@@ -171,7 +171,7 @@
   > personal.listAccounts
   ["0x549ad57f6d5370fdefa0da4cb92fda4ea391a139"]
   ```
-  这里,解锁可以使用
+  这里,解锁也可以使用
   ```cmd
   personal.unlockAccount("0x549ad57f6d5370fdefa0da4cb92fda4ea391a139", "1", 100)
   ```
