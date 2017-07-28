@@ -27,7 +27,10 @@ true
 
 . 被锁定的账户仍然能挖矿,只是不能交易<br>
 继续挖矿后查看账户<br>
+这里注意eth即web3.eth
 ```cmd
 > eth.getBalance(eth.accounts[0])
+335000000000000000000
+> web3.eth.getBalance("0xa3a601635f5f51392c2045d5f5617bde98622b13")
 335000000000000000000
 ```
