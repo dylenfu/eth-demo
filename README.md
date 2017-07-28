@@ -1,18 +1,18 @@
-以太坊demo
+# 以太坊demo
 
-功能
- 安装
- 创世块
- 智能合约
+## 功能
+ . 安装
+ . 创世块
+ . 智能合约
  
-安装
- 下载go-eth项目,使用源码安装,参考：
+## 安装
+ 下载go-eth项目,使用源码安装,参考：<br>
  https://ethereum.github.io/go-ethereum/install/#build-it-from-source-code
- 安装solc,使用binary package安装,参考：
+ 安装solc,使用binary package安装,参考： <br>
  http://solidity.readthedocs.io/en/latest/installing-solidity.html
  
-创世块
- 新建build/seed0/genesis.json
+## 创世块
+ 新建build/seed0/genesis.json <br>
  建立5个初始账号
  ```json
     {
@@ -98,9 +98,9 @@
  
 ```
  
- 上述命令中：
- datadir 指定数据目录
- rpc     启动rpc通讯,可以进行调试和部署智能合约
+ 上述命令中：<br>
+ datadir 指定数据目录 <br>
+ rpc     启动rpc通讯,可以进行调试和部署智能合约 <br>
  
  控制台运行相关命令,这里以挖矿为例子：
 ```cmd
