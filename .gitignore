@@ -16,4 +16,6 @@
 .glide/
 
 .idea/
+.config/
+
 eth-demo.iml
