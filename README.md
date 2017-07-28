@@ -157,6 +157,24 @@
  true
 
 ```
- 
+
+  创建并解锁账户:<br>
+  创建可用账户的逻辑是：使用密码创建账户,然后解锁账户,通过personal.listAccounts可以查看  
+  ```cmd
+  > personal.newAccount("1")
+  "0x549ad57f6d5370fdefa0da4cb92fda4ea391a139"
+  INFO [07-28|15:54:09] New wallet appeared                      url=keystore:///home/vagrant/gohome… status=Locked
+  > personal.unlockAccount(eth.accounts[0])
+  Unlock account 0x549ad57f6d5370fdefa0da4cb92fda4ea391a139
+  Passphrase: 
+  true
+  > personal.listAccounts
+  ["0x549ad57f6d5370fdefa0da4cb92fda4ea391a139"]
+  ```
+  这里,解锁可以使用
+  ```cmd
+  personal.unlockAccount("0x549ad57f6d5370fdefa0da4cb92fda4ea391a139", "1", 100)
+  ```
+  
 
  
