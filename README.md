@@ -17,7 +17,7 @@
  ```json
     {
        "config": {
-         "chainId": 1,
+         "chainId": 150,
          "homesteadBlock": 0,
          "eip155Block": 0,
          "eip158Block": 0
@@ -72,7 +72,7 @@
  ```
  启动节点:
  ```bash
- vagrant@vagrant:~/gohome/src/eth-demo/build/seed0$ geth --datadir data --networkid 1 --rpc --rpccorsdomain "*" --nodiscover console
+ vagrant@vagrant:~/gohome/src/eth-demo/build/seed0$ geth --datadir data --networkid 150 --rpc --rpccorsdomain "*" --nodiscover console
  WARN [07-28|15:05:30] No etherbase set and no accounts found as default 
  INFO [07-28|15:05:30] Starting peer-to-peer node               instance=Geth/v1.7.0-unstable/linux-amd64/go1.8.1
  INFO [07-28|15:05:30] Allocated cache and file handles         database=/home/vagrant/gohome/src/eth-demo/build/seed0/data/geth/chaindata cache=128 handles=1024
@@ -105,19 +105,57 @@
  控制台运行相关命令,这里以挖矿为例子：
 ```cmd
  > personal.newAccount("1")
- INFO [07-28|15:11:00] New wallet appeared                      url=keystore:///home/vagrant/gohome… status=Locked
- "0x577e2b2ae9d3bce1eaf60f735425a2e5fc67093e"
+ INFO [07-28|15:37:31] New wallet appeared                      url=keystore:///home/vagrant/gohome… status=Locked
+ "0x888aa85221873f7f180c8fd9d88d4f462a40da6c"
  > miner.start(1)
- INFO [07-28|15:11:04] Updated mining threads                   threads=1
- INFO [07-28|15:11:04] Transaction pool price threshold updated price=18000000000
+ INFO [07-28|15:37:40] Updated mining threads                   threads=1
+ INFO [07-28|15:37:40] Transaction pool price threshold updated price=18000000000
  null
- > INFO [07-28|15:11:04] Starting mining operation 
- INFO [07-28|15:11:04] Commit new mining work                   number=1 txs=0 uncles=0 elapsed=303.736µs
- INFO [07-28|15:11:07] Generating DAG in progress               epoch=0 percentage=0 elapsed=1.530s
- INFO [07-28|15:11:08] Generating DAG in progress               epoch=0 percentage=1 elapsed=3.065s
- ......
+ INFO [07-28|15:37:40] Starting mining operation 
+ > INFO [07-28|15:37:40] Commit new mining work                   number=1 txs=0 uncles=0 elapsed=136.516µs
+ INFO [07-28|15:37:46] Successfully sealed new block            number=1 hash=a3d5e8…c7bcf6
+ INFO [07-28|15:37:46] 🔨 mined potential block                  number=1 hash=a3d5e8…c7bcf6
+ INFO [07-28|15:37:46] Commit new mining work                   number=2 txs=0 uncles=0 elapsed=205.795µs
+ INFO [07-28|15:37:47] Successfully sealed new block            number=2 hash=86869f…b6b4ff
+ INFO [07-28|15:37:47] 🔨 mined potential block                  number=2 hash=86869f…b6b4ff
+ INFO [07-28|15:37:47] Commit new mining work                   number=3 txs=0 uncles=0 elapsed=175.83µs
+ INFO [07-28|15:37:48] Successfully sealed new block            number=3 hash=89bf98…db5baa
+ INFO [07-28|15:37:48] 🔨 mined potential block                  number=3 hash=89bf98…db5baa
+ INFO [07-28|15:37:48] Commit new mining work                   number=4 txs=0 uncles=0 elapsed=145.061µs
+ INFO [07-28|15:37:52] Successfully sealed new block            number=4 hash=0177f9…b36645
+ INFO [07-28|15:37:52] 🔨 mined potential block                  number=4 hash=0177f9…b36645
+ INFO [07-28|15:37:52] Commit new mining work                   number=5 txs=0 uncles=0 elapsed=154.19µs
+ INFO [07-28|15:37:53] Successfully sealed new block            number=5 hash=97dbde…e6621d
+ INFO [07-28|15:37:53] 🔨 mined potential block                  number=5 hash=97dbde…e6621d
+ INFO [07-28|15:37:53] Commit new mining work                   number=6 txs=0 uncles=0 elapsed=173.534µs
+ INFO [07-28|15:37:56] Successfully sealed new block            number=6 hash=596c60…e2c6b4
+ INFO [07-28|15:37:56] 🔗 block reached canonical chain          number=1 hash=a3d5e8…c7bcf6
+ INFO [07-28|15:37:56] 🔨 mined potential block                  number=6 hash=596c60…e2c6b4
+ INFO [07-28|15:37:56] Commit new mining work                   number=7 txs=0 uncles=0 elapsed=168.144µs
+ INFO [07-28|15:37:57] Successfully sealed new block            number=7 hash=15268a…fef71c
+ INFO [07-28|15:37:57] 🔗 block reached canonical chain          number=2 hash=86869f…b6b4ff
+ INFO [07-28|15:37:57] 🔨 mined potential block                  number=7 hash=15268a…fef71c
+ INFO [07-28|15:37:57] Commit new mining work                   number=8 txs=0 uncles=0 elapsed=167.951µs
+ > mINFO [07-28|15:37:58] Successfully sealed new block            number=8 hash=d8e9f4…092e4b
+ INFO [07-28|15:37:58] 🔗 block reached canonical chain          number=3 hash=89bf98…db5baa
+ INFO [07-28|15:37:58] 🔨 mined potential block                  number=8 hash=d8e9f4…092e4b
+ INFO [07-28|15:37:58] Commit new mining work                   number=9 txs=0 uncles=0 elapsed=225.274µs
+ > minINFO [07-28|15:37:58] Successfully sealed new block            number=9 hash=b85147…eb18d2
+ INFO [07-28|15:37:58] 🔗 block reached canonical chain          number=4 hash=0177f9…b36645
+ INFO [07-28|15:37:58] 🔨 mined potential block                  number=9 hash=b85147…eb18d2
+ INFO [07-28|15:37:58] Commit new mining work                   number=10 txs=0 uncles=0 elapsed=167.023µs
+ > minerINFO [07-28|15:37:59] Successfully sealed new block            number=10 hash=fa34a4…626d07
+ INFO [07-28|15:37:59] 🔗 block reached canonical chain          number=5  hash=97dbde…e6621d
+ INFO [07-28|15:37:59] 🔨 mined potential block                  number=10 hash=fa34a4…626d07
+ INFO [07-28|15:37:59] Commit new mining work                   number=11 txs=0 uncles=0 elapsed=140.509µs
+ > miner.stINFO [07-28|15:37:59] Successfully sealed new block            number=11 hash=7a06de…5305d9
+ INFO [07-28|15:37:59] 🔗 block reached canonical chain          number=6  hash=596c60…e2c6b4
+ INFO [07-28|15:37:59] 🔨 mined potential block                  number=11 hash=7a06de…5305d9
+ INFO [07-28|15:37:59] Mining too far in the future             wait=2s
  > miner.stop()
+ INFO [07-28|15:38:01] Commit new mining work                   number=12 txs=0 uncles=0 elapsed=2.000s
  true
+
 ```
  
 
