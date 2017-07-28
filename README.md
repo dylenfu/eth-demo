@@ -14,42 +14,45 @@
 创世块
  新建build/seed0/genesis.json
  建立5个初始账号
- {
-   "config": {
-     "chainId": 1,
-     "homesteadBlock": 0,
-     "eip155Block": 0,
-     "eip158Block": 0
-   },
-   "alloc": {
-     "3ae88fe370c39384fc16da2c9e768cf5d2495b48": {
-       "balance": "10000000000"
-     },
-     "81063419f13cab5ac090cd8329d8fff9feead4a0": {
-       "balance": "10000000000"
-     },
-     "9da26fc2e1d6ad9fdd46138906b0104ae68a65d8": {
-       "balance": "10000000000"
-     },
-     "bd2d69e3e68e1ab3944a865b3e566ca5c48740da": {
-       "balance": "10000000000"
-     },
-     "ca9f427df31a1f5862968fad1fe98c0a9ee068c4": {
-       "balance": "10000000000"
+ ```json
+    {
+       "config": {
+         "chainId": 1,
+         "homesteadBlock": 0,
+         "eip155Block": 0,
+         "eip158Block": 0
+       },
+       "alloc": {
+         "3ae88fe370c39384fc16da2c9e768cf5d2495b48": {
+           "balance": "10000000000"
+         },
+         "81063419f13cab5ac090cd8329d8fff9feead4a0": {
+           "balance": "10000000000"
+         },
+         "9da26fc2e1d6ad9fdd46138906b0104ae68a65d8": {
+           "balance": "10000000000"
+         },
+         "bd2d69e3e68e1ab3944a865b3e566ca5c48740da": {
+           "balance": "10000000000"
+         },
+         "ca9f427df31a1f5862968fad1fe98c0a9ee068c4": {
+           "balance": "10000000000"
+         }
+       },
+     
+       "nonce": "0x0000000000000042",
+       "difficulty": "0x020000",
+       "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+       "coinbase": "0x0000000000000000000000000000000000000000",
+       "timestamp": "0x00",
+       "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+       "extraData": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
+       "gasLimit": "0x4c4b40"
      }
-   },
- 
-   "nonce": "0x0000000000000042",
-   "difficulty": "0x020000",
-   "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-   "coinbase": "0x0000000000000000000000000000000000000000",
-   "timestamp": "0x00",
-   "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-   "extraData": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
-   "gasLimit": "0x4c4b40"
- }
+```
  
  初始化：
+ ```bash
  vagrant@vagrant:~/gohome/src/eth-demo/build/seed0$ mkdir data
  vagrant@vagrant:~/gohome/src/eth-demo/build/seed0$ ll
  总用量 16
@@ -66,8 +69,9 @@
  INFO [07-28|15:00:39] Allocated cache and file handles         database=/home/vagrant/gohome/src/eth-demo/build/seed0/data/geth/lightchaindata cache=16 handles=16
  INFO [07-28|15:00:39] Writing custom genesis block 
  INFO [07-28|15:00:39] Successfully wrote genesis state         database=lightchaindata                                                         hash=c5f7a6…dd680c
- 
+ ```
  启动节点:
+ ```bash
  vagrant@vagrant:~/gohome/src/eth-demo/build/seed0$ geth --datadir data --networkid 1 --rpc --rpccorsdomain "*" --nodiscover console
  WARN [07-28|15:05:30] No etherbase set and no accounts found as default 
  INFO [07-28|15:05:30] Starting peer-to-peer node               instance=Geth/v1.7.0-unstable/linux-amd64/go1.8.1
@@ -92,11 +96,14 @@
  instance: Geth/v1.7.0-unstable/linux-amd64/go1.8.1
   modules: admin:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 txpool:1.0 web3:1.0
  
+```
+ 
  上述命令中：
  datadir 指定数据目录
  rpc     启动rpc通讯,可以进行调试和部署智能合约
  
  控制台运行相关命令,这里以挖矿为例子：
+```cmd
  > personal.newAccount("1")
  INFO [07-28|15:11:00] New wallet appeared                      url=keystore:///home/vagrant/gohome… status=Locked
  "0x577e2b2ae9d3bce1eaf60f735425a2e5fc67093e"
@@ -111,7 +118,7 @@
  ......
  > miner.stop()
  true
-
+```
  
 
  
