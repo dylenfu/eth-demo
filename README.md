@@ -2,7 +2,8 @@
 
 ## 功能
  . 安装
- . 创世块
+ . 项目目录
+ . 创建私链
  . 智能合约
  
 ## 安装
@@ -29,7 +30,7 @@
  . hello 智能合约项目目录
  
  
-## 创建链
+## 创建私链
  新建build/seed0/genesis.json <br>
  建立5个初始账号
  ```json
@@ -180,3 +181,4 @@
     其中,contracts中migration.sol关系到合约部署不能删除,该目录下其他的都可以删除
     truffle compile 编译项目
   ```
+  . truffle compile后可以使用truffle deploy部署合约到私链
