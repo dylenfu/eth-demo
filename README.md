@@ -175,10 +175,9 @@
   ```
   
 ## 智能合约
-  . 安装好solc&truffle后,在constracts下创建项目hello,使用命令行：
-  ```cmd
-    truffle init 后会在hello下生成build,constracts,migrations,node_modules,test目录&truffle.js
-    其中,contracts中migration.sol关系到合约部署不能删除,该目录下其他的都可以删除
-    truffle compile 编译项目
-  ```
+  . 安装好solc&truffle后,在constracts下创建项目hello,使用命令行：  truffle init <br>
+    后会在hello下生成build,constracts,migrations,node_modules,test目录&truffle.js中,<br>
+    contracts中migration.sol关系到合约部署不能删除,该目录下其他的都可以删除,<br>
+    truffle compile 编译项目<br>
+  
   . truffle compile后可以使用truffle deploy部署合约到私链
