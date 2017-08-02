@@ -1,0 +1,35 @@
+{
+  "contract_name": "Greeter",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "w",
+          "type": "uint256"
+        },
+        {
+          "name": "h",
+          "type": "uint256"
+        }
+      ],
+      "name": "rectangle",
+      "outputs": [
+        {
+          "name": "s",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x60606040523415600e57600080fd5b5b608e8061001d6000396000f300606060405263ffffffff60e060020a6000350416634476754881146023575b600080fd5b3415602d57600080fd5b60396004356024356051565b60405191825260208201526040908101905180910390f35b8181026002838301025b92509290505600a165627a7a72305820077967d4c453e01098acdf8a952dd2b0c45af9aaded85ab9781ec0da5b70db9b0029",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1501579093099
+}

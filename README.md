@@ -6,12 +6,30 @@
  . 智能合约
  
 ## 安装
- 下载go-eth项目,使用源码安装,参考：<br>
+ 1. 下载go-eth项目,使用源码安装,参考：<br>
  https://ethereum.github.io/go-ethereum/install/#build-it-from-source-code
- 安装solc,使用binary package安装,参考： <br>
+ 
+ 2. 安装solc,使用binary package安装,参考： <br>
  http://solidity.readthedocs.io/en/latest/installing-solidity.html
  
-## 创世块
+ 3. 安装solidity框架turffle:<br>
+  npm install -g truffle
+  
+ 4. 保证node版本(安装truffle后,node低版本不能保证truffle compile成功)<br>
+ ```cmd
+ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+ ``` 
+ ```cmd
+ sudo apt-get install nodejs
+ ```
+ 
+## 项目目录
+ . build 以太放私有链目录
+ . docs 相关说明文档目录
+ . hello 智能合约项目目录
+ 
+ 
+## 创建链
  新建build/seed0/genesis.json <br>
  建立5个初始账号
  ```json
@@ -113,28 +131,7 @@
  null
  INFO [07-28|15:37:40] Starting mining operation 
  > INFO [07-28|15:37:40] Commit new mining work                   number=1 txs=0 uncles=0 elapsed=136.516µs
- INFO [07-28|15:37:46] Successfully sealed new block            number=1 hash=a3d5e8…c7bcf6
- INFO [07-28|15:37:46] 🔨 mined potential block                  number=1 hash=a3d5e8…c7bcf6
- INFO [07-28|15:37:46] Commit new mining work                   number=2 txs=0 uncles=0 elapsed=205.795µs
- INFO [07-28|15:37:47] Successfully sealed new block            number=2 hash=86869f…b6b4ff
- INFO [07-28|15:37:47] 🔨 mined potential block                  number=2 hash=86869f…b6b4ff
- INFO [07-28|15:37:47] Commit new mining work                   number=3 txs=0 uncles=0 elapsed=175.83µs
- INFO [07-28|15:37:48] Successfully sealed new block            number=3 hash=89bf98…db5baa
- INFO [07-28|15:37:48] 🔨 mined potential block                  number=3 hash=89bf98…db5baa
- INFO [07-28|15:37:48] Commit new mining work                   number=4 txs=0 uncles=0 elapsed=145.061µs
- INFO [07-28|15:37:52] Successfully sealed new block            number=4 hash=0177f9…b36645
- INFO [07-28|15:37:52] 🔨 mined potential block                  number=4 hash=0177f9…b36645
- INFO [07-28|15:37:52] Commit new mining work                   number=5 txs=0 uncles=0 elapsed=154.19µs
- INFO [07-28|15:37:53] Successfully sealed new block            number=5 hash=97dbde…e6621d
- INFO [07-28|15:37:53] 🔨 mined potential block                  number=5 hash=97dbde…e6621d
- INFO [07-28|15:37:53] Commit new mining work                   number=6 txs=0 uncles=0 elapsed=173.534µs
- INFO [07-28|15:37:56] Successfully sealed new block            number=6 hash=596c60…e2c6b4
- INFO [07-28|15:37:56] 🔗 block reached canonical chain          number=1 hash=a3d5e8…c7bcf6
- INFO [07-28|15:37:56] 🔨 mined potential block                  number=6 hash=596c60…e2c6b4
- INFO [07-28|15:37:56] Commit new mining work                   number=7 txs=0 uncles=0 elapsed=168.144µs
- INFO [07-28|15:37:57] Successfully sealed new block            number=7 hash=15268a…fef71c
- INFO [07-28|15:37:57] 🔗 block reached canonical chain          number=2 hash=86869f…b6b4ff
- INFO [07-28|15:37:57] 🔨 mined potential block                  number=7 hash=15268a…fef71c
+ INFO [07-28|15:37:46] Successfully sealed new block            number=1 hash=a3d5e8…c7bcf6 
  INFO [07-28|15:37:57] Commit new mining work                   number=8 txs=0 uncles=0 elapsed=167.951µs
  > mINFO [07-28|15:37:58] Successfully sealed new block            number=8 hash=d8e9f4…092e4b
  INFO [07-28|15:37:58] 🔗 block reached canonical chain          number=3 hash=89bf98…db5baa
@@ -174,4 +171,12 @@
   这里,解锁也可以使用
   ```cmd
   personal.unlockAccount("0x549ad57f6d5370fdefa0da4cb92fda4ea391a139", "1", 100)
+  ```
+  
+## 智能合约
+  . 安装好solc&truffle后,在constracts下创建项目hello,使用命令行：
+  ```cmd
+    truffle init 后会在hello下生成build,constracts,migrations,node_modules,test目录&truffle.js
+    其中,contracts中migration.sol关系到合约部署不能删除,该目录下其他的都可以删除
+    truffle compile 编译项目
   ```

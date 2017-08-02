@@ -1,4 +1,11 @@
 
+## functions
+. 新建账户 personal.newAccount("password")
+. 解锁用户 personal.unlockAccount("address", "password", expire)
+. 查询账户 personal.listAccounts 列出所有账户
+. 查询钱包 personal.listWallets  列出所有钱包
+. 查询余额 eth.getBalance("address")
+
 ## 解锁时间
 . 使用personal.unlockAccount解锁账户,解锁时间是有限定的<br>
 ```cmd
@@ -23,6 +30,9 @@ true
     status: "Unlocked",
     url: "keystore:///home/vagrant/gohome/src/eth-demo/build/seed0/data/keystore/UTC--2017-07-28T08-09-12.079263977Z--a3a601635f5f51392c2045d5f5617bde98622b13"
 }]
+> personal.listAccounts
+["0xa3a601635f5f51392c2045d5f5617bde98622b13"]
+
 ```
 
 . 被锁定的账户仍然能挖矿,只是不能交易<br>
