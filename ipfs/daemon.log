@@ -1,0 +1,11 @@
+Initializing daemon...
+Adjusting current ulimit to 2048...
+Successfully raised file descriptor limit to 2048.
+Swarm listening on /ip4/10.139.176.168/tcp/4001
+Swarm listening on /ip4/127.0.0.1/tcp/4001
+Swarm listening on /ip4/172.16.43.73/tcp/4001
+Swarm listening on /ip4/172.17.0.1/tcp/4001
+Swarm listening on /ip6/::1/tcp/4001
+API server listening on /ip4/127.0.0.1/tcp/5001
+Gateway (readonly) server listening on /ip4/127.0.0.1/tcp/8080
+Daemon is ready

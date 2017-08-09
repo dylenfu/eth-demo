@@ -7,6 +7,7 @@ contract Greeter
 
     function Greeter(string _greeting) public
     {
+        assert(3 > 2);
         creator = msg.sender;
         greeting = _greeting;
     }

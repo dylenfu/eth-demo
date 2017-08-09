@@ -32,11 +32,11 @@
  
 ## 创建私链
  新建build/seed0/genesis.json <br>
- 建立5个初始账号
+ 建立2个初始账号
  ```json
     {
        "config": {
-         "chainId": 150,
+         "chainId": 151,
          "homesteadBlock": 0,
          "eip155Block": 0,
          "eip158Block": 0
@@ -47,20 +47,11 @@
          },
          "81063419f13cab5ac090cd8329d8fff9feead4a0": {
            "balance": "10000000000"
-         },
-         "9da26fc2e1d6ad9fdd46138906b0104ae68a65d8": {
-           "balance": "10000000000"
-         },
-         "bd2d69e3e68e1ab3944a865b3e566ca5c48740da": {
-           "balance": "10000000000"
-         },
-         "ca9f427df31a1f5862968fad1fe98c0a9ee068c4": {
-           "balance": "10000000000"
-         }
+         }     
        },
      
        "nonce": "0x0000000000000042",
-       "difficulty": "0x020000",
+       "difficulty": "0x400000",
        "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
        "coinbase": "0x0000000000000000000000000000000000000000",
        "timestamp": "0x00",
