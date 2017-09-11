@@ -21,6 +21,36 @@ const(
 	Account2 = "0x56d9620237fff8a6c0f98ec6829c137477887ec4" // pwd 103
 )
 
+type transaction struct {
+	From		string
+	To 			string
+	Gas			*hexutil.Big
+	GasPrice	*hexutil.Big
+	Value       *hexutil.Big
+	Data		string
+}
+
+type block struct {
+	Number *hexutil.Big
+	Hash string
+	ParentHash string
+	Nonce string
+	Sha3Uncles string
+	LogsBloom string
+	TransactionRoot string
+	StateRoot string
+	Miner string
+	Difficulty *hexutil.Big
+	TotalDifficulty *hexutil.Big
+	ExtraData string
+	Size *hexutil.Big
+	GasLimit *hexutil.Big
+	GasUsed *hexutil.Big
+	Timestamp string
+	Transactions []transaction
+	uncles []string
+}
+
 // 这里我们使用http的形式连接eth私有链
 func main() {
 	flag.Parse()
@@ -66,22 +96,7 @@ func (h *Handle) Code() {
 	log.Println(code)
 }
 
-// 发送transaction转账，transaction数据结构包括:
-// from address
-// to address
-// gas int
-// gasPrice int
-// data []byte
-
-type transaction struct {
-	From		string
-	To 			string
-	Gas			*hexutil.Big
-	GasPrice	*hexutil.Big
-	Value       *hexutil.Big
-	Data		string
-}
-
+// 发送transaction转账
 func (h *Handle) SendTransaction() {
 	var (
 		result string
@@ -100,6 +115,46 @@ func (h *Handle) SendTransaction() {
 	log.Println(result)
 }
 
+// 查询transaction数量，注意，这里count一定是string
+func (h *Handle) TransactionCount() {
+	var count string
+
+	if err := h.client.Call(&count, "eth_getTransactionCount", Miner, "latest"); err != nil {
+		panic(err)
+	}
+
+	log.Println(count)
+}
+
+// 根据number查询block
+func (h *Handle) GetBlockByNumber() {
+	var b block
+
+	// 这里注意，查询时number中的0x不能少
+	if err := h.client.Call(&b, "eth_getBlockByNumber", "0x1", true); err != nil {
+		panic(err)
+	}
+
+	log.Println(b)
+}
+
+// 根据hash查询block
+func (h *Handle) GetBlockByHash() {
+	var b block
+
+	hash := "0x328075d039e42c5f7b2823bfb2d8334843cc4fbe35c0d4021f6239f03d9d526a"
+	if err := h.client.Call(&b, "eth_getBlockByHash", hash, true); err != nil {
+		panic(err)
+	}
+
+	log.Println(b)
+}
+
+////////////////////////////////////////////////////////////////////////////
+//
+// 内部使用方法
+//
+////////////////////////////////////////////////////////////////////////////
 func toHexBigInt(src int) *hexutil.Big {
 	var ret hexutil.Big
 
