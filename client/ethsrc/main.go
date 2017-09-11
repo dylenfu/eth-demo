@@ -1,72 +1,39 @@
 package main
 
 import (
-	"math/big"
-	"time"
-	"fmt"
 	"github.com/dylenfu/eth-libs/client/ethsrc/rpc"
-	"context"
+	"log"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"flag"
+	//"reflect"
+	"reflect"
 )
 
-// In this example, our client whishes to track the latest 'block number'
-// known to the server. The server supports two methods:
-//
-// eth_getBlockByNumber("latest", {})
-//    returns the latest block object.
-//
-// eth_subscribe("newBlocks")
-//    creates a subscription which fires block objects when new blocks arrive.
+var call = flag.String("call", "Balance", "chose test case")
 
-type Block struct {
-	Number *big.Int
+type Handle struct {
+	client *rpc.Client
 }
 
 // 这里我们使用http的形式连接eth私有链
 func main() {
-	// Connect the client.
-	client, _ := rpc.Dial("ws://127.0.0.1:8485")
-	subch := make(chan Block)
-
-	// Ensure that subch receives the latest block.
-	go func() {
-		for i := 0; ; i++ {
-			if i > 0 {
-				time.Sleep(2 * time.Second)
-			}
-			subscribeBlocks(client, subch)
-		}
-	}()
-
-	// Print events from the subscription as they arrive.
-	for block := range subch {
-		fmt.Println("latest block:", block.Number)
-	}
+	flag.Parse()
+	c, _ := rpc.Dial("http://127.0.0.1:8545")
+	handle := &Handle{client: c}
+	reflect.ValueOf(handle).MethodByName(*call).Call([]reflect.Value{})
 }
 
-// subscribeBlocks runs in its own goroutine and maintains
-// a subscription for new blocks.
-func subscribeBlocks(client *rpc.Client, subch chan Block) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+// 查询账户余额
+func (h *Handle) Balance() {
+	var amount hexutil.Big
+	h.client.Call(&amount, "eth_getBalance", "0xc30ae0bbb7722b1af3ada4db98d86090f8850cdb", "pending")
+	log.Println(amount.ToInt().String())
+}
 
-	// Subscribe to new blocks.
-	sub, err := client.EthSubscribe(ctx, subch, "newBlocks")
-	if err != nil {
-		fmt.Println("subscribe error:", err)
-		return
+func (h *Handle) Accounts() {
+	var accounts []string
+	h.client.Call(&accounts, "eth_accounts")
+	for _, v := range accounts {
+		log.Println(v)
 	}
-
-	// The connection is established now.
-	// Update the channel with the current block.
-	var lastBlock Block
-	if err := client.CallContext(ctx, &lastBlock, "eth_getBlockByNumber", "latest"); err != nil {
-		fmt.Println("can't get latest block:", err)
-		return
-	}
-	subch <- lastBlock
-
-	// The subscription will deliver events to the channel. Wait for the
-	// subscription to end for any reason, then loop around to re-establish
-	// the connection.
-	fmt.Println("connection lost: ", <-sub.Err())
 }
