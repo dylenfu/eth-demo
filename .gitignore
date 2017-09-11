@@ -20,3 +20,5 @@ build/seed0/data
 .config/
 
 eth-demo.iml
+build/data/
+data/
