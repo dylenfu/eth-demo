@@ -7,6 +7,12 @@ import (
 	"flag"
 	"reflect"
 	"strconv"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/common"
+	"math/big"
+	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
+	"crypto/rand"
 )
 
 var call = flag.String("call", "Balance", "chose test case")
@@ -18,9 +24,13 @@ type Handle struct {
 // 在私链建立三个账户，miner是第一个账户，用于挖矿，account1&account2作为测试账户
 // 每一次transaction之前都要解锁相关账户
 const(
-	Miner = "0x4bad3053d574cd54513babe21db3f09bea1d387d" // pwd 101
-	Account1 = "0x46c5683c754b2eba04b2701805617c0319a9b4dd" // pwd 102
-	Account2 = "0x56d9620237fff8a6c0f98ec6829c137477887ec4" // pwd 103
+	Miner       = "0x4bad3053d574cd54513babe21db3f09bea1d387d"    // pwd 101
+	Account1    = "0x46c5683c754b2eba04b2701805617c0319a9b4dd"    // pwd 102
+	Account2    = "0x56d9620237fff8a6c0f98ec6829c137477887ec4"    // pwd 103
+	PwdMiner    = "101"
+	PwdAccount1 = "102"
+	PwdAccount2 = "103"
+	ChainId = 151
 )
 
 // transaction数据结构参考 https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sendtransaction
@@ -155,9 +165,32 @@ func (h *Handle) GetBlockByHash() {
 	log.Println(b)
 }
 
-// 发送签名后transaction
-func (h *Handle) SendRawTransaction() {
+// 签名用户
+func (h *Handle) signUser(account,pwd string) (string, error) {
+	var result string
 
+	if err := h.client.Call(&result, "eth_sign", account, pwd); err != nil {
+		return "", err
+	}
+
+	return result, nil
+}
+
+// 签名transaction
+func (h *Handle) SignTransaction() {
+	tx := newTransaction()
+	codes, err := rlp.EncodeToBytes(tx)
+	if err != nil {
+		panic(err)
+	}
+	hash := common.BytesToHash(codes).String()
+	log.Println("rlp hash:", hash)
+
+	var result string
+	if err := h.client.Call(&result, "eth_sign", Miner, hash); err != nil {
+		panic(err)
+	}
+	log.Println("sign result:", result)
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -174,4 +207,16 @@ func toHexBigInt(src int) *hexutil.Big {
 	ret.UnmarshalText([]byte(des))
 
 	return &ret
+}
+
+func newTransaction() *types.Transaction {
+	nonce := 170
+	to := common.HexToAddress(Account1)
+	amount := big.NewInt(100000000)
+	gas := big.NewInt(10000)
+	price := big.NewInt(1)
+	//data := []byte{}
+	tx := types.NewTransaction(uint64(nonce), to, amount,gas,price, nil)
+
+	return tx
 }
