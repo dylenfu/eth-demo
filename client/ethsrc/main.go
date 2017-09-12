@@ -11,8 +11,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"crypto/rand"
 )
 
 var call = flag.String("call", "Balance", "chose test case")
@@ -215,8 +213,8 @@ func newTransaction() *types.Transaction {
 	amount := big.NewInt(100000000)
 	gas := big.NewInt(10000)
 	price := big.NewInt(1)
-	//data := []byte{}
-	tx := types.NewTransaction(uint64(nonce), to, amount,gas,price, nil)
+	data := []byte{}
+	tx := types.NewTransaction(uint64(nonce), to, amount,gas,price, data)
 
 	return tx
 }
