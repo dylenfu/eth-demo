@@ -113,7 +113,7 @@ func greet(habi *abi.ABI) *CallArgs {
 // > fullhash=0x1e406b4ef846191ebbf27c405aff6f182e4c6ec0f40ed8fbda60c612abb7b792
 // > recipient=0xe5131431f134A961C5Cf3941Ef77182aea203196
 func setGreet(habi *abi.ABI) *Transaction {
-	bytes, err := habi.Pack("setGreeting", "hahhaha")
+	bytes, err := habi.Pack("setGreeting", "hahhahammmmmmm")
 	if err != nil {
 		panic(err)
 	}
