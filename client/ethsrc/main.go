@@ -90,8 +90,10 @@ func (h *Handle) Accounts() {
 
 // 查看区块数量
 func (h *Handle) BlockNumber() {
-	var num int
-	h.client.Call(&num, "eth_blockNumber")
+	var num string
+	if err := h.client.Call(&num, "eth_blockNumber"); err != nil {
+		panic(err)
+	}
 	log.Println(num)
 }
 
@@ -144,7 +146,7 @@ func (h *Handle) GetBlockByNumber() {
 	var b block
 
 	// 这里注意，查询时number中的0x不能少
-	if err := h.client.Call(&b, "eth_getBlockByNumber", "0x1", true); err != nil {
+	if err := h.client.Call(&b, "eth_getBlockByNumber", "0x10", true); err != nil {
 		panic(err)
 	}
 
