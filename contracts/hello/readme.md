@@ -57,3 +57,15 @@ contract 合约地址:<br>
 ```
 对应到eth合约abi
 
+4.通过eth_call调用智能合约<br>
+当合约部署后，我们可以通过abi调用合约方法,以helloworld智能合约的greet方法为例<br>
+.  首先，我们需要将abi字符串unmarshal解析，得到一个abi<br>
+.  然后，通过abi的Pack方法将合约的方法打包<br>
+.  最后，通过设定call方法相关参数，调用call实现调用合约方法,注意from&to这两个地址都不能为空<br>
+
+5.通过transaction调用合约并修改相关变量<br>
+当合约中有全局变量时，全局变量的修改不能通过call方法直接修改，而是要使用sendTransaction<br>
+在不对miner进行签名的情况下，我们应该自己构建transaction,而不是go-eth的newTransaction方法<br>
+to地址应该为合约地址,data应该是aib对合约方法打包后的字符数组.<br>
+调用该方法前，需要对miner进行解锁,<br>
+调用该方法后，需要miner进行挖矿,以执行transaction<br>
