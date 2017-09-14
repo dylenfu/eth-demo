@@ -6,11 +6,11 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"flag"
 	"reflect"
-	"strconv"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"github.com/ethereum/go-ethereum/rlp"
+	cm "github.com/dylenfu/eth-libs/common"
 )
 
 var call = flag.String("call", "Balance", "chose test case")
@@ -36,32 +36,32 @@ const(
 type transaction struct {
 	From		string
 	To 			string
-	Gas			*hexutil.Big
-	GasPrice	*hexutil.Big
-	Value       *hexutil.Big
+	Gas			hexutil.Big
+	GasPrice	hexutil.Big
+	Value       hexutil.Big
 	Data		string
 }
 
 // block数据结构参考 https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbyhash
 type block struct {
-	Number *hexutil.Big
-	Hash string
-	ParentHash string
-	Nonce string
-	Sha3Uncles string
-	LogsBloom string
+	Number 			hexutil.Big
+	Hash 			string
+	ParentHash 		string
+	Nonce 			string
+	Sha3Uncles 		string
+	LogsBloom 		string
 	TransactionRoot string
-	StateRoot string
-	Miner string
-	Difficulty *hexutil.Big
-	TotalDifficulty *hexutil.Big
-	ExtraData string
-	Size *hexutil.Big
-	GasLimit *hexutil.Big
-	GasUsed *hexutil.Big
-	Timestamp string
-	Transactions []transaction
-	uncles []string
+	StateRoot 		string
+	Miner 			string
+	Difficulty 		hexutil.Big
+	TotalDifficulty hexutil.Big
+	ExtraData 		string
+	Size 			hexutil.Big
+	GasLimit 		hexutil.Big
+	GasUsed 		hexutil.Big
+	Timestamp 		string
+	Transactions 	[]transaction
+	uncles 			[]string
 }
 
 // 这里我们使用http的形式连接eth私有链
@@ -120,9 +120,9 @@ func (h *Handle) SendTransaction() {
 
 	tx.From = Miner
 	tx.To   = Account2
-	tx.Gas  = toHexBigInt(100000)
-	tx.GasPrice = toHexBigInt(1)
-	tx.Value = toHexBigInt(1000000000)
+	tx.Gas  = cm.ToHexBigInt(100000)
+	tx.GasPrice = cm.ToHexBigInt(1)
+	tx.Value = cm.ToHexBigInt(1000000000)
 
 	if err := h.client.Call(&result, "eth_sendTransaction", &tx); err != nil {
 		panic(err)
@@ -198,17 +198,6 @@ func (h *Handle) SignTransaction() {
 // 内部使用方法
 //
 ////////////////////////////////////////////////////////////////////////////
-func toHexBigInt(src int) *hexutil.Big {
-	var ret hexutil.Big
-
-	str := strconv.FormatInt(int64(src), 16)
-	// 这里注意，一定要加上"0x"
-	des :=  "0x" + str
-	ret.UnmarshalText([]byte(des))
-
-	return &ret
-}
-
 func newTransaction() *types.Transaction {
 	nonce := 170
 	to := common.HexToAddress(Account1)

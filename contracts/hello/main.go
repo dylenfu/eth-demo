@@ -8,9 +8,14 @@ import (
 	"github.com/ethereum/go-ethereum/rpc"
 	"log"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	cm "github.com/dylenfu/eth-libs/common"
+	"flag"
 )
 
-const tokenAddress = "0xe5131431f134a961c5cf3941ef77182aea203196"
+const (
+	tokenAddress = "0xe5131431f134a961c5cf3941ef77182aea203196"
+	miner = "0x4bad3053d574cd54513babe21db3f09bea1d387d"
+)
 
 type CallArgs struct {
 	From 		string
@@ -21,7 +26,20 @@ type CallArgs struct {
 	Data 		interface{}
 }
 
+type Transaction struct {
+	From		string
+	To 			string
+	Gas			hexutil.Big
+	GasPrice	hexutil.Big
+	Value       hexutil.Big
+	Data		string
+}
+
+var testcase = flag.String("t", "greet", "chose testcase")
+
 func main() {
+	flag.Parse()
+
 	habi := newABI()
 
 	client, err := rpc.Dial("http://127.0.0.1:8545")
@@ -31,17 +49,30 @@ func main() {
 
 	var result string
 
-	args1 := greet(habi)
-	if err := client.Call(&result, "eth_call", args1, "latest"); err != nil {
-		panic(err)
-	}
-	log.Println(string(common.FromHex(result)))
+	switch *testcase {
 
-	//args2 := setGreet(habi)
-	//if err := client.Call(&result, "eth_call", args2, "latest"); err != nil {
-	//	panic(err)
-	//}
-	//log.Println(result)
+	case "greet":
+		args1 := greet(habi)
+		if err := client.Call(&result, "eth_call", args1, "latest"); err != nil {
+			panic(err)
+		}
+		log.Println(string(common.FromHex(result)))
+
+	case "set":
+		tx := setGreet(habi)
+		if err := client.Call(&result, "eth_sendTransaction", tx); err != nil {
+			panic(err)
+		}
+		log.Println(result)
+
+	case "get":
+		args2 := getGreet(habi)
+		if err := client.Call(&result, "eth_call", args2, "latest"); err != nil {
+			panic(err)
+		}
+		log.Println(string(common.FromHex(result)))
+	}
+
 }
 
 // newABI 解析在线编辑器生成的abi字符串,生成对应的智能合约ABI
@@ -78,8 +109,27 @@ func greet(habi *abi.ABI) *CallArgs {
 
 // setGreet函数在智能合约里涉及到修改变量，这时我们不能直接使用call
 // 而是要使用sendTransaction的方式调用，然后通过挖矿的方式实现变量变更
-func setGreet(habi *abi.ABI) *CallArgs {
+// > INFO [09-14|14:10:56] Submitted transaction
+// > fullhash=0x1e406b4ef846191ebbf27c405aff6f182e4c6ec0f40ed8fbda60c612abb7b792
+// > recipient=0xe5131431f134A961C5Cf3941Ef77182aea203196
+func setGreet(habi *abi.ABI) *Transaction {
 	bytes, err := habi.Pack("setGreeting", "hahhaha")
+	if err != nil {
+		panic(err)
+	}
+
+	tx := &Transaction{}
+	tx.From = miner
+	tx.To = tokenAddress
+	tx.Gas = cm.ToHexBigInt(100000)
+	tx.GasPrice = cm.ToHexBigInt(1)
+	tx.Data = common.ToHex(bytes)
+
+	return tx
+}
+
+func getGreet(habi *abi.ABI) *CallArgs {
+	bytes, err := habi.Pack("getGreeting")
 	if err != nil {
 		panic(err)
 	}
