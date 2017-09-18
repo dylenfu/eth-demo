@@ -86,7 +86,7 @@ contract Bank
 
     function balanceOf(address _owner) constant returns (uint)
     {
-        return 20; //accounts[_owner];
+        return accounts[_owner];
     }
 
     function check(bool condition, string message) {

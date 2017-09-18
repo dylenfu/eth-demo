@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 )
 
-const tokenAddress = "0xf4a97a23cd66e7b8bf788d6d6eb4abb4e3b42caf"
+const tokenAddress = "0x0c5f18376053FAEC5189f5360AD04e04854b65D7"
 
 ////////////////////////////////////////////
 //
@@ -156,7 +156,11 @@ func (method *AbiMethod) Call(result interface{}, tag string, args ...interface{
 	return client.Call(result, "eth_call", c, tag)
 }
 
-func (method *AbiMethod) SendTransaction() (string, error) {
+func (method *AbiMethod) SendTransaction(result interface{}, tag string, args ...interface{}) error {
+	bytes, err := method.Abi.Pack(method.Name, args)
+	if err != nil {
+		return err
+	}
 
 	return "",nil
 }
