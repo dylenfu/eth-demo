@@ -155,3 +155,10 @@
 10:32:31.432887 version@stat F·[1 1] S·120KiB[68KiB 51KiB] Sc·[0.25 0.00]
 10:32:31.433515 db@janitor F·4 G·0
 10:32:31.433535 db@open done T·7.234641ms
+=============== Sep 20, 2017 (CST) ===============
+14:55:18.702409 table@compaction L0·1 -> L1·1 S·120KiB Q·2808
+14:55:18.710448 table@build created L1@39 N·1121 S·108KiB "\x00\x91F..F\n\x97,v3":"\xff_H..멖,v918"
+14:55:18.711552 version@stat F·[0 1] S·108KiB[0B 108KiB] Sc·[0.00 0.00]
+14:55:18.711772 table@compaction committed F-1 S-12KiB Ke·0 D·574 T·8.84754ms
+14:55:18.712114 table@remove removed @36
+14:55:18.712819 table@remove removed @35

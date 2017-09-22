@@ -11,14 +11,13 @@ import (
 	"io/ioutil"
 	"github.com/dylenfu/eth-libs/types"
 	"log"
-	//"bytes"
 	"github.com/pkg/errors"
 )
 
 const (
 	miner = "0x4bad3053d574cd54513babe21db3f09bea1d387d"
 	tokenAddress = "0x227F88083AE9eE717e39669CB2718E604833fEf9"
-	filterId = "0x6b01393d6914ea5118b8ebb123eb07e"
+	filterId = "0x96e29dbf7977bba0265a299bd65da73e"
 )
 
 type BankToken struct {
@@ -73,8 +72,8 @@ func LoadContract() *BankToken {
 func getAbi() *abi.ABI {
 	tabi := &abi.ABI{}
 
-	dir, _ := os.Getwd()
-	abiStr,err := ioutil.ReadFile(dir + "/contracts/transfer/abi.txt")
+	dir := os.Getenv("GOPATH")
+	abiStr,err := ioutil.ReadFile(dir + "/src/github.com/dylenfu/eth-libs/contracts/transfer/abi.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -181,60 +180,50 @@ type DepositEvent struct {
 	ok 			bool
 }
 
+type TransferEvent struct {
+
+}
+
+// 监听合约事件并解析
 func FilterChanged() error {
-	//var logs []FilterLog
+	var logs []FilterLog
 
-	//err := client.Call(&logs, "eth_getFilterChanges", filterId)
-	//if err != nil {
-	//	return err
-	//}
-
-	event := &DepositEvent{}
-	name := "DepositFilled"//contract.Deposit.Name
-
-	data := "0x69be7bc7c7c6e216dd9531c88c94769f9f63ce53f47665b5ec7faf55f8094e8100000000000000000000000037303138303536313763303331396139623464640000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000001"
-
-	t := hexutil.MustDecode(data)
-	abiEvent, ok := tabi.Events[name]
-	if !ok {
-		err := errors.New("event do not exist")
-		panic(err)
+	err := client.Call(&logs, "eth_getFilterChanges", filterId)
+	if err != nil {
 		return err
 	}
 
-	d := []byte(t)//buff.Bytes()
-	if err := cm.UnpackEvent(abiEvent, event, d); err != nil {
-		panic(err)
-		return err
-	} else {
-		//log.Println("amount", event.amount)
-		//log.Println("account", event.account)
-		//log.Println("hash", event.hash)
-		//log.Println("isOk", event.ok)
+	depositEventName := "DepositFilled"
+	//orderEventName := "OrderFilled"
+
+	for _, v := range logs {
+		// 转换hex
+		data := hexutil.MustDecode(v.Data)
+		// topics第一个元素就是eventId
+		eventId := v.Topics[0]
+
+		switch eventId {
+		case tabi.Events[depositEventName].Id().String():
+			event, ok := tabi.Events[depositEventName]
+			if !ok {
+				return errors.New("deposit event do not exsit")
+			}
+			deposit := &DepositEvent{}
+
+			//
+			if err := cm.UnpackEvent(event, deposit, []byte(data)); err != nil {
+				return err
+			} else {
+				log.Println("amount", deposit.amount)
+				log.Println("account", deposit.account)
+				log.Println("hash", deposit.hash)
+				log.Println("isOk", deposit.ok)
+			}
+
+		case tabi.Events[""].Id().String():
+
+		}
 	}
-
-	//log.Println(event.account)
-	//log.Println(event.amount)
-	//log.Println(event.hash)
-	//log.Println(event.ok)
-
-	//for _, v := range logs {
-	//	log.Println(v.Data)
-	//	bytesArr := get32Bytes([]byte(v.Data))
-	//	buff := new(bytes.Buffer)
-	//	for _, v := range bytesArr {
-	//		buff.Write(common.Hex2Bytes(string(v)))
-	//	}
-	//
-	//	if err := tabi.Unpack(event, name, buff.Bytes()); err != nil {
-	//		return err
-	//	} else {
-	//		log.Println("amount", event.amount)
-	//		log.Println("account", event.account)
-	//		log.Println("hash", event.hash)
-	//		log.Println("isOk", event.ok)
-	//	}
-	//}
 
 	return nil
 }

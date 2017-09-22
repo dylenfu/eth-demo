@@ -22,23 +22,22 @@ const (
 func main() {
 	flag.Parse()
 
-	//bank := LoadContract()
-	//
-	//go func() {
-	//	switch *testcase {
-	//	case "balance":
-	//		balance(bank)
-	//
-	//	case "deposit":
-	//		deposit(bank)
-	//
-	//	case "filter":
-	//		filter()
-	//	}
-	//}()
-	//
-	//listen()
-	FilterChanged()
+	bank := LoadContract()
+
+	go func() {
+		switch *testcase {
+		case "balance":
+			balance(bank)
+
+		case "deposit":
+			deposit(bank)
+
+		case "filter":
+			filter()
+		}
+	}()
+
+	listen()
 }
 
 func balance(bank *BankToken) {
@@ -77,31 +76,3 @@ func listen() {
 		}
 	}
 }
-
-type Order struct {
-	hash		string
-	accountS 	string
-	accountB 	string
-	amountS		int
-	amountB		int
-}
-
-type OrderState struct {
-	hash		string
-	accountS 	string
-	accountB 	string
-	amountS 	int
-	amountB 	int
-	ok 			bool
-}
-
-type OrderEvent struct {
-	hash 		string
-	accountS 	string
-	accountB 	string
-	amountS 	int
-	amountB 	int
-	ok 			bool
-}
-
-func transfer() {}

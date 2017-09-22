@@ -7,11 +7,15 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"os"
 	"io/ioutil"
+	"reflect"
+	"unsafe"
 )
 
 func TestNewFilter(t *testing.T) {
+	var event depositEvent
+
 	tabi := newAbi()
-	event := &depositEvent{}
+
 	name := "DepositFilled"
 	str := "0x69be7bc7c7c6e216dd9531c88c94769f9f63ce53f47665b5ec7faf55f8094e8100000000000000000000000037303138303536313763303331396139623464640000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000001"
 
@@ -21,7 +25,7 @@ func TestNewFilter(t *testing.T) {
 		t.Error("event do not exist")
 	}
 
-	if err := cm.UnpackEvent(abiEvent, event, []byte(data)); err != nil {
+	if err := cm.UnpackEvent(abiEvent, &event, data); err != nil {
 		panic(err)
 	}
 
@@ -53,4 +57,39 @@ func newAbi() *abi.ABI {
 	}
 
 	return tabi
+}
+
+func BytesToString(b []byte) string {
+	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	sh := reflect.StringHeader{bh.Data, bh.Len}
+	return *(*string)(unsafe.Pointer(&sh))
+}
+
+func StringToBytes(s string) []byte {
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	bh := reflect.SliceHeader{sh.Data, sh.Len, 0}
+	return *(*[]byte)(unsafe.Pointer(&bh))
+}
+
+func TestBytesStringConvert(t *testing.T) {
+	b := []byte{'b', 'y', 't', 'e'}
+	s := BytesToString(b)
+	t.Log(s)
+	b = StringToBytes(s)
+	t.Log(string(b))
+}
+
+// 在传递的时候
+func TestBytesStringReflect(t *testing.T) {
+	bs := []byte{'h', 'a', 's', 'h'}
+	src := reflect.ValueOf(bs)
+
+	str := ""
+	dst := reflect.ValueOf(&str).Elem()
+
+	v := string(src.Bytes())
+	t.Log("string is ", v)
+
+	dst.SetString(v)
+	t.Log(dst.String())
 }
