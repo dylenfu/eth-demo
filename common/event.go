@@ -72,6 +72,9 @@ func set(dst, src reflect.Value, output abi.Argument) error {
 		return set(dst.Elem(), src, output)
 	case dstType.Kind() == reflect.String && srcType.Kind() == reflect.Slice:
 		dst = reflect.ValueOf(string(src.Bytes()))
+	case dstType.Kind() == reflect.String && srcType.Kind() == reflect.Array:
+		reflect.Copy(dst, src)
+		//dst = reflect.ValueOf(string(src.Bytes()))
 	default:
 		return fmt.Errorf("abi: cannot unmarshal %v in to %v", src.Type(), dst.Type())
 	}

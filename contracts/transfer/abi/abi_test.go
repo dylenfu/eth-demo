@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"reflect"
 	"unsafe"
+	//"github.com/ethereum/go-ethereum/common"
 )
 
 func TestNewFilter(t *testing.T) {
@@ -95,6 +96,8 @@ func TestBytesStringReflect(t *testing.T) {
 	t.Log(dst.String())
 }
 
+// 对于数据结构中的类型:
+// slice通过反射转array
 func TestBytesStringFieldReflect(t *testing.T) {
 	type ts struct {
 		srcData []byte
@@ -102,6 +105,7 @@ func TestBytesStringFieldReflect(t *testing.T) {
 	}
 
 	tsd := &ts{[]byte{'h', 'a','s','h'}, "12"}
+
 	valueOf := reflect.ValueOf(tsd)
 	value := valueOf.Elem()
 
@@ -112,6 +116,37 @@ func TestBytesStringFieldReflect(t *testing.T) {
 	dst = reflect.ValueOf(str)
 
 	t.Log(dst.Kind().String())
+	t.Log(str)
+	t.Log(dst)
+}
+
+func TestArraySliceReflect(t *testing.T) {
+	s := [4]byte{'h', 'a', 's', 'h'}
+	d := []byte{}
+
+	src := reflect.ValueOf(s)
+	dst := reflect.ValueOf(d)
+	dst = src
+
+	//reflect.Copy(dst,src)
+
+	t.Log([]byte(dst))
+}
+
+func TestArrayStringReflect(t *testing.T) {
+	bs := [4]byte{'h', 'a', 's', 'h'}
+
+	var ts []byte
+	src := reflect.ValueOf(ts)
+
+	//t.Log(reflect.ValueOf(&bs).Elem().Slice(0, 3))
+
+	n := reflect.Copy(src, reflect.ValueOf(bs))
+	t.Log(n)
+
+	str := string(src.Bytes())
+	dst := reflect.ValueOf(str)
+
 	t.Log(str)
 	t.Log(dst)
 }
