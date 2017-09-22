@@ -87,9 +87,31 @@ func TestBytesStringReflect(t *testing.T) {
 	str := ""
 	dst := reflect.ValueOf(&str).Elem()
 
+	// 这里string(src.Bytes())是字符串内容,而src.String()是类型
 	v := string(src.Bytes())
 	t.Log("string is ", v)
 
 	dst.SetString(v)
 	t.Log(dst.String())
+}
+
+func TestBytesStringFieldReflect(t *testing.T) {
+	type ts struct {
+		srcData []byte
+		dstData string
+	}
+
+	tsd := &ts{[]byte{'h', 'a','s','h'}, "12"}
+	valueOf := reflect.ValueOf(tsd)
+	value := valueOf.Elem()
+
+	src := value.Field(0)
+	dst := value.Field(1)
+
+	str := string(src.Bytes())
+	dst = reflect.ValueOf(str)
+
+	t.Log(dst.Kind().String())
+	t.Log(str)
+	t.Log(dst)
 }

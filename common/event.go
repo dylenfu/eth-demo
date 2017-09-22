@@ -47,42 +47,6 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
 		}
 	}
 
-	//j := 0
-	//for i := 0; i < len(e.Inputs); i++ {
-	//	input := e.Inputs[i]
-	//	if input.Indexed {
-	//		// can't read, continue
-	//		continue
-	//	} else if input.Type.T == abi.SliceTy {
-	//		// need to move this up because they read sequentially
-	//		j += input.Type.Size
-	//	}
-	//
-	//	marshalledValue, err := toGoType(i, input, output)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	reflectValue := reflect.ValueOf(marshalledValue)
-	//
-	//	// log.Println(input.Name) // hash
-	//	// log.Println(reflectValue.String()) // []uint8->byte32
-	//
-	//	for j := 0; j < typ.NumField(); j++ {
-	//		field := typ.Field(j)
-	//		// TODO read tags: `abi:"fieldName"`
-	//		//if field.Name == strings.ToUpper(e.Inputs[i].Name[:1])+e.Inputs[i].Name[1:] {
-	//		if field.Name == e.Inputs[i].Name {
-	//			//println("0", value.Field(0).Kind().String())
-	//			//println("1",value.Field(j).String())
-	//			//println("2",reflectValue.String())
-	//			//println("3",e.Inputs[i].Name)
-	//			if err := set(value.Field(j), reflectValue, e.Inputs[i]); err != nil {
-	//				return err
-	//			}
-	//		}
-	//	}
-	//}
-
 	return nil
 }
 
@@ -106,8 +70,8 @@ func set(dst, src reflect.Value, output abi.Argument) error {
 		dst.Set(src)
 	case dstType.Kind() == reflect.Ptr:
 		return set(dst.Elem(), src, output)
-	case dstType.Kind() == reflect.String && srcType.Kind() == reflect.Uintptr:
-
+	case dstType.Kind() == reflect.String && srcType.Kind() == reflect.Slice:
+		dst = reflect.ValueOf(string(src.Bytes()))
 	default:
 		return fmt.Errorf("abi: cannot unmarshal %v in to %v", src.Type(), dst.Type())
 	}
