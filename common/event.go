@@ -8,23 +8,21 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"encoding/binary"
 	"errors"
-)
-
-var (
-	errBadBool = errors.New("abi: improperly encoded boolean value")
+	"strings"
 )
 
 func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
 	// make sure the passed value is a pointer
 	valueOf := reflect.ValueOf(v)
 	if reflect.Ptr != valueOf.Kind() {
-			return fmt.Errorf("abi: Unpack(non-pointer %T)", v)
+		return fmt.Errorf("abi: Unpack(non-pointer %T)", v)
 	}
 
 	var (
 		value = valueOf.Elem()
 		typ   = value.Type()
 	)
+
 	if value.Kind() != reflect.Struct {
 		return fmt.Errorf("abi: cannot unmarshal tuple in to %v", typ)
 	}
@@ -35,11 +33,15 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
 			return err
 		}
 		reflectValue := reflect.ValueOf(marshalledValue)
-
 		for j := 0; j < typ.NumField(); j++ {
 			field := typ.Field(j)
 			// TODO read tags: `abi:"fieldName"`
-			if field.Name == e.Inputs[i].Name {
+			eventFieldName := strings.ToUpper(e.Inputs[i].Name[:1]) + e.Inputs[i].Name[1:]
+			println("number is", j)
+			println("field name", field.Name)
+			println("event name", eventFieldName)
+			if field.Name == eventFieldName {
+				println("value.field canset", value.Field(j).CanSet())
 				if err := set(value.Field(j), reflectValue, e.Inputs[i]); err != nil {
 					return err
 				}
@@ -50,10 +52,47 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
 	return nil
 }
 
-// set attempts to assign src to dst by either setting, copying or otherwise.
-//
-// set is a bit more lenient when it comes to assignment and doesn't force an as
-// strict ruleset as bare `reflect` does.
+func UnpackMethod(method abi.Method, v interface{}, output []byte) error {
+
+	if len(output) == 0 {
+		return fmt.Errorf("abi: unmarshalling empty output")
+	}
+
+	// make sure the passed value is a pointer
+	valueOf := reflect.ValueOf(v)
+	if reflect.Ptr != valueOf.Kind() {
+		return fmt.Errorf("abi: Unpack(non-pointer %T)", v)
+	}
+
+	var (
+		value = valueOf.Elem()
+		typ   = value.Type()
+	)
+
+	for i := 0; i < len(method.Outputs); i++ {
+		marshalledValue, err := toGoType(i, method.Outputs[i], output)
+		if err != nil {
+			return err
+		}
+		reflectValue := reflect.ValueOf(marshalledValue)
+
+		for j := 0; j < typ.NumField(); j++ {
+			field := typ.Field(j)
+			// TODO read tags: `abi:"fieldName"`
+			if field.Name == strings.ToUpper(method.Outputs[i].Name[:1])+method.Outputs[i].Name[1:] {
+				println(value.Field(j).Type().String())
+				println(reflectValue.Type().String())
+				if err := set(value.Field(j), reflectValue, method.Outputs[i]); err != nil {
+					return err
+				}
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func set(dst, src reflect.Value, output abi.Argument) error {
 	dstType := dst.Type()
 	srcType := src.Type()
@@ -70,16 +109,68 @@ func set(dst, src reflect.Value, output abi.Argument) error {
 		dst.Set(src)
 	case dstType.Kind() == reflect.Ptr:
 		return set(dst.Elem(), src, output)
-	case dstType.Kind() == reflect.String && srcType.Kind() == reflect.Slice:
-		dst = reflect.ValueOf(string(src.Bytes()))
-	case dstType.Kind() == reflect.String && srcType.Kind() == reflect.Array:
-		reflect.Copy(dst, src)
-		//dst = reflect.ValueOf(string(src.Bytes()))
 	default:
 		return fmt.Errorf("abi: cannot unmarshal %v in to %v", src.Type(), dst.Type())
 	}
 	return nil
 }
+
+// toGoType parses the input and casts it to the proper type defined by the ABI
+// argument in T.
+func toGoType(i int, t abi.Argument, output []byte) (interface{}, error) {
+	// we need to treat slices differently
+	if (t.Type.IsSlice || t.Type.IsArray) && t.Type.T != abi.BytesTy && t.Type.T != abi.StringTy && t.Type.T != abi.FixedBytesTy && t.Type.T != abi.FunctionTy {
+		return toGoSlice(i, t, output)
+	}
+
+	index := i * 32
+	if index+32 > len(output) {
+		return nil, fmt.Errorf("abi: cannot marshal in to go type: length insufficient %d require %d", len(output), index+32)
+	}
+
+	// Parse the given index output and check whether we need to read
+	// a different offset and length based on the type (i.e. string, bytes)
+	var returnOutput []byte
+	switch t.Type.T {
+	case abi.StringTy, abi.BytesTy: // variable arrays are written at the end of the return bytes
+		// parse offset from which we should start reading
+		offset := int(binary.BigEndian.Uint64(output[index+24 : index+32]))
+		if offset+32 > len(output) {
+			return nil, fmt.Errorf("abi: cannot marshal in to go type: length insufficient %d require %d", len(output), offset+32)
+		}
+		// parse the size up until we should be reading
+		size := int(binary.BigEndian.Uint64(output[offset+24 : offset+32]))
+		if offset+32+size > len(output) {
+			return nil, fmt.Errorf("abi: cannot marshal in to go type: length insufficient %d require %d", len(output), offset+32+size)
+		}
+
+		// get the bytes for this return value
+		returnOutput = output[offset+32 : offset+32+size]
+	default:
+		returnOutput = output[index : index+32]
+	}
+
+	// convert the bytes to whatever is specified by the ABI.
+	switch t.Type.T {
+	case abi.IntTy, abi.UintTy:
+		return readInteger(t.Type.Kind, returnOutput), nil
+	case abi.BoolTy:
+		return readBool(returnOutput)
+	case abi.AddressTy:
+		return common.BytesToAddress(returnOutput), nil
+	case abi.HashTy:
+		return common.BytesToHash(returnOutput), nil
+	case abi.BytesTy, abi.FixedBytesTy, abi.FunctionTy:
+		return returnOutput, nil
+	case abi.StringTy:
+		return string(returnOutput), nil
+	}
+	return nil, fmt.Errorf("abi: unknown type %v", t.Type.T)
+}
+
+var (
+	errBadBool = errors.New("abi: improperly encoded boolean value")
+)
 
 // toGoSliceType parses the input and casts it to the proper slice defined by the ABI
 // argument in T.
@@ -191,59 +282,6 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 
 	// return the interface
 	return refSlice.Interface(), nil
-}
-
-// toGoType parses the input and casts it to the proper type defined by the ABI
-// argument in T.
-func toGoType(i int, t abi.Argument, output []byte) (interface{}, error) {
-	// we need to treat slices differently
-	if (t.Type.IsSlice || t.Type.IsArray) && t.Type.T != abi.BytesTy && t.Type.T != abi.StringTy && t.Type.T != abi.FixedBytesTy && t.Type.T != abi.FunctionTy {
-		return toGoSlice(i, t, output)
-	}
-
-	index := i * 32
-	if index+32 > len(output) {
-		return nil, fmt.Errorf("abi: cannot marshal in to go type: length insufficient %d require %d", len(output), index+32)
-	}
-
-	// Parse the given index output and check whether we need to read
-	// a different offset and length based on the type (i.e. string, bytes)
-	var returnOutput []byte
-	switch t.Type.T {
-	case abi.StringTy, abi.BytesTy: // variable arrays are written at the end of the return bytes
-		// parse offset from which we should start reading
-		offset := int(binary.BigEndian.Uint64(output[index+24 : index+32]))
-		if offset+32 > len(output) {
-			return nil, fmt.Errorf("abi: cannot marshal in to go type: length insufficient %d require %d", len(output), offset+32)
-		}
-		// parse the size up until we should be reading
-		size := int(binary.BigEndian.Uint64(output[offset+24 : offset+32]))
-		if offset+32+size > len(output) {
-			return nil, fmt.Errorf("abi: cannot marshal in to go type: length insufficient %d require %d", len(output), offset+32+size)
-		}
-
-		// get the bytes for this return value
-		returnOutput = output[offset+32 : offset+32+size]
-	default:
-		returnOutput = output[index : index+32]
-	}
-
-	// convert the bytes to whatever is specified by the ABI.
-	switch t.Type.T {
-	case abi.IntTy, abi.UintTy:
-		return readInteger(t.Type.Kind, returnOutput), nil
-	case abi.BoolTy:
-		return readBool(returnOutput)
-	case abi.AddressTy:
-		return common.BytesToAddress(returnOutput), nil
-	case abi.HashTy:
-		return common.BytesToHash(returnOutput), nil
-	case abi.BytesTy, abi.FixedBytesTy, abi.FunctionTy:
-		return returnOutput, nil
-	case abi.StringTy:
-		return string(returnOutput), nil
-	}
-	return nil, fmt.Errorf("abi: unknown type %v", t.Type.T)
 }
 
 func readInteger(kind reflect.Kind, b []byte) interface{} {

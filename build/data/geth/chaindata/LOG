@@ -162,3 +162,38 @@
 14:55:18.711772 table@compaction committed F-1 S-12KiB Ke·0 D·574 T·8.84754ms
 14:55:18.712114 table@remove removed @36
 14:55:18.712819 table@remove removed @35
+=============== Sep 22, 2017 (CST) ===============
+16:56:57.688212 db@close closing
+16:56:57.689424 db@close done T·1.213674ms
+=============== Oct 6, 2017 (CST) ===============
+21:40:56.028386 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+21:40:56.029150 version@stat F·[0 1] S·108KiB[0B 108KiB] Sc·[0.00 0.00]
+21:40:56.029163 db@open opening
+21:40:56.029594 journal@recovery F·1
+21:40:56.030438 journal@recovery recovering @37
+21:40:56.284964 memdb@flush created L0@40 N·88891 S·3MiB "\x00\x04\xa9..\x97\"\v,v12134":"\xff\xfe3..\x10OX,v69730"
+21:40:56.285847 version@stat F·[1 1] S·4MiB[3MiB 108KiB] Sc·[0.25 0.00]
+21:40:56.288580 db@janitor F·4 G·0
+21:40:56.288599 db@open done T·259.430206ms
+21:47:18.628466 db@close closing
+21:47:18.628562 db@close done T·93.401µs
+=============== Oct 7, 2017 (CST) ===============
+08:43:40.459529 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+08:43:40.460316 version@stat F·[1 1] S·4MiB[3MiB 108KiB] Sc·[0.25 0.00]
+08:43:40.460327 db@open opening
+08:43:40.460366 journal@recovery F·1
+08:43:40.461907 journal@recovery recovering @41
+08:43:40.462796 memdb@flush created L0@43 N·2 S·245B "Blo..ion,v91150":"Las..der,v91151"
+08:43:40.463696 version@stat F·[2 1] S·4MiB[3MiB 108KiB] Sc·[0.50 0.00]
+08:43:40.464499 db@janitor F·5 G·0
+08:43:40.464516 db@open done T·4.1805ms
+=============== Oct 9, 2017 (CST) ===============
+10:07:15.421775 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+10:07:15.422754 version@stat F·[2 1] S·4MiB[3MiB 108KiB] Sc·[0.50 0.00]
+10:07:15.422982 db@open opening
+10:07:15.423076 journal@recovery F·1
+10:07:15.425537 journal@recovery recovering @44
+10:07:15.427020 memdb@flush created L0@46 N·2 S·245B "Blo..ion,v91153":"Las..der,v91154"
+10:07:15.427708 version@stat F·[3 1] S·4MiB[3MiB 108KiB] Sc·[0.75 0.00]
+10:07:15.428626 db@janitor F·6 G·0
+10:07:15.428643 db@open done T·5.649018ms

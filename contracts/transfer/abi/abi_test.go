@@ -2,25 +2,34 @@ package abi_test
 
 import (
 	"testing"
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	//"github.com/ethereum/go-ethereum/common/hexutil"
 	cm "github.com/dylenfu/eth-libs/common"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"os"
 	"io/ioutil"
 	"reflect"
 	"unsafe"
-	//"github.com/ethereum/go-ethereum/common"
+	"math/big"
+	"github.com/ethereum/go-ethereum/common"
+	"bytes"
+	"strings"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
-func TestNewFilter(t *testing.T) {
-	var event depositEvent
+var testStr = "0x69be7bc7c7c6e216dd9531c88c94769f9f63ce53f47665b5ec7faf55f8094e8100000000000000000000000037303138303536313763303331396139623464640000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000001"
+
+func TestUnpackEvent(t *testing.T) {
+	event := DepositEvent{}
 
 	tabi := newAbi()
 
 	name := "DepositFilled"
-	str := "0x69be7bc7c7c6e216dd9531c88c94769f9f63ce53f47665b5ec7faf55f8094e8100000000000000000000000037303138303536313763303331396139623464640000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000001"
+	str := testStr
 
 	data := hexutil.MustDecode(str)
+	//t.Log(common.Hex2Bytes(data))
+	//t.Log("common.address length is ", len("0000000000000000000000000000000000000000000000000000000000000040"))
+
 	abiEvent, ok := tabi.Events[name]
 	if !ok {
 		t.Error("event do not exist")
@@ -30,17 +39,74 @@ func TestNewFilter(t *testing.T) {
 		panic(err)
 	}
 
-	t.Log(event.account)
-	t.Log(event.amount)
-	t.Log(event.hash)
-	t.Log(event.ok)
+	t.Log(event.Hash)
+	t.Log(event.Account)
+	t.Log(event.Amount)
+	t.Log(event.Ok)
 }
 
-type depositEvent struct {
-	hash 		string
-	account     string
-	amount 		int
-	ok 			bool
+func TestUnpackMethod(t *testing.T) {
+	const definition = `[
+	{ "name" : "int", "constant" : false, "outputs": [ { "type": "uint256" } ] },
+	{ "name" : "bool", "constant" : false, "outputs": [ { "type": "bool" } ] },
+	{ "name" : "bytes", "constant" : false, "outputs": [ { "type": "bytes" } ] },
+	{ "name" : "fixed", "constant" : false, "outputs": [ { "type": "bytes32" } ] },
+	{ "name" : "multi", "constant" : false, "outputs": [ { "type": "bytes" }, { "type": "bytes" } ] },
+	{ "name" : "intArraySingle", "constant" : false, "outputs": [ { "type": "uint256[3]" } ] },
+	{ "name" : "addressSliceSingle", "constant" : false, "outputs": [ { "type": "address[]" } ] },
+	{ "name" : "addressSliceDouble", "constant" : false, "outputs": [ { "name": "a", "type": "address[]" }, { "name": "b", "type": "address[]" } ] },
+	{ "name" : "mixedBytes", "constant" : true, "outputs": [ { "name": "a", "type": "bytes" }, { "name": "b", "type": "bytes32" } ] }]`
+
+
+	tabi, err := abi.JSON(strings.NewReader(definition))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 64字节
+	buff := new(bytes.Buffer)
+	buff.Write(common.Hex2Bytes("0000000000000000000000000000000000000000000000000000000000000040")) // offset
+	buff.Write(common.Hex2Bytes("0000000000000000000000000000000000000000000000000000000000000080")) // offset
+	buff.Write(common.Hex2Bytes("0000000000000000000000000000000000000000000000000000000000000001")) // size
+	buff.Write(common.Hex2Bytes("0000000000000000000000000100000000000000000000000000000000000000"))
+	buff.Write(common.Hex2Bytes("0000000000000000000000000000000000000000000000000000000000000002")) // size
+	buff.Write(common.Hex2Bytes("0000000000000000000000000200000000000000000000000000000000000000"))
+	buff.Write(common.Hex2Bytes("0000000000000000000000000300000000000000000000000000000000000000"))
+
+	var outAddrStruct struct {
+		A []common.Address
+		B []common.Address
+	}
+	err = cm.UnpackMethod(tabi.Methods["addressSliceDouble"], &outAddrStruct, buff.Bytes())
+	if err != nil {
+		t.Fatal("didn't expect error:", err)
+	}
+
+	if len(outAddrStruct.A) != 1 {
+		t.Fatal("expected 1 item, got", len(outAddrStruct.A))
+	}
+
+	if outAddrStruct.A[0] != (common.Address{1}) {
+		t.Errorf("expected %x, got %x", common.Address{1}, outAddrStruct.A[0])
+	}
+
+	if len(outAddrStruct.B) != 2 {
+		t.Fatal("expected 1 item, got", len(outAddrStruct.B))
+	}
+
+	if outAddrStruct.B[0] != (common.Address{2}) {
+		t.Errorf("expected %x, got %x", common.Address{2}, outAddrStruct.B[0])
+	}
+	if outAddrStruct.B[1] != (common.Address{3}) {
+		t.Errorf("expected %x, got %x", common.Address{3}, outAddrStruct.B[1])
+	}
+}
+
+type DepositEvent struct {
+	Hash 		[]byte
+	Account     common.Address
+	Amount 		*big.Int
+	Ok 			bool
 }
 
 func newAbi() *abi.ABI {
@@ -115,7 +181,6 @@ func TestBytesStringFieldReflect(t *testing.T) {
 	str := string(src.Bytes())
 	dst = reflect.ValueOf(str)
 
-	t.Log(dst.Kind().String())
 	t.Log(str)
 	t.Log(dst)
 }
@@ -130,23 +195,33 @@ func TestArraySliceReflect(t *testing.T) {
 
 	//reflect.Copy(dst,src)
 
-	t.Log([]byte(dst))
+	t.Log([]byte(dst.Bytes()))
 }
 
 func TestArrayStringReflect(t *testing.T) {
 	bs := [4]byte{'h', 'a', 's', 'h'}
 
-	var ts []byte
-	src := reflect.ValueOf(ts)
+	src := reflect.ValueOf(bs)
+	ts := make([]byte, len(bs))
+	for i :=0; i< len(bs); i++{
+		ts[i] = src.Index(i).Interface().(byte)
+	}
 
-	//t.Log(reflect.ValueOf(&bs).Elem().Slice(0, 3))
+	t.Log(string(ts))
+}
 
-	n := reflect.Copy(src, reflect.ValueOf(bs))
-	t.Log(n)
+// 可以通过reflect直接赋值
+func TestBigIntPtrCopy(t *testing.T) {
+	bs := big.NewInt(1)
+	src := reflect.ValueOf(bs)
 
-	str := string(src.Bytes())
-	dst := reflect.ValueOf(str)
+	ts := big.NewInt(2)
+	dst := reflect.ValueOf(&ts)
 
-	t.Log(str)
+	t.Log(dst.CanSet())
+
+	dst = src
+
+	t.Log(dst.Elem().String())
 	t.Log(dst)
 }
