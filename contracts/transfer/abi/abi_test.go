@@ -2,7 +2,6 @@ package abi_test
 
 import (
 	"testing"
-	//"github.com/ethereum/go-ethereum/common/hexutil"
 	cm "github.com/dylenfu/eth-libs/common"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"os"
@@ -15,35 +14,6 @@ import (
 	"strings"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
-
-var testStr = "0x69be7bc7c7c6e216dd9531c88c94769f9f63ce53f47665b5ec7faf55f8094e8100000000000000000000000037303138303536313763303331396139623464640000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000001"
-
-func TestUnpackEvent(t *testing.T) {
-	event := DepositEvent{}
-
-	tabi := newAbi()
-
-	name := "DepositFilled"
-	str := testStr
-
-	data := hexutil.MustDecode(str)
-	//t.Log(common.Hex2Bytes(data))
-	//t.Log("common.address length is ", len("0000000000000000000000000000000000000000000000000000000000000040"))
-
-	abiEvent, ok := tabi.Events[name]
-	if !ok {
-		t.Error("event do not exist")
-	}
-
-	if err := cm.UnpackEvent(abiEvent, &event, data); err != nil {
-		panic(err)
-	}
-
-	t.Log(event.Hash)
-	t.Log(event.Account)
-	t.Log(event.Amount)
-	t.Log(event.Ok)
-}
 
 func TestUnpackMethod(t *testing.T) {
 	const definition = `[
@@ -100,6 +70,39 @@ func TestUnpackMethod(t *testing.T) {
 	if outAddrStruct.B[1] != (common.Address{3}) {
 		t.Errorf("expected %x, got %x", common.Address{3}, outAddrStruct.B[1])
 	}
+}
+
+var testStr = "0x5ad6fe3e08ffa01bb1db674ac8e66c47511e364a4500115dd2feb33dad972d7e0000000000000000000000003865633638323963313337343737383837656334000000000000000000000000000000000000000000000000000000000bebc2010000000000000000000000000000000000000000000000000000000000000001"
+
+func TestAddress(t *testing.T) {
+	account := "0x56d9620237fff8a6c0f98ec6829c137477887ec4"
+	t.Log(account)
+	t.Log(common.HexToAddress(account).String())
+}
+
+func TestUnpackEvent(t *testing.T) {
+	event := DepositEvent{}
+
+	tabi := newAbi()
+
+	name := "DepositFilled"
+	str := testStr
+
+	data := hexutil.MustDecode(str)
+
+	abiEvent, ok := tabi.Events[name]
+	if !ok {
+		t.Error("event do not exist")
+	}
+
+	if err := cm.UnpackEvent(abiEvent, &event, data); err != nil {
+		panic(err)
+	}
+
+	t.Log(common.BytesToHash(event.Hash).Hex())
+	t.Log(event.Account.Hex())
+	t.Log(event.Amount)
+	t.Log(event.Ok)
 }
 
 type DepositEvent struct {

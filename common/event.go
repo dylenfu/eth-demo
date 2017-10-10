@@ -36,12 +36,7 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
 		for j := 0; j < typ.NumField(); j++ {
 			field := typ.Field(j)
 			// TODO read tags: `abi:"fieldName"`
-			eventFieldName := strings.ToUpper(e.Inputs[i].Name[:1]) + e.Inputs[i].Name[1:]
-			println("number is", j)
-			println("field name", field.Name)
-			println("event name", eventFieldName)
-			if field.Name == eventFieldName {
-				println("value.field canset", value.Field(j).CanSet())
+			if field.Name == strings.ToUpper(e.Inputs[i].Name[:1]) + e.Inputs[i].Name[1:] {
 				if err := set(value.Field(j), reflectValue, e.Inputs[i]); err != nil {
 					return err
 				}
@@ -80,8 +75,6 @@ func UnpackMethod(method abi.Method, v interface{}, output []byte) error {
 			field := typ.Field(j)
 			// TODO read tags: `abi:"fieldName"`
 			if field.Name == strings.ToUpper(method.Outputs[i].Name[:1])+method.Outputs[i].Name[1:] {
-				println(value.Field(j).Type().String())
-				println(reflectValue.Type().String())
 				if err := set(value.Field(j), reflectValue, method.Outputs[i]); err != nil {
 					return err
 				}

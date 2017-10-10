@@ -12,12 +12,13 @@ import (
 	"github.com/dylenfu/eth-libs/types"
 	"log"
 	"github.com/pkg/errors"
+	"math/big"
 )
 
 const (
 	miner = "0x4bad3053d574cd54513babe21db3f09bea1d387d"
 	tokenAddress = "0x227F88083AE9eE717e39669CB2718E604833fEf9"
-	filterId = "0x96e29dbf7977bba0265a299bd65da73e"
+	filterId = "0xe8dc06f83732aeba30603b944524e941"
 )
 
 type BankToken struct {
@@ -174,10 +175,10 @@ type FilterLog struct {
 }
 
 type DepositEvent struct {
-	hash 		string
-	account     string
-	amount 		int
-	ok 			bool
+	Hash 		[]byte
+	Account     common.Address
+	Amount 		*big.Int
+	Ok 			bool
 }
 
 type TransferEvent struct {
@@ -197,6 +198,9 @@ func FilterChanged() error {
 	//orderEventName := "OrderFilled"
 
 	for _, v := range logs {
+		log.Println(v.Data)
+		log.Println(v.TransactionHash)
+
 		// 转换hex
 		data := hexutil.MustDecode(v.Data)
 		// topics第一个元素就是eventId
@@ -214,10 +218,10 @@ func FilterChanged() error {
 			if err := cm.UnpackEvent(event, deposit, []byte(data)); err != nil {
 				return err
 			} else {
-				log.Println("amount", deposit.amount)
-				log.Println("account", deposit.account)
-				log.Println("hash", deposit.hash)
-				log.Println("isOk", deposit.ok)
+				log.Println("hash", common.BytesToHash(deposit.Hash).Hex())
+				log.Println("account", deposit.Account.Hex())
+				log.Println("amount", deposit.Amount)
+				log.Println("isOk", deposit.Ok)
 			}
 
 		case tabi.Events[""].Id().String():

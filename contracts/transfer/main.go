@@ -11,8 +11,8 @@ import (
 
 // 该项目实验性地创建一个合约，包含订单信息及转账功能
 // 实现合约及部署，通过abi调用方式实现转账操作
-
-var testcase = flag.String("call", "balance", "chose test case")
+// 注：相关账号密码为101,102,103
+var testcase = flag.String("call", "deposit", "chose test case")
 
 const (
 	account1 = "0x46c5683c754b2eba04b2701805617c0319a9b4dd"
@@ -43,7 +43,7 @@ func main() {
 func balance(bank *BankToken) {
 	var result types.HexNumber
 
-	addr := common.StringToAddress(account2)
+	addr := common.StringToAddress(account1)
 	if err := bank.BalanceOf.Call(&result, "latest", addr); err != nil {
 		panic(err)
 	}
@@ -54,13 +54,13 @@ func balance(bank *BankToken) {
 func deposit(bank *BankToken) {
 	var result string
 
-	hash := common.FromHex("0x69be7bc7c7c6e216dd9531c88c94769f9f63ce53f47665b5ec7faf55f8094e81")
-	account := common.StringToAddress(account1)
+	id := common.FromHex("0x5ad6fe3e08ffa01bb1db674ac8e66c47511e364a4500115dd2feb33dad972d7e")
+	account := common.HexToAddress(account2)
 	// 这里需要注意一定只能用big.NewInt
-	amount := big.NewInt(100000000)
+	amount := big.NewInt(200000001)
 
 	// 这里一定注意，因为合约里的函数参数是一个个传入的，所以这里不能传一个结构过去
-	if err := bank.Deposit.SendTransaction(&result, hash, account, amount); err != nil {
+	if err := bank.Deposit.SendTransaction(&result, id, account, amount); err != nil {
 		panic(err)
 	}
 }
@@ -72,7 +72,7 @@ func filter() {
 func listen() {
 	for {
 		if err := FilterChanged(); err != nil {
-			panic(err)
+			log.Println(err.Error())
 		}
 	}
 }
