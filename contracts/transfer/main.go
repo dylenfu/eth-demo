@@ -50,9 +50,7 @@ func balance(bank *BankToken) {
 func deposit(bank *BankToken) {
 	var result string
 
-	//str := "0x5ad6fe3e08ffa01bb1db674ac8e66c47511e364a4500115dd2feb33dad972d7e"
-	str := "0x0000000000000000000000000000000000000000000000000000000000000001"
-	id := common.FromHex(str)
+	id := common.FromHex("0x0000000000000000000000000000000000000000000000000000000000000001")
 
 	account := types.Str2Address(Account1)
 
@@ -68,7 +66,16 @@ func deposit(bank *BankToken) {
 
 // 账户1多2少
 func transfer(bank *BankToken) {
+	var result string
+	account1 := types.Str2Address(Account1)
+	account2 := types.Str2Address(Account2)
 
+	id := common.FromHex("0x0000000000000000000000000000000000000000000000000000000000000002")
+	amount := big.NewInt(100000000)
+	err := bank.Transfer.SendTransaction(Miner, TransferTokenAddress, 1200000, 1, &result, id, account2, account1, amount, amount)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func listen() {
