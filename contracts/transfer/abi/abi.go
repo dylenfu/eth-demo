@@ -13,12 +13,7 @@ import (
 	"log"
 	"github.com/pkg/errors"
 	"math/big"
-)
-
-const (
-	miner = "0x4bad3053d574cd54513babe21db3f09bea1d387d"
-	tokenAddress = "0x227F88083AE9eE717e39669CB2718E604833fEf9"
-	filterId = "0xe8dc06f83732aeba30603b944524e941"
+	. "github.com/dylenfu/eth-libs/params"
 )
 
 type BankToken struct {
@@ -60,7 +55,7 @@ func LoadContract() *BankToken {
 		abiMethod := &AbiMethod{}
 		abiMethod.Name = methodName
 		abiMethod.Abi = tabi
-		abiMethod.Address = tokenAddress
+		abiMethod.Address = TokenAddress
 
 		elem.Field(i).Set(reflect.ValueOf(*abiMethod))
 	}
@@ -126,8 +121,8 @@ func (method *AbiMethod) SendTransaction(result interface{}, args ...interface{}
 	}
 
 	tx := &Transaction{}
-	tx.From = miner
-	tx.To = tokenAddress
+	tx.From = Miner
+	tx.To = TokenAddress
 	tx.Gas = cm.ToHexBigInt(1200000)
 	tx.GasPrice = cm.ToHexBigInt(1)
 	tx.Data = common.ToHex(bytes)
@@ -151,7 +146,7 @@ func NewFilter(topic string) error {
 	filter := FilterReq{}
 	filter.FromBlock = "latest"
 	filter.ToBlock = "latest"
-	filter.Address = tokenAddress
+	filter.Address = TokenAddress
 
 	err := client.Call(&filterId, "eth_newFilter", &filter)
 	if err != nil {
@@ -189,7 +184,7 @@ type TransferEvent struct {
 func FilterChanged() error {
 	var logs []FilterLog
 
-	err := client.Call(&logs, "eth_getFilterChanges", filterId)
+	err := client.Call(&logs, "eth_getFilterChanges", FilterId)
 	if err != nil {
 		return err
 	}

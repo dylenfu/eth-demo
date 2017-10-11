@@ -9,12 +9,8 @@ import (
 	"log"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	cm "github.com/dylenfu/eth-libs/common"
+	. "github.com/dylenfu/eth-libs/params"
 	"flag"
-)
-
-const (
-	tokenAddress = "0xe5131431f134a961c5cf3941ef77182aea203196"
-	miner = "0x4bad3053d574cd54513babe21db3f09bea1d387d"
 )
 
 type CallArgs struct {
@@ -119,8 +115,8 @@ func setGreet(habi *abi.ABI) *Transaction {
 	}
 
 	tx := &Transaction{}
-	tx.From = miner
-	tx.To = tokenAddress
+	tx.From = Miner
+	tx.To = TokenAddress
 	tx.Gas = cm.ToHexBigInt(100000)
 	tx.GasPrice = cm.ToHexBigInt(1)
 	tx.Data = common.ToHex(bytes)
@@ -142,7 +138,7 @@ func getGreet(habi *abi.ABI) *CallArgs {
 }
 
 func (args *CallArgs)commonArgs(data string) {
-	args.From = tokenAddress
-	args.To = tokenAddress
+	args.From = TokenAddress
+	args.To = TokenAddress
 	args.Data = data
 }
