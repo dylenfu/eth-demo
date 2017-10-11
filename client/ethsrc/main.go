@@ -10,8 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"github.com/ethereum/go-ethereum/rlp"
-	cm "github.com/dylenfu/eth-libs/common"
 	. "github.com/dylenfu/eth-libs/params"
+	tp "github.com/dylenfu/eth-libs/types"
 )
 
 var call = flag.String("call", "Balance", "chose test case")
@@ -109,9 +109,9 @@ func (h *Handle) SendTransaction() {
 
 	tx.From = Miner
 	tx.To   = Account2
-	tx.Gas  = cm.ToHexBigInt(100000)
-	tx.GasPrice = cm.ToHexBigInt(1)
-	tx.Value = cm.ToHexBigInt(1000000000)
+	tx.Gas  = tp.Int2HexBigInt(100000)
+	tx.GasPrice = tp.Int2HexBigInt(1)
+	tx.Value = tp.Int2HexBigInt(1000000000)
 
 	if err := h.client.Call(&result, "eth_sendTransaction", &tx); err != nil {
 		panic(err)

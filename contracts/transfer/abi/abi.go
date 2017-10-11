@@ -77,12 +77,12 @@ func LoadContract() *BankToken {
 
 // filter可以根据blockNumber生成
 // 也可以从网络中直接查询eth.filter()
-func NewFilter(height *big.Int) (string,error) {
+func NewFilter(height int) (string,error) {
 	var filterId string
 
 	// 使用jsonrpc的方式调用newFilter
 	filter := types.FilterReq{}
-	filter.FromBlock = hexutil.EncodeBig(height)//common.Bytes2Hex(height.Bytes())
+	filter.FromBlock = types.Int2BlockNumHex(int64(height))
 	filter.ToBlock = "latest"
 	filter.Address = TransferTokenAddress
 

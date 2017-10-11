@@ -39,7 +39,7 @@ func main() {
 func balance(bank *BankToken) {
 	var result types.HexNumber
 
-	addr := common.StringToAddress(Account1)
+	addr := types.Str2Address(Account1)
 	if err := bank.BalanceOf.Call(&result, "latest", addr); err != nil {
 		panic(err)
 	}
@@ -54,7 +54,7 @@ func deposit(bank *BankToken) {
 	str := "0x0000000000000000000000000000000000000000000000000000000000000001"
 	id := common.FromHex(str)
 
-	account := common.HexToAddress(Account1)
+	account := types.Str2Address(Account2)
 
 	// 这里需要注意一定只能用big.NewInt
 	amount := big.NewInt(200000000)
@@ -71,7 +71,7 @@ func transfer(bank *BankToken) {
 }
 
 func listen() {
-	filterId, err := NewFilter(big.NewInt(BlockNumber))
+	filterId, err := NewFilter(BlockNumber)
 	if err != nil {
 		panic(err)
 	}

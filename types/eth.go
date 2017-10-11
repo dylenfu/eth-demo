@@ -5,7 +5,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/ethereum/go-ethereum/common"
-	cm "github.com/dylenfu/eth-libs/common"
 )
 
 // 发送transaction
@@ -79,8 +78,8 @@ func (method *AbiMethod) SendTransaction(miner, tokenAddress string,gas, gasPric
 	tx := &Transaction{}
 	tx.From = miner
 	tx.To = tokenAddress
-	tx.Gas = cm.ToHexBigInt(gas)
-	tx.GasPrice = cm.ToHexBigInt(gasPrice)
+	tx.Gas = Int2HexBigInt(gas)
+	tx.GasPrice = Int2HexBigInt(gasPrice)
 	tx.Data = common.ToHex(bytes)
 
 	return method.Client.Call(result, "eth_sendTransaction", tx)
