@@ -28,8 +28,8 @@ func main() {
 		case "deposit":
 			deposit(bank)
 
-		case "filter":
-			filter()
+		case "transfer":
+			transfer(bank)
 		}
 	}()
 
@@ -50,24 +50,34 @@ func balance(bank *BankToken) {
 func deposit(bank *BankToken) {
 	var result string
 
-	id := common.FromHex("0x5ad6fe3e08ffa01bb1db674ac8e66c47511e364a4500115dd2feb33dad972d7e")
-	account := common.HexToAddress(Account2)
+	//str := "0x5ad6fe3e08ffa01bb1db674ac8e66c47511e364a4500115dd2feb33dad972d7e"
+	str := "0x0000000000000000000000000000000000000000000000000000000000000001"
+	id := common.FromHex(str)
+
+	account := common.HexToAddress(Account1)
+
 	// 这里需要注意一定只能用big.NewInt
-	amount := big.NewInt(200000001)
+	amount := big.NewInt(200000000)
 
 	// 这里一定注意，因为合约里的函数参数是一个个传入的，所以这里不能传一个结构过去
-	if err := bank.Deposit.SendTransaction(&result, id, account, amount); err != nil {
+	err := bank.Deposit.SendTransaction(Miner, TransferTokenAddress, 1200000, 1, &result, id, account, amount)
+	if err != nil {
 		panic(err)
 	}
 }
 
-func filter() {
-	NewFilter("deposit")
+func transfer(bank *BankToken) {
+
 }
 
 func listen() {
+	filterId, err := NewFilter(big.NewInt(BlockNumber))
+	if err != nil {
+		panic(err)
+	}
+
 	for {
-		if err := FilterChanged(); err != nil {
+		if err := FilterChanged(filterId); err != nil {
 			log.Println(err.Error())
 		}
 	}
