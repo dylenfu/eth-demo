@@ -39,12 +39,12 @@ contract Bank
     );
 
     event OrderFilled(
-        bytes32         hash,
-        address         accountS,
-        address         accountB,
-        uint            amountS,
-        uint            amountB,
-        bool            ok
+        bytes32         indexed     hash,
+        address                     accountS,
+        address                     accountB,
+        uint                        amountS,
+        uint                        amountB,
+        bool                        ok
     );
 
     event Exception(string message);

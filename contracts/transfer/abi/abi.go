@@ -55,7 +55,7 @@ func LoadContract() *BankToken {
 		abiMethod := &AbiMethod{}
 		abiMethod.Name = methodName
 		abiMethod.Abi = tabi
-		abiMethod.Address = TokenAddress
+		abiMethod.Address = TransferTokenAddress
 
 		elem.Field(i).Set(reflect.ValueOf(*abiMethod))
 	}
@@ -122,7 +122,7 @@ func (method *AbiMethod) SendTransaction(result interface{}, args ...interface{}
 
 	tx := &Transaction{}
 	tx.From = Miner
-	tx.To = TokenAddress
+	tx.To = TransferTokenAddress
 	tx.Gas = cm.ToHexBigInt(1200000)
 	tx.GasPrice = cm.ToHexBigInt(1)
 	tx.Data = common.ToHex(bytes)
@@ -146,7 +146,7 @@ func NewFilter(topic string) error {
 	filter := FilterReq{}
 	filter.FromBlock = "latest"
 	filter.ToBlock = "latest"
-	filter.Address = TokenAddress
+	filter.Address = TransferTokenAddress
 
 	err := client.Call(&filterId, "eth_newFilter", &filter)
 	if err != nil {
@@ -184,7 +184,7 @@ type TransferEvent struct {
 func FilterChanged() error {
 	var logs []FilterLog
 
-	err := client.Call(&logs, "eth_getFilterChanges", FilterId)
+	err := client.Call(&logs, "eth_getFilterChanges", TransferFilterId1)
 	if err != nil {
 		return err
 	}

@@ -116,7 +116,7 @@ func setGreet(habi *abi.ABI) *Transaction {
 
 	tx := &Transaction{}
 	tx.From = Miner
-	tx.To = TokenAddress
+	tx.To = HelloTokenAddress
 	tx.Gas = cm.ToHexBigInt(100000)
 	tx.GasPrice = cm.ToHexBigInt(1)
 	tx.Data = common.ToHex(bytes)
@@ -138,7 +138,7 @@ func getGreet(habi *abi.ABI) *CallArgs {
 }
 
 func (args *CallArgs)commonArgs(data string) {
-	args.From = TokenAddress
-	args.To = TokenAddress
+	args.From = HelloTokenAddress
+	args.To = HelloTokenAddress
 	args.Data = data
 }
