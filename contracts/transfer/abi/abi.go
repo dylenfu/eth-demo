@@ -102,7 +102,12 @@ type DepositEvent struct {
 }
 
 type TransferEvent struct {
-
+	Hash 		[]byte
+	AccountS 	common.Address
+	AccountB 	common.Address
+	AmountS 	*big.Int
+	AmountB 	*big.Int
+	Ok 			bool
 }
 
 // 监听合约事件并解析
@@ -114,40 +119,70 @@ func FilterChanged(filterId string) error {
 		return err
 	}
 
-	depositEventName := "DepositFilled"
-	//orderEventName := "OrderFilled"
+	den := "DepositFilled"
+	oen := "OrderFilled"
+	denId := tabi.Events[den].Id().String()
+	oenId := tabi.Events[oen].Id().String()
 
 	for _, v := range logs {
-		log.Println(v.Data)
-		log.Println(v.TransactionHash)
-
 		// 转换hex
 		data := hexutil.MustDecode(v.Data)
+
 		// topics第一个元素就是eventId
-		eventId := v.Topics[0]
-
-		switch eventId {
-		case tabi.Events[depositEventName].Id().String():
-			event, ok := tabi.Events[depositEventName]
-			if !ok {
-				return errors.New("deposit event do not exsit")
-			}
-			deposit := &DepositEvent{}
-
-			//
-			if err := cm.UnpackEvent(event, deposit, []byte(data)); err != nil {
+		switch v.Topics[0] {
+		case denId:
+			if err := showDeposit(den, data, v.Topics); err != nil {
 				return err
-			} else {
-				log.Println("hash", common.BytesToHash(deposit.Hash).Hex())
-				log.Println("account", deposit.Account.Hex())
-				log.Println("amount", deposit.Amount)
-				log.Println("isOk", deposit.Ok)
 			}
-
-		case tabi.Events[""].Id().String():
-
+		case oenId:
+			if err := showTransfer(oen, data, v.Topics); err != nil {
+				return err
+			}
 		}
 	}
+
+	return nil
+}
+
+// 解析并显示event数据内容
+func showDeposit(eventName string, data []byte, topics []string) error {
+	event, ok := tabi.Events[eventName]
+	if !ok {
+		return errors.New("deposit event do not exsit")
+	}
+	deposit := &DepositEvent{}
+
+	//
+	if err := cm.UnpackEvent(event, deposit, []byte(data), topics); err != nil {
+		return err
+	}
+
+	log.Println("hash", common.BytesToHash(deposit.Hash).Hex())
+	log.Println("account", deposit.Account.Hex())
+	log.Println("amount", deposit.Amount)
+	log.Println("ok", deposit.Ok)
+
+	return nil
+}
+
+// 解析并显示OrderFilledEvent数据内容
+func showTransfer(eventName string, data []byte, topics []string) error {
+	event, ok := tabi.Events[eventName]
+	if !ok {
+		return errors.New("orderFilled event do not exist")
+	}
+
+	transfer := &TransferEvent{}
+	if err := cm.UnpackEvent(event, transfer, []byte(data), topics); err != nil {
+		return err
+	}
+
+	log.Println("hash", common.BytesToHash(transfer.Hash).Hex())
+	log.Println("accounts", transfer.AccountS.Hex())
+	log.Println("accountb", transfer.AccountB.Hex())
+	log.Println("amounts", transfer.AmountS)
+	log.Println("amountb", transfer.AmountB)
+	log.Println("ok", transfer.Ok)
 
 	return nil
 }

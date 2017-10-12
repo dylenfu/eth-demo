@@ -9,9 +9,13 @@ import (
 	"encoding/binary"
 	"errors"
 	"strings"
+	"bytes"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
-func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
+func UnpackEvent(e abi.Event,v interface{}, output []byte, topics []string) error {
+	output = combine(e, output, topics)
+
 	// make sure the passed value is a pointer
 	valueOf := reflect.ValueOf(v)
 	if reflect.Ptr != valueOf.Kind() {
@@ -27,15 +31,16 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
 		return fmt.Errorf("abi: cannot unmarshal tuple in to %v", typ)
 	}
 
-	for i := 0; i < len(e.Inputs); i++ {
+	for i:=0; i < len(e.Inputs); i++ {
 		marshalledValue, err := toGoType(i, e.Inputs[i], output)
+
 		if err != nil {
 			return err
 		}
+
 		reflectValue := reflect.ValueOf(marshalledValue)
 		for j := 0; j < typ.NumField(); j++ {
 			field := typ.Field(j)
-			// TODO read tags: `abi:"fieldName"`
 			if field.Name == strings.ToUpper(e.Inputs[i].Name[:1]) + e.Inputs[i].Name[1:] {
 				if err := set(value.Field(j), reflectValue, e.Inputs[i]); err != nil {
 					return err
@@ -45,6 +50,32 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte) error {
 	}
 
 	return nil
+}
+
+// event中indexed field不在data内，而在filterLog的topic内
+// topics内容包括eventId以及所有indexed field data
+func combine(e abi.Event, output []byte, topics []string) []byte {
+	if len(topics) <= 1 {
+		return output
+	}
+	idxflds := topics[1:]
+	j := 0
+	k := 0
+	var ret [][]byte
+	for i:=0;i<len(e.Inputs);i++ {
+		if e.Inputs[i].Indexed {
+			bs := hexutil.MustDecode(idxflds[j])
+			ret = append(ret, bs)
+			j++
+			continue
+		}
+
+		bs := output[k*32:(k+1)*32]
+		ret = append(ret, bs)
+		k += 1
+	}
+
+	return bytes.Join(ret, []byte{})
 }
 
 func UnpackMethod(method abi.Method, v interface{}, output []byte) error {
@@ -142,6 +173,10 @@ func toGoType(i int, t abi.Argument, output []byte) (interface{}, error) {
 	default:
 		returnOutput = output[index : index+32]
 	}
+
+	// todo: delete
+	//println(t.Name)
+	//println(common.Bytes2Hex(returnOutput))
 
 	// convert the bytes to whatever is specified by the ABI.
 	switch t.Type.T {
