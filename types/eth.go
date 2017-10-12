@@ -7,6 +7,28 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
+// 监听block时需要解析
+type Block struct {
+	Number           hexutil.Big
+	Hash             string
+	ParentHash       string
+	Nonce            string
+	Sha3Uncles       string
+	LogsBloom        string
+	TransactionsRoot string
+	ReceiptsRoot     string
+	Miner            string
+	Difficulty       hexutil.Big
+	TotalDifficulty  hexutil.Big
+	ExtraData        string
+	Size             hexutil.Big
+	GasLimit         hexutil.Big
+	GasUsed          hexutil.Big
+	Timestamp        hexutil.Big
+	Transactions 	 []Transaction
+	Uncles           []string
+}
+
 // 发送transaction
 type Transaction struct {
 	From		string

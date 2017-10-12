@@ -18,22 +18,25 @@ var testcase = flag.String("call", "deposit", "chose test case")
 func main() {
 	flag.Parse()
 
+	//v := reflect.ValueOf(*testcase)
 	bank := LoadContract()
 
-	go func() {
-		switch *testcase {
-		case "balance":
-			balance(bank)
+	switch *testcase {
+	case "balance":
+		balance(bank)
 
-		case "deposit":
-			deposit(bank)
+	case "deposit":
+		deposit(bank)
 
-		case "transfer":
-			transfer(bank)
-		}
-	}()
+	case "transfer":
+		transfer(bank)
 
-	listen()
+	case "listenEvents":
+		listenEvents()
+
+	case "listenBlock":
+		listenBlock()
+	}
 }
 
 func balance(bank *BankToken) {
@@ -78,14 +81,27 @@ func transfer(bank *BankToken) {
 	}
 }
 
-func listen() {
+func listenEvents() {
 	filterId, err := NewFilter(BlockNumber)
 	if err != nil {
 		panic(err)
 	}
 
 	for {
-		if err := FilterChanged(filterId); err != nil {
+		if err := EventChanged(filterId); err != nil {
+			log.Println(err.Error())
+		}
+	}
+}
+
+func listenBlock() {
+	filterId, err := BlockFilterId()
+	if err != nil {
+		panic(err)
+	}
+
+	for {
+		if err := BlockChanged(filterId); err != nil {
 			log.Println(err.Error())
 		}
 	}

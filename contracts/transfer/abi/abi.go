@@ -111,7 +111,7 @@ type TransferEvent struct {
 }
 
 // 监听合约事件并解析
-func FilterChanged(filterId string) error {
+func EventChanged(filterId string) error {
 	var logs []types.FilterLog
 
 	// 注意 这里使用filterchanges获得的是以太坊最新的log
@@ -188,6 +188,54 @@ func showTransfer(eventName string, data []byte, topics []string) error {
 	log.Println("amounts", transfer.AmountS)
 	log.Println("amountb", transfer.AmountB)
 	log.Println("ok", transfer.Ok)
+
+	return nil
+}
+
+// 使用jsonrpc eth_newBlockFilter得到一个filterId
+// 然后使用jsonrpc eth_getFilterChange得到blockHash数组
+// 轮询数组，解析block信息
+
+func BlockFilterId() (string, error) {
+	var filterId 	string
+	if err := client.Call(&filterId, "eth_newBlockFilter"); err != nil {
+		return "", err
+	}
+	return filterId, nil
+}
+
+// 拿到的block一直是最新的
+func BlockChanged(filterId string) error {
+	var blockHashs 	[]string
+
+	err := client.Call(&blockHashs, "eth_getFilterChanges", filterId)
+	if err != nil {
+		return err
+	}
+
+	for _,v := range blockHashs {
+		var block types.Block
+		// 最后一个参数：true查询整个block信息，false查询block包含的transaction hash
+		if err := client.Call(&block, "eth_getBlockByHash", v, true); err != nil {
+			log.Println(err)
+		}
+		log.Println("number", block.Number.ToInt())
+		log.Println("hash", block.Hash)
+		log.Println("parentHash", block.ParentHash)
+		log.Println("nonce", block.Nonce)
+		log.Println("sha3Uncles", block.Sha3Uncles)
+		log.Println("logsBloom", block.LogsBloom)
+		log.Println("TransactionsRoot", block.TransactionsRoot)
+		log.Println("ReceiptsRoot", block.ReceiptsRoot)
+		log.Println("Miner", block.Miner)
+		log.Println("Difficulty", block.Difficulty.String())
+		log.Println("TotalDifficulty", block.TotalDifficulty.String())
+		log.Println("ExtraData", block.ExtraData)
+		log.Println("Size", block.Size)
+		log.Println("GasLimit", block.GasLimit)
+		log.Println("GasUsed", block.GasUsed)
+		log.Println("Timestamp", block.Timestamp)
+	}
 
 	return nil
 }
