@@ -114,7 +114,12 @@ type TransferEvent struct {
 func FilterChanged(filterId string) error {
 	var logs []types.FilterLog
 
+	// 注意 这里使用filterchanges获得的是以太坊最新的log
+	// 使用filterlogs获得的是fromBlock后的所有log
+	// 所以，一般而言我们在程序里一般都是启动时使用getFilterLogs
+	// 过滤掉已经解析了的logs后，使用getFilterChange继续监听
 	err := client.Call(&logs, "eth_getFilterChanges", filterId)
+	//err := client.Call(&logs, "eth_getFilterLogs", filterId)
 	if err != nil {
 		return err
 	}
