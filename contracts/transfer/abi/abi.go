@@ -1,24 +1,24 @@
 package abi
 
 import (
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common"
 	cm "github.com/dylenfu/eth-libs/common"
-	"github.com/ethereum/go-ethereum/rpc"
-	"reflect"
-	"os"
-	"io/ioutil"
-	"github.com/dylenfu/eth-libs/types"
-	"log"
-	"github.com/pkg/errors"
-	"math/big"
 	. "github.com/dylenfu/eth-libs/params"
+	"github.com/dylenfu/eth-libs/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/pkg/errors"
+	"io/ioutil"
+	"log"
+	"math/big"
+	"os"
+	"reflect"
 )
 
 var (
-	client 		*rpc.Client
-	tabi 		*abi.ABI
+	client *rpc.Client
+	tabi   *abi.ABI
 )
 
 const Topic = "bank"
@@ -38,7 +38,7 @@ func NewAbi() *abi.ABI {
 	tabi := &abi.ABI{}
 
 	dir := os.Getenv("GOPATH")
-	abiStr,err := ioutil.ReadFile(dir + "/src/github.com/dylenfu/eth-libs/contracts/transfer/abi.txt")
+	abiStr, err := ioutil.ReadFile(dir + "/src/github.com/dylenfu/eth-libs/contracts/transfer/abi.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -51,16 +51,16 @@ func NewAbi() *abi.ABI {
 }
 
 type BankToken struct {
-	Transfer 		types.AbiMethod	`methodName:"submitTransfer"`
-	Deposit			types.AbiMethod	`methodName:"submitDeposit"`
-	BalanceOf		types.AbiMethod	`methodName:"balanceOf"`
+	Transfer  types.AbiMethod `methodName:"submitTransfer"`
+	Deposit   types.AbiMethod `methodName:"submitDeposit"`
+	BalanceOf types.AbiMethod `methodName:"balanceOf"`
 }
 
 func LoadContract() *BankToken {
 	contract := &BankToken{}
 	elem := reflect.ValueOf(contract).Elem()
 
-	for i:=0; i < elem.NumField(); i++ {
+	for i := 0; i < elem.NumField(); i++ {
 		methodName := elem.Type().Field(i).Tag.Get("methodName")
 
 		abiMethod := &types.AbiMethod{}
@@ -77,7 +77,7 @@ func LoadContract() *BankToken {
 
 // filter可以根据blockNumber生成
 // 也可以从网络中直接查询eth.filter()
-func NewFilter(height int) (string,error) {
+func NewFilter(height int) (string, error) {
 	var filterId string
 
 	// 使用jsonrpc的方式调用newFilter
@@ -95,19 +95,19 @@ func NewFilter(height int) (string,error) {
 }
 
 type DepositEvent struct {
-	Hash 		[]byte
-	Account     common.Address
-	Amount 		*big.Int
-	Ok 			bool
+	Hash    []byte
+	Account common.Address
+	Amount  *big.Int
+	Ok      bool
 }
 
 type TransferEvent struct {
-	Hash 		[]byte
-	AccountS 	common.Address
-	AccountB 	common.Address
-	AmountS 	*big.Int
-	AmountB 	*big.Int
-	Ok 			bool
+	Hash     []byte
+	AccountS common.Address
+	AccountB common.Address
+	AmountS  *big.Int
+	AmountB  *big.Int
+	Ok       bool
 }
 
 // 监听合约事件并解析
@@ -197,7 +197,7 @@ func showTransfer(eventName string, data []byte, topics []string) error {
 // 轮询数组，解析block信息
 
 func BlockFilterId() (string, error) {
-	var filterId 	string
+	var filterId string
 	if err := client.Call(&filterId, "eth_newBlockFilter"); err != nil {
 		return "", err
 	}
@@ -206,14 +206,14 @@ func BlockFilterId() (string, error) {
 
 // 拿到的block一直是最新的
 func BlockChanged(filterId string) error {
-	var blockHashs 	[]string
+	var blockHashs []string
 
 	err := client.Call(&blockHashs, "eth_getFilterChanges", filterId)
 	if err != nil {
 		return err
 	}
 
-	for _,v := range blockHashs {
+	for _, v := range blockHashs {
 		var block types.Block
 		// 最后一个参数：true查询整个block信息，false查询block包含的transaction hash
 		if err := client.Call(&block, "eth_getBlockByHash", v, true); err != nil {

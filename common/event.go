@@ -1,19 +1,19 @@
 package common
 
 import (
-	"fmt"
-	"reflect"
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"math/big"
-	"github.com/ethereum/go-ethereum/common"
+	"bytes"
 	"encoding/binary"
 	"errors"
-	"strings"
-	"bytes"
+	"fmt"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"math/big"
+	"reflect"
+	"strings"
 )
 
-func UnpackEvent(e abi.Event,v interface{}, output []byte, topics []string) error {
+func UnpackEvent(e abi.Event, v interface{}, output []byte, topics []string) error {
 	output = combine(e, output, topics)
 
 	// make sure the passed value is a pointer
@@ -31,7 +31,7 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte, topics []string) erro
 		return fmt.Errorf("abi: cannot unmarshal tuple in to %v", typ)
 	}
 
-	for i:=0; i < len(e.Inputs); i++ {
+	for i := 0; i < len(e.Inputs); i++ {
 		marshalledValue, err := toGoType(i, e.Inputs[i], output)
 
 		if err != nil {
@@ -41,7 +41,7 @@ func UnpackEvent(e abi.Event,v interface{}, output []byte, topics []string) erro
 		reflectValue := reflect.ValueOf(marshalledValue)
 		for j := 0; j < typ.NumField(); j++ {
 			field := typ.Field(j)
-			if field.Name == strings.ToUpper(e.Inputs[i].Name[:1]) + e.Inputs[i].Name[1:] {
+			if field.Name == strings.ToUpper(e.Inputs[i].Name[:1])+e.Inputs[i].Name[1:] {
 				if err := set(value.Field(j), reflectValue, e.Inputs[i]); err != nil {
 					return err
 				}
@@ -62,7 +62,7 @@ func combine(e abi.Event, output []byte, topics []string) []byte {
 	j := 0
 	k := 0
 	var ret [][]byte
-	for i:=0;i<len(e.Inputs);i++ {
+	for i := 0; i < len(e.Inputs); i++ {
 		if e.Inputs[i].Indexed {
 			bs := hexutil.MustDecode(idxflds[j])
 			ret = append(ret, bs)
@@ -70,7 +70,7 @@ func combine(e abi.Event, output []byte, topics []string) []byte {
 			continue
 		}
 
-		bs := output[k*32:(k+1)*32]
+		bs := output[k*32 : (k+1)*32]
 		ret = append(ret, bs)
 		k += 1
 	}

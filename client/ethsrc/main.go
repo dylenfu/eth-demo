@@ -1,17 +1,17 @@
 package main
 
 import (
-	"github.com/dylenfu/eth-libs/client/ethsrc/rpc"
-	"log"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"flag"
-	"reflect"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/common"
-	"math/big"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/dylenfu/eth-libs/client/ethsrc/rpc"
 	. "github.com/dylenfu/eth-libs/params"
 	tp "github.com/dylenfu/eth-libs/types"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/rlp"
+	"log"
+	"math/big"
+	"reflect"
 )
 
 var call = flag.String("call", "Balance", "chose test case")
@@ -23,34 +23,34 @@ type Handle struct {
 // transaction数据结构参考 https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sendtransaction
 // 也可以直接使用go-eth本身的数据结构，如果是自己构造的话，需要保证能被正确解析(主要是hexutil.Big)
 type transaction struct {
-	From		string
-	To 			string
-	Gas			hexutil.Big
-	GasPrice	hexutil.Big
-	Value       hexutil.Big
-	Data		string
+	From     string
+	To       string
+	Gas      hexutil.Big
+	GasPrice hexutil.Big
+	Value    hexutil.Big
+	Data     string
 }
 
 // block数据结构参考 https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getblockbyhash
 type block struct {
-	Number 			hexutil.Big
-	Hash 			string
-	ParentHash 		string
-	Nonce 			string
-	Sha3Uncles 		string
-	LogsBloom 		string
+	Number          hexutil.Big
+	Hash            string
+	ParentHash      string
+	Nonce           string
+	Sha3Uncles      string
+	LogsBloom       string
 	TransactionRoot string
-	StateRoot 		string
-	Miner 			string
-	Difficulty 		hexutil.Big
+	StateRoot       string
+	Miner           string
+	Difficulty      hexutil.Big
 	TotalDifficulty hexutil.Big
-	ExtraData 		string
-	Size 			hexutil.Big
-	GasLimit 		hexutil.Big
-	GasUsed 		hexutil.Big
-	Timestamp 		string
-	Transactions 	[]transaction
-	uncles 			[]string
+	ExtraData       string
+	Size            hexutil.Big
+	GasLimit        hexutil.Big
+	GasUsed         hexutil.Big
+	Timestamp       string
+	Transactions    []transaction
+	uncles          []string
 }
 
 // 这里我们使用http的形式连接eth私有链
@@ -89,7 +89,7 @@ func (h *Handle) BlockNumber() {
 // 查看当前客户端是否处于监听状态
 func (h *Handle) Listening() {
 	var ok bool
-	h.client.Call(&ok,"net_listening")
+	h.client.Call(&ok, "net_listening")
 	log.Println(ok)
 }
 
@@ -108,8 +108,8 @@ func (h *Handle) SendTransaction() {
 	)
 
 	tx.From = Miner
-	tx.To   = Account2
-	tx.Gas  = tp.Int2HexBigInt(100000)
+	tx.To = Account2
+	tx.Gas = tp.Int2HexBigInt(100000)
 	tx.GasPrice = tp.Int2HexBigInt(1)
 	tx.Value = tp.Int2HexBigInt(1000000000)
 
@@ -155,7 +155,7 @@ func (h *Handle) GetBlockByHash() {
 }
 
 // 签名用户
-func (h *Handle) signUser(account,pwd string) (string, error) {
+func (h *Handle) signUser(account, pwd string) (string, error) {
 	var result string
 
 	if err := h.client.Call(&result, "eth_sign", account, pwd); err != nil {
@@ -194,7 +194,7 @@ func newTransaction() *types.Transaction {
 	gas := big.NewInt(10000)
 	price := big.NewInt(1)
 	data := []byte{}
-	tx := types.NewTransaction(uint64(nonce), to, amount,gas,price, data)
+	tx := types.NewTransaction(uint64(nonce), to, amount, gas, price, data)
 
 	return tx
 }

@@ -1,14 +1,14 @@
 package abi_test
 
 import (
-	"testing"
+	"bytes"
 	cm "github.com/dylenfu/eth-libs/common"
+	iabi "github.com/dylenfu/eth-libs/contracts/transfer/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
-	"bytes"
-	"strings"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	iabi "github.com/dylenfu/eth-libs/contracts/transfer/abi"
+	"strings"
+	"testing"
 )
 
 func TestUnpackMethod(t *testing.T) {
@@ -22,7 +22,6 @@ func TestUnpackMethod(t *testing.T) {
 	{ "name" : "addressSliceSingle", "constant" : false, "outputs": [ { "type": "address[]" } ] },
 	{ "name" : "addressSliceDouble", "constant" : false, "outputs": [ { "name": "a", "type": "address[]" }, { "name": "b", "type": "address[]" } ] },
 	{ "name" : "mixedBytes", "constant" : true, "outputs": [ { "name": "a", "type": "bytes" }, { "name": "b", "type": "bytes32" } ] }]`
-
 
 	tabi, err := abi.JSON(strings.NewReader(definition))
 	if err != nil {
@@ -89,7 +88,7 @@ func TestUnpackDepositEvent(t *testing.T) {
 		t.Error("event do not exist")
 	}
 
-	if err := cm.UnpackEvent(abiEvent, &event, data,[]string{"111"}); err != nil {
+	if err := cm.UnpackEvent(abiEvent, &event, data, []string{"111"}); err != nil {
 		panic(err)
 	}
 
@@ -105,7 +104,7 @@ func TestUnpackTransferEvent(t *testing.T) {
 	tabi := iabi.NewAbi()
 
 	name := "OrderFilled"
-	topics := []string{"0xe82b29110155d7f50a67fadb38783bf00fbf992a5c866a55c83f85b7edadd234","0x0000000000000000000000000000000000000000000000000000000000000002"}
+	topics := []string{"0xe82b29110155d7f50a67fadb38783bf00fbf992a5c866a55c83f85b7edadd234", "0x0000000000000000000000000000000000000000000000000000000000000002"}
 	// str长度为322 包含5个字段，mustDecode后长度为160,但是打印string(str)和common.Bytes2Hex(data)在字面上只差了0x两个字母
 	str := "0x00000000000000000000000056d9620237fff8a6c0f98ec6829c137477887ec400000000000000000000000046c5683c754b2eba04b2701805617c0319a9b4dd0000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000001"
 

@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/dylenfu/eth-libs/types"
 	"flag"
 	. "github.com/dylenfu/eth-libs/contracts/transfer/abi"
-	"math/big"
 	. "github.com/dylenfu/eth-libs/params"
+	"github.com/dylenfu/eth-libs/types"
+	"github.com/ethereum/go-ethereum/common"
+	"log"
+	"math/big"
 )
 
 // 该项目实验性地创建一个合约，包含订单信息及转账功能

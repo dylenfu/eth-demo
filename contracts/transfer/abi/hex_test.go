@@ -2,10 +2,10 @@ package abi_test
 
 import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"testing"
 	"math/big"
 	"reflect"
 	"regexp"
+	"testing"
 )
 
 func TestHexNumber(t *testing.T) {

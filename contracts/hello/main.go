@@ -1,34 +1,34 @@
 package main
 
 import (
-	"io/ioutil"
-	abi "github.com/ethereum/go-ethereum/accounts/abi"
-	"os"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/rpc"
-	"log"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	. "github.com/dylenfu/eth-libs/params"
 	"flag"
+	. "github.com/dylenfu/eth-libs/params"
 	"github.com/dylenfu/eth-libs/types"
+	abi "github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/rpc"
+	"io/ioutil"
+	"log"
+	"os"
 )
 
 type CallArgs struct {
-	From 		string
-	To   		string
-	Gas  		hexutil.Big
-	GasPrice 	hexutil.Big
-	Value 		hexutil.Big
-	Data 		interface{}
+	From     string
+	To       string
+	Gas      hexutil.Big
+	GasPrice hexutil.Big
+	Value    hexutil.Big
+	Data     interface{}
 }
 
 type Transaction struct {
-	From		string
-	To 			string
-	Gas			hexutil.Big
-	GasPrice	hexutil.Big
-	Value       hexutil.Big
-	Data		string
+	From     string
+	To       string
+	Gas      hexutil.Big
+	GasPrice hexutil.Big
+	Value    hexutil.Big
+	Data     string
 }
 
 var testcase = flag.String("t", "greet", "chose testcase")
@@ -76,7 +76,7 @@ func newABI() *abi.ABI {
 	hABI := abi.ABI{}
 
 	dir, _ := os.Getwd()
-	abiStr,err := ioutil.ReadFile(dir + "/contracts/hello/abi.txt")
+	abiStr, err := ioutil.ReadFile(dir + "/contracts/hello/abi.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -137,7 +137,7 @@ func getGreet(habi *abi.ABI) *CallArgs {
 	return args
 }
 
-func (args *CallArgs)commonArgs(data string) {
+func (args *CallArgs) commonArgs(data string) {
 	args.From = HelloTokenAddress
 	args.To = HelloTokenAddress
 	args.Data = data

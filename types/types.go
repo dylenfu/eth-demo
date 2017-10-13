@@ -1,9 +1,9 @@
 package types
 
 import (
-	"reflect"
-	"math/big"
 	"fmt"
+	"math/big"
+	"reflect"
 )
 
 type HexNumber big.Int

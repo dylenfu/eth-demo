@@ -1,9 +1,9 @@
 package abi
 
 import (
+	"math/big"
 	"reflect"
 	"testing"
-	"math/big"
 	"unsafe"
 )
 
@@ -51,7 +51,7 @@ func TestBytesStringFieldReflect(t *testing.T) {
 		dstData string
 	}
 
-	tsd := &ts{[]byte{'h', 'a','s','h'}, "12"}
+	tsd := &ts{[]byte{'h', 'a', 's', 'h'}, "12"}
 
 	valueOf := reflect.ValueOf(tsd)
 	value := valueOf.Elem()
@@ -84,7 +84,7 @@ func TestArrayStringReflect(t *testing.T) {
 
 	src := reflect.ValueOf(bs)
 	ts := make([]byte, len(bs))
-	for i :=0; i< len(bs); i++{
+	for i := 0; i < len(bs); i++ {
 		ts[i] = src.Index(i).Interface().(byte)
 	}
 
