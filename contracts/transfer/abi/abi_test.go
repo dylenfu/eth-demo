@@ -4,12 +4,12 @@ import (
 	"bytes"
 	cm "github.com/dylenfu/eth-libs/common"
 	iabi "github.com/dylenfu/eth-libs/contracts/transfer/abi"
+	"github.com/dylenfu/eth-libs/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"strings"
 	"testing"
-	"github.com/dylenfu/eth-libs/types"
 )
 
 func TestUnpackMethod(t *testing.T) {

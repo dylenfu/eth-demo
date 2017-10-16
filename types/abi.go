@@ -1,20 +1,20 @@
 package types
 
 import (
-	"os"
-	"io/ioutil"
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"reflect"
 	"github.com/ethereum/go-ethereum/rpc"
+	"io/ioutil"
+	"os"
+	"reflect"
 )
 
 type TokenImpl struct {
-	Client 	*rpc.Client
-	Abi   	*abi.ABI
-	Token   interface{}
+	Client           *rpc.Client
+	Abi              *abi.ABI
+	Token            interface{}
 	ContractFilePath string //ex:"github.com/dylenfu/eth-libs/contracts/transfer/abi.txt"
-	TokenAddress string		//ex:""
-	Url string    //ex:"http://127.0.0.1:8545"
+	TokenAddress     string //ex:""
+	Url              string //ex:"http://127.0.0.1:8545"
 }
 
 // NewAbi params file

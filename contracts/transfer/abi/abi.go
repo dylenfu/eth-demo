@@ -15,9 +15,9 @@ var (
 )
 
 const (
-	Topic = "bank"
-	AbiFilePath = "github.com/dylenfu/eth-libs/contracts/transfer/abi.txt"
-	EthRpcUrl = "http://127.0.0.1:8545"
+	Topic        = "bank"
+	AbiFilePath  = "github.com/dylenfu/eth-libs/contracts/transfer/abi.txt"
+	EthRpcUrl    = "http://127.0.0.1:8545"
 	TokenAddress = "0xa221f7c8cd24a7a383d116aa5d7430b48d1e0063"
 )
 
@@ -39,7 +39,7 @@ type DepositEvent struct {
 	Ok      bool
 }
 
-type Ha interface {}
+type Ha interface{}
 
 // 所有跟event不相关的字段在解析的时候都没有影响
 type TransferEvent struct {
@@ -181,24 +181,27 @@ func BlockChanged(filterId string) error {
 		if err := Bank.Client.Call(&block, "eth_getBlockByHash", v, true); err != nil {
 			log.Println(err)
 		}
-
-		log.Println("number", block.Number.ToInt())
-		log.Println("hash", block.Hash)
-		log.Println("parentHash", block.ParentHash)
-		log.Println("nonce", block.Nonce)
-		log.Println("sha3Uncles", block.Sha3Uncles)
-		log.Println("logsBloom", block.LogsBloom)
-		log.Println("TransactionsRoot", block.TransactionsRoot)
-		log.Println("ReceiptsRoot", block.ReceiptsRoot)
-		log.Println("Miner", block.Miner)
-		log.Println("Difficulty", block.Difficulty.String())
-		log.Println("TotalDifficulty", block.TotalDifficulty.String())
-		log.Println("ExtraData", block.ExtraData)
-		log.Println("Size", block.Size)
-		log.Println("GasLimit", block.GasLimit)
-		log.Println("GasUsed", block.GasUsed)
-		log.Println("Timestamp", block.Timestamp)
+		showBlock(block)
 	}
 
 	return nil
+}
+
+func showBlock(block types.Block) {
+	log.Println("number", block.Number.ToInt())
+	log.Println("hash", block.Hash)
+	log.Println("parentHash", block.ParentHash)
+	log.Println("nonce", block.Nonce)
+	log.Println("sha3Uncles", block.Sha3Uncles)
+	log.Println("logsBloom", block.LogsBloom)
+	log.Println("TransactionsRoot", block.TransactionsRoot)
+	log.Println("ReceiptsRoot", block.ReceiptsRoot)
+	log.Println("Miner", block.Miner)
+	log.Println("Difficulty", block.Difficulty.String())
+	log.Println("TotalDifficulty", block.TotalDifficulty.String())
+	log.Println("ExtraData", block.ExtraData)
+	log.Println("Size", block.Size)
+	log.Println("GasLimit", block.GasLimit)
+	log.Println("GasUsed", block.GasUsed)
+	log.Println("Timestamp", block.Timestamp)
 }

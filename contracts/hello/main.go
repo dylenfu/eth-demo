@@ -13,6 +13,10 @@ import (
 	"os"
 )
 
+const (
+	TokenAddress = "0x227F88083AE9eE717e39669CB2718E604833fEf9"
+)
+
 type CallArgs struct {
 	From     string
 	To       string
@@ -116,7 +120,7 @@ func setGreet(habi *abi.ABI) *Transaction {
 
 	tx := &Transaction{}
 	tx.From = Miner
-	tx.To = HelloTokenAddress
+	tx.To = TokenAddress
 	tx.Gas = types.Int2HexBigInt(100000)
 	tx.GasPrice = types.Int2HexBigInt(1)
 	tx.Data = common.ToHex(bytes)
@@ -138,7 +142,7 @@ func getGreet(habi *abi.ABI) *CallArgs {
 }
 
 func (args *CallArgs) commonArgs(data string) {
-	args.From = HelloTokenAddress
-	args.To = HelloTokenAddress
+	args.From = TokenAddress
+	args.To = TokenAddress
 	args.Data = data
 }
