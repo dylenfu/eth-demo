@@ -2,52 +2,28 @@ package abi
 
 import (
 	cm "github.com/dylenfu/eth-libs/common"
-	. "github.com/dylenfu/eth-libs/params"
 	"github.com/dylenfu/eth-libs/types"
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/pkg/errors"
-	"io/ioutil"
 	"log"
 	"math/big"
-	"os"
-	"reflect"
 )
 
 var (
-	client *rpc.Client
-	tabi   *abi.ABI
+	Bank *types.TokenImpl
 )
 
-const Topic = "bank"
+const (
+	Topic = "bank"
+	AbiFilePath = "github.com/dylenfu/eth-libs/contracts/transfer/abi.txt"
+	EthRpcUrl = "http://127.0.0.1:8545"
+	TokenAddress = "0xa221f7c8cd24a7a383d116aa5d7430b48d1e0063"
+)
 
 func init() {
-	var err error
-
-	client, err = rpc.Dial("http://127.0.0.1:8545")
-	if err != nil {
-		panic(err)
-	}
-
-	tabi = NewAbi()
-}
-
-func NewAbi() *abi.ABI {
-	tabi := &abi.ABI{}
-
-	dir := os.Getenv("GOPATH")
-	abiStr, err := ioutil.ReadFile(dir + "/src/github.com/dylenfu/eth-libs/contracts/transfer/abi.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := tabi.UnmarshalJSON(abiStr); err != nil {
-		panic(err)
-	}
-
-	return tabi
+	token := &BankToken{}
+	Bank = types.NewContract(AbiFilePath, TokenAddress, EthRpcUrl, token)
 }
 
 type BankToken struct {
@@ -56,23 +32,25 @@ type BankToken struct {
 	BalanceOf types.AbiMethod `methodName:"balanceOf"`
 }
 
-func LoadContract() *BankToken {
-	contract := &BankToken{}
-	elem := reflect.ValueOf(contract).Elem()
+type DepositEvent struct {
+	Hash    []byte
+	Account common.Address
+	Amount  *big.Int
+	Ok      bool
+}
 
-	for i := 0; i < elem.NumField(); i++ {
-		methodName := elem.Type().Field(i).Tag.Get("methodName")
+type Ha interface {}
 
-		abiMethod := &types.AbiMethod{}
-		abiMethod.Name = methodName
-		abiMethod.Abi = tabi
-		abiMethod.Address = TransferTokenAddress
-		abiMethod.Client = client
-
-		elem.Field(i).Set(reflect.ValueOf(*abiMethod))
-	}
-
-	return contract
+// 所有跟event不相关的字段在解析的时候都没有影响
+type TransferEvent struct {
+	Ha
+	Hie      string
+	Hash     []byte
+	AccountS common.Address
+	AccountB common.Address
+	AmountS  *big.Int
+	AmountB  *big.Int
+	Ok       bool
 }
 
 // filter可以根据blockNumber生成
@@ -84,30 +62,14 @@ func NewFilter(height int) (string, error) {
 	filter := types.FilterReq{}
 	filter.FromBlock = types.Int2BlockNumHex(int64(height))
 	filter.ToBlock = "latest"
-	filter.Address = TransferTokenAddress
+	filter.Address = Bank.TokenAddress
 
-	err := client.Call(&filterId, "eth_newFilter", &filter)
+	err := Bank.Client.Call(&filterId, "eth_newFilter", &filter)
 	if err != nil {
 		return "", err
 	}
 
 	return filterId, nil
-}
-
-type DepositEvent struct {
-	Hash    []byte
-	Account common.Address
-	Amount  *big.Int
-	Ok      bool
-}
-
-type TransferEvent struct {
-	Hash     []byte
-	AccountS common.Address
-	AccountB common.Address
-	AmountS  *big.Int
-	AmountB  *big.Int
-	Ok       bool
 }
 
 // 监听合约事件并解析
@@ -118,7 +80,7 @@ func EventChanged(filterId string) error {
 	// 使用filterlogs获得的是fromBlock后的所有log
 	// 所以，一般而言我们在程序里一般都是启动时使用getFilterLogs
 	// 过滤掉已经解析了的logs后，使用getFilterChange继续监听
-	err := client.Call(&logs, "eth_getFilterChanges", filterId)
+	err := Bank.Client.Call(&logs, "eth_getFilterChanges", filterId)
 	//err := client.Call(&logs, "eth_getFilterLogs", filterId)
 	if err != nil {
 		return err
@@ -126,8 +88,8 @@ func EventChanged(filterId string) error {
 
 	den := "DepositFilled"
 	oen := "OrderFilled"
-	denId := tabi.Events[den].Id().String()
-	oenId := tabi.Events[oen].Id().String()
+	denId := Bank.Abi.Events[den].Id().String()
+	oenId := Bank.Abi.Events[oen].Id().String()
 
 	for _, v := range logs {
 		// 转换hex
@@ -151,7 +113,7 @@ func EventChanged(filterId string) error {
 
 // 解析并显示event数据内容
 func showDeposit(eventName string, data []byte, topics []string) error {
-	event, ok := tabi.Events[eventName]
+	event, ok := Bank.Abi.Events[eventName]
 	if !ok {
 		return errors.New("deposit event do not exsit")
 	}
@@ -172,7 +134,7 @@ func showDeposit(eventName string, data []byte, topics []string) error {
 
 // 解析并显示OrderFilledEvent数据内容
 func showTransfer(eventName string, data []byte, topics []string) error {
-	event, ok := tabi.Events[eventName]
+	event, ok := Bank.Abi.Events[eventName]
 	if !ok {
 		return errors.New("orderFilled event do not exist")
 	}
@@ -198,7 +160,7 @@ func showTransfer(eventName string, data []byte, topics []string) error {
 
 func BlockFilterId() (string, error) {
 	var filterId string
-	if err := client.Call(&filterId, "eth_newBlockFilter"); err != nil {
+	if err := Bank.Client.Call(&filterId, "eth_newBlockFilter"); err != nil {
 		return "", err
 	}
 	return filterId, nil
@@ -208,7 +170,7 @@ func BlockFilterId() (string, error) {
 func BlockChanged(filterId string) error {
 	var blockHashs []string
 
-	err := client.Call(&blockHashs, "eth_getFilterChanges", filterId)
+	err := Bank.Client.Call(&blockHashs, "eth_getFilterChanges", filterId)
 	if err != nil {
 		return err
 	}
@@ -216,9 +178,10 @@ func BlockChanged(filterId string) error {
 	for _, v := range blockHashs {
 		var block types.Block
 		// 最后一个参数：true查询整个block信息，false查询block包含的transaction hash
-		if err := client.Call(&block, "eth_getBlockByHash", v, true); err != nil {
+		if err := Bank.Client.Call(&block, "eth_getBlockByHash", v, true); err != nil {
 			log.Println(err)
 		}
+
 		log.Println("number", block.Number.ToInt())
 		log.Println("hash", block.Hash)
 		log.Println("parentHash", block.ParentHash)

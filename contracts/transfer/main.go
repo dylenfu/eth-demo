@@ -18,8 +18,7 @@ var testcase = flag.String("call", "deposit", "chose test case")
 func main() {
 	flag.Parse()
 
-	//v := reflect.ValueOf(*testcase)
-	bank := LoadContract()
+	bank := Bank.Token.(*BankToken)
 
 	switch *testcase {
 	case "balance":

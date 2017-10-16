@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"strings"
 	"testing"
+	"github.com/dylenfu/eth-libs/types"
 )
 
 func TestUnpackMethod(t *testing.T) {
@@ -76,7 +77,7 @@ func TestAddress(t *testing.T) {
 func TestUnpackDepositEvent(t *testing.T) {
 	event := iabi.DepositEvent{}
 
-	tabi := iabi.NewAbi()
+	tabi := types.NewAbi("github.com/dylenfu/eth-libs/contracts/transfer/abi.txt")
 
 	name := "DepositFilled"
 	str := "0x5ad6fe3e08ffa01bb1db674ac8e66c47511e364a4500115dd2feb33dad972d7e0000000000000000000000003865633638323963313337343737383837656334000000000000000000000000000000000000000000000000000000000bebc2010000000000000000000000000000000000000000000000000000000000000001"
@@ -101,7 +102,7 @@ func TestUnpackDepositEvent(t *testing.T) {
 func TestUnpackTransferEvent(t *testing.T) {
 	transfer := iabi.TransferEvent{}
 
-	tabi := iabi.NewAbi()
+	tabi := types.NewAbi("github.com/dylenfu/eth-libs/contracts/transfer/abi.txt")
 
 	name := "OrderFilled"
 	topics := []string{"0xe82b29110155d7f50a67fadb38783bf00fbf992a5c866a55c83f85b7edadd234", "0x0000000000000000000000000000000000000000000000000000000000000002"}

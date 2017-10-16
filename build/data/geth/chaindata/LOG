@@ -207,3 +207,13 @@
 14:59:38.186113 table@remove removed @43
 14:59:38.186886 table@remove removed @40
 14:59:38.187929 table@remove removed @39
+=============== Oct 13, 2017 (CST) ===============
+10:37:12.096020 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+10:37:12.096797 version@stat F·[0 2] S·2MiB[0B 2MiB] Sc·[0.00 0.03]
+10:37:12.096808 db@open opening
+10:37:12.096852 journal@recovery F·1
+10:37:12.098542 journal@recovery recovering @47
+10:37:12.270308 memdb@flush created L0@51 N·69540 S·3MiB "\x00\a\x8c..y\xf0\a,v154221":"\xff\xe1\xca..a-\xfc,v120694"
+10:37:12.271135 version@stat F·[1 2] S·6MiB[3MiB 2MiB] Sc·[0.25 0.03]
+10:37:12.273223 db@janitor F·5 G·0
+10:37:12.273238 db@open done T·176.424208ms
