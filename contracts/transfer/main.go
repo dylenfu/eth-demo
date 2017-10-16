@@ -41,7 +41,7 @@ func main() {
 func balance(bank *BankToken) {
 	var result types.HexNumber
 
-	addr := types.Str2Address(Account2)
+	addr := types.Str2Address(Account1)
 	if err := bank.BalanceOf.Call(&result, "latest", addr); err != nil {
 		panic(err)
 	}
@@ -60,7 +60,7 @@ func deposit(bank *BankToken) {
 	amount := big.NewInt(500000000)
 
 	// 这里一定注意，因为合约里的函数参数是一个个传入的，所以这里不能传一个结构过去
-	err := bank.Deposit.SendTransaction(Miner, TransferTokenAddress, 1200000, 1, &result, id, account, amount)
+	err := bank.Deposit.SendTransaction(Miner, TokenAddress, 1200000, 1, &result, id, account, amount)
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +74,7 @@ func transfer(bank *BankToken) {
 
 	id := common.FromHex("0x0000000000000000000000000000000000000000000000000000000000000002")
 	amount := big.NewInt(100000000)
-	err := bank.Transfer.SendTransaction(Miner, TransferTokenAddress, 1200000, 1, &result, id, account2, account1, amount, amount)
+	err := bank.Transfer.SendTransaction(Miner, TokenAddress, 1200000, 1, &result, id, account2, account1, amount, amount)
 	if err != nil {
 		panic(err)
 	}
