@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 	"unsafe"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func BytesToString(b []byte) string {
@@ -105,4 +106,15 @@ func TestBigIntPtrCopy(t *testing.T) {
 
 	t.Log(dst.Elem().String())
 	t.Log(dst)
+}
+
+func TestReflectStructTag(t *testing.T) {
+	type Deposit struct {
+		Id 			[]byte 			`alias:"_id"`
+		Owner 		common.Address	`alias:"_owner"`
+		Amount		*big.Int		`alias:"_amount"`
+	}
+
+	d := Deposit{}
+	t.Log(reflect.TypeOf(d).Field(0).Tag.Get("alias"))
 }

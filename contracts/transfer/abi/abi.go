@@ -33,10 +33,10 @@ type BankToken struct {
 }
 
 type DepositEvent struct {
-	Hash    []byte
-	Account common.Address
-	Amount  *big.Int
-	Ok      bool
+	Hash    []byte				`alias:"hash"`
+	Account common.Address		`alias:"account"`
+	Amount  *big.Int			`alias:"amount"`
+	Ok      bool				`alias:"ok"`
 }
 
 type Ha interface{}
@@ -45,12 +45,12 @@ type Ha interface{}
 type TransferEvent struct {
 	Ha
 	Hie      string
-	Hash     []byte
-	AccountS common.Address
-	AccountB common.Address
-	AmountS  *big.Int
-	AmountB  *big.Int
-	Ok       bool
+	Hash     []byte				`alias:"hash"`
+	AccountS common.Address		`alias:"accountS"`
+	AccountB common.Address		`alias:"accountB"`
+	AmountS  *big.Int			`alias:"amountS"`
+	AmountB  *big.Int			`alias:"amountB"`
+	Ok       bool				`alias:"ok"`
 }
 
 // filter可以根据blockNumber生成
@@ -120,7 +120,7 @@ func showDeposit(eventName string, data []byte, topics []string) error {
 	deposit := &DepositEvent{}
 
 	//
-	if err := cm.UnpackEvent(event, deposit, []byte(data), topics); err != nil {
+	if err := cm.UnpackEvent(event.Inputs, deposit, []byte(data), topics); err != nil {
 		return err
 	}
 
@@ -140,7 +140,7 @@ func showTransfer(eventName string, data []byte, topics []string) error {
 	}
 
 	transfer := &TransferEvent{}
-	if err := cm.UnpackEvent(event, transfer, []byte(data), topics); err != nil {
+	if err := cm.UnpackEvent(event.Inputs, transfer, []byte(data), topics); err != nil {
 		return err
 	}
 
@@ -157,7 +157,6 @@ func showTransfer(eventName string, data []byte, topics []string) error {
 // 使用jsonrpc eth_newBlockFilter得到一个filterId
 // 然后使用jsonrpc eth_getFilterChange得到blockHash数组
 // 轮询数组，解析block信息
-
 func BlockFilterId() (string, error) {
 	var filterId string
 	if err := Bank.Client.Call(&filterId, "eth_newBlockFilter"); err != nil {
@@ -188,20 +187,39 @@ func BlockChanged(filterId string) error {
 }
 
 func showBlock(block types.Block) {
-	log.Println("number", block.Number.ToInt())
-	log.Println("hash", block.Hash)
-	log.Println("parentHash", block.ParentHash)
-	log.Println("nonce", block.Nonce)
-	log.Println("sha3Uncles", block.Sha3Uncles)
-	log.Println("logsBloom", block.LogsBloom)
-	log.Println("TransactionsRoot", block.TransactionsRoot)
-	log.Println("ReceiptsRoot", block.ReceiptsRoot)
-	log.Println("Miner", block.Miner)
-	log.Println("Difficulty", block.Difficulty.String())
-	log.Println("TotalDifficulty", block.TotalDifficulty.String())
-	log.Println("ExtraData", block.ExtraData)
-	log.Println("Size", block.Size)
-	log.Println("GasLimit", block.GasLimit)
-	log.Println("GasUsed", block.GasUsed)
-	log.Println("Timestamp", block.Timestamp)
+	if len(block.Transactions) > 0 {
+		log.Println("number", block.Number.ToInt())
+		log.Println("hash", block.Hash)
+		log.Println("parentHash", block.ParentHash)
+		log.Println("nonce", block.Nonce)
+		log.Println("sha3Uncles", block.Sha3Uncles)
+		log.Println("logsBloom", block.LogsBloom)
+		log.Println("TransactionsRoot", block.TransactionsRoot)
+		log.Println("ReceiptsRoot", block.ReceiptsRoot)
+		log.Println("Miner", block.Miner)
+		log.Println("Difficulty", block.Difficulty.String())
+		log.Println("TotalDifficulty", block.TotalDifficulty.String())
+		log.Println("ExtraData", block.ExtraData)
+		log.Println("Size", block.Size)
+		log.Println("GasLimit", block.GasLimit)
+		log.Println("GasUsed", block.GasUsed)
+		log.Println("Timestamp", block.Timestamp)
+		for _, v := range block.Transactions {
+			showRecptTransaction(v)
+		}
+	}
+}
+
+func showRecptTransaction(v types.RTransaction) {
+	log.Println("transaction.hash", v.Hash)
+	log.Println("transaction.nonce", v.Nonce.String())
+	log.Println("transaction.blockhash", v.BlockHash)
+	log.Println("transaction.blocknumber", v.BlockNumber.String())
+	log.Println("transaction.transactionIndex", v.TransactionIndex)
+	log.Println("transaction.from", v.From)
+	log.Println("transaction.to", v.To)
+	log.Println("transaction.gas", v.Gas.String())
+	log.Println("transaction.gasPrice", v.GasPrice.String())
+	log.Println("transaction.value", v.Value.String())
+	log.Println("transaction.data", v.Input)
 }

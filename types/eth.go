@@ -25,7 +25,7 @@ type Block struct {
 	GasLimit         hexutil.Big
 	GasUsed          hexutil.Big
 	Timestamp        hexutil.Big
-	Transactions     []Transaction
+	Transactions     []RTransaction
 	Uncles           []string
 }
 
@@ -37,6 +37,21 @@ type Transaction struct {
 	GasPrice hexutil.Big
 	Value    hexutil.Big
 	Data     string
+}
+
+// 接受到transaction
+type RTransaction struct {
+	Hash             string
+	Nonce            hexutil.Big
+	BlockHash        string
+	BlockNumber      hexutil.Big
+	TransactionIndex hexutil.Big
+	From             string
+	To               string
+	Value            hexutil.Big
+	GasPrice         hexutil.Big
+	Gas              hexutil.Big
+	Input            string
 }
 
 // 使用call方法

@@ -13,9 +13,52 @@ import (
 	"strings"
 )
 
-func UnpackEvent(e abi.Event, v interface{}, output []byte, topics []string) error {
-	output = combine(e, output, topics)
+func UnpackEvent(inputs []abi.Argument, v interface{}, output []byte, topics []string) error {
+	output = combine(inputs, output, topics)
+	return unpack(inputs, v, output)
+}
 
+func UnpackTransaction(inputs []abi.Argument, v interface{}, hex string, method abi.Method) error {
+	output := []byte(hex)
+	output = txDataFilter(output, method)
+	bs := hexutil.MustDecode(string(output))
+	return unpack(inputs, v, bs)
+}
+
+func txDataFilter(data []byte, method abi.Method) []byte {
+	str := common.Bytes2Hex(method.Id())
+	length := len(str)
+	return []byte("0x" + string(data[2+length:]))
+}
+
+// event中indexed field不在data内，而在filterLog的topic内
+// topics内容包括eventId以及所有indexed field data
+func combine(inputs []abi.Argument, output []byte, topics []string) []byte {
+	if len(topics) <= 1 {
+		return output
+	}
+	idxflds := topics[1:]
+	j := 0
+	k := 0
+	var ret [][]byte
+	for i := 0; i < len(inputs); i++ {
+		if inputs[i].Indexed {
+			bs := hexutil.MustDecode(idxflds[j])
+			ret = append(ret, bs)
+			j++
+			continue
+		}
+
+		bs := output[k*32 : (k+1)*32]
+		ret = append(ret, bs)
+		k += 1
+	}
+
+	return bytes.Join(ret, []byte{})
+}
+
+// v的各个字段别名与合约字段名称必须一致，此外，v数据结构各字段及本身首字母大写
+func unpack(inputs []abi.Argument, v interface{}, output []byte) error {
 	// make sure the passed value is a pointer
 	valueOf := reflect.ValueOf(v)
 	if reflect.Ptr != valueOf.Kind() {
@@ -31,8 +74,8 @@ func UnpackEvent(e abi.Event, v interface{}, output []byte, topics []string) err
 		return fmt.Errorf("abi: cannot unmarshal tuple in to %v", typ)
 	}
 
-	for i := 0; i < len(e.Inputs); i++ {
-		marshalledValue, err := toGoType(i, e.Inputs[i], output)
+	for i := 0; i < len(inputs); i++ {
+		marshalledValue, err := toGoType(i, inputs[i], output)
 
 		if err != nil {
 			return err
@@ -41,8 +84,8 @@ func UnpackEvent(e abi.Event, v interface{}, output []byte, topics []string) err
 		reflectValue := reflect.ValueOf(marshalledValue)
 		for j := 0; j < typ.NumField(); j++ {
 			field := typ.Field(j)
-			if field.Name == strings.ToUpper(e.Inputs[i].Name[:1])+e.Inputs[i].Name[1:] {
-				if err := set(value.Field(j), reflectValue, e.Inputs[i]); err != nil {
+			if field.Tag.Get("alias") == inputs[i].Name {
+				if err := set(value.Field(j), reflectValue, inputs[i]); err != nil {
 					return err
 				}
 			}
@@ -50,32 +93,6 @@ func UnpackEvent(e abi.Event, v interface{}, output []byte, topics []string) err
 	}
 
 	return nil
-}
-
-// event中indexed field不在data内，而在filterLog的topic内
-// topics内容包括eventId以及所有indexed field data
-func combine(e abi.Event, output []byte, topics []string) []byte {
-	if len(topics) <= 1 {
-		return output
-	}
-	idxflds := topics[1:]
-	j := 0
-	k := 0
-	var ret [][]byte
-	for i := 0; i < len(e.Inputs); i++ {
-		if e.Inputs[i].Indexed {
-			bs := hexutil.MustDecode(idxflds[j])
-			ret = append(ret, bs)
-			j++
-			continue
-		}
-
-		bs := output[k*32 : (k+1)*32]
-		ret = append(ret, bs)
-		k += 1
-	}
-
-	return bytes.Join(ret, []byte{})
 }
 
 func UnpackMethod(method abi.Method, v interface{}, output []byte) error {
@@ -117,6 +134,7 @@ func UnpackMethod(method abi.Method, v interface{}, output []byte) error {
 	return nil
 }
 
+// dst是unpack传入的interface数据结构,src是inputs的数据结构
 func set(dst, src reflect.Value, output abi.Argument) error {
 	dstType := dst.Type()
 	srcType := src.Type()
@@ -173,10 +191,6 @@ func toGoType(i int, t abi.Argument, output []byte) (interface{}, error) {
 	default:
 		returnOutput = output[index : index+32]
 	}
-
-	// todo: delete
-	//println(t.Name)
-	//println(common.Bytes2Hex(returnOutput))
 
 	// convert the bytes to whatever is specified by the ABI.
 	switch t.Type.T {

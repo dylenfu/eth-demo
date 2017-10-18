@@ -10,6 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"strings"
 	"testing"
+	"math/big"
 )
 
 func TestUnpackMethod(t *testing.T) {
@@ -89,7 +90,7 @@ func TestUnpackDepositEvent(t *testing.T) {
 		t.Error("event do not exist")
 	}
 
-	if err := cm.UnpackEvent(abiEvent, &event, data, []string{"111"}); err != nil {
+	if err := cm.UnpackEvent(abiEvent.Inputs, &event, data, []string{"111"}); err != nil {
 		panic(err)
 	}
 
@@ -115,7 +116,7 @@ func TestUnpackTransferEvent(t *testing.T) {
 		t.Error("event do not exist")
 	}
 
-	if err := cm.UnpackEvent(abiEvent, &transfer, data, topics); err != nil {
+	if err := cm.UnpackEvent(abiEvent.Inputs, &transfer, data, topics); err != nil {
 		panic(err)
 	}
 
@@ -125,4 +126,50 @@ func TestUnpackTransferEvent(t *testing.T) {
 	t.Log("amounts", transfer.AmountS)
 	t.Log("amountb", transfer.AmountB)
 	t.Log("ok", transfer.Ok)
+}
+
+/*
+fukundeMacBook-Pro:eth-libs fukun$ go run contracts/transfer/main.go --call=listenBlock
+2017/10/17 16:37:49 transaction.hash 0xa9fca6f0602a0d0471d622e8a729546f921b2f42bf674e21df564bac43495a8d
+2017/10/17 16:37:49 transaction.nonce 0x74
+2017/10/17 16:37:49 transaction.blockhash 0xfd6612584595345feb8f1a97cd4fd126cb96f147db455525f4b21ba26ca89de8
+2017/10/17 16:37:49 transaction.blocknumber 0x2558
+2017/10/17 16:37:49 transaction.transactionIndex {false []}
+2017/10/17 16:37:49 transaction.from 0x4bad3053d574cd54513babe21db3f09bea1d387d
+2017/10/17 16:37:49 transaction.to 0xa221f7c8cd24a7a383d116aa5d7430b48d1e0063
+2017/10/17 16:37:49 transaction.gas 0x124f80
+2017/10/17 16:37:49 transaction.gasPrice 0x1
+2017/10/17 16:37:49 transaction.value 0x0
+2017/10/17 16:37:49 transaction.data 0x8a024a21000000000000000000000000000000000000000000000000000000000000000100000000000000000000000046c5683c754b2eba04b2701805617c0319a9b4dd000000000000000000000000000000000000000000000000000000001dcd6500
+2017/10/17 16:37:49 transaction.hash 0x5038b1f77a02fa1763e8e65bc11a8170538e85ba37307480cb7c6c0dd6079082
+2017/10/17 16:37:49 transaction.nonce 0x75
+2017/10/17 16:37:49 transaction.blockhash 0xfd6612584595345feb8f1a97cd4fd126cb96f147db455525f4b21ba26ca89de8
+2017/10/17 16:37:49 transaction.blocknumber 0x2558
+2017/10/17 16:37:49 transaction.transactionIndex {false [1]}
+2017/10/17 16:37:49 transaction.from 0x4bad3053d574cd54513babe21db3f09bea1d387d
+2017/10/17 16:37:49 transaction.to 0xa221f7c8cd24a7a383d116aa5d7430b48d1e0063
+2017/10/17 16:37:49 transaction.gas 0x124f80
+2017/10/17 16:37:49 transaction.gasPrice 0x1
+2017/10/17 16:37:49 transaction.value 0x0
+2017/10/17 16:37:49 transaction.data 0x8a024a21000000000000000000000000000000000000000000000000000000000000000100000000000000000000000046c5683c754b2eba04b2701805617c0319a9b4dd000000000000000000000000000000000000000000000000000000001dcd6500
+*/
+func TestUnpackTransaction(t *testing.T) {
+	tx := "0x8a024a21000000000000000000000000000000000000000000000000000000000000000100000000000000000000000046c5683c754b2eba04b2701805617c0319a9b4dd000000000000000000000000000000000000000000000000000000001dcd6500"
+	tabi := types.NewAbi("github.com/dylenfu/eth-libs/contracts/transfer/abi.txt")
+	method, _ := tabi.Methods["submitDeposit"]
+
+	type Deposit struct {
+		Id 			[]byte 			`alias:"_id"`
+		Owner 		common.Address	`alias:"_owner"`
+		Amount		*big.Int		`alias:"_amount"`
+	}
+
+	out := &Deposit{}
+	if err := cm.UnpackTransaction(method.Inputs, out, tx, method); err != nil {
+		t.Error(err)
+	} else {
+		t.Log(common.BytesToHash(out.Id).Hex())
+		t.Log(out.Owner.Hex())
+		t.Log(out.Amount.String())
+	}
 }
