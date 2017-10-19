@@ -15,7 +15,7 @@ var School *types.TokenImpl
 const (
 	AbiFilePath  = "github.com/dylenfu/eth-libs/contracts/school/abi.txt"
 	EthRpcUrl    = "http://127.0.0.1:8545"
-	TokenAddress = "0x0f24565fe3db5a337373f835b6b3c60865bc7c5c"
+	TokenAddress = "0xb35cdcee1cb47bf8e8aa3132007d44a4bd711720"
 )
 
 func init() {
@@ -24,6 +24,7 @@ func init() {
 }
 
 type SchoolImpl struct {
+	Baby 	types.AbiMethod `methodName:"setBaby"`
 	Child   types.AbiMethod `methodName:"setChild"`
 	Student types.AbiMethod `methodName:"setStudent"`
 	Mates   types.AbiMethod `methodName:"setMates"`
@@ -31,8 +32,12 @@ type SchoolImpl struct {
 	Grade   types.AbiMethod `methodName:"setGrade"`
 }
 
+type BabyEvent struct {
+	Addresses [3]common.Address `alias:"addresses"`
+}
+
 type ChildEvent struct {
-	Addresses []common.Address `alias:"addresses"`
+	AddressList [][3]common.Address		`alias:"addressList"`
 }
 
 type StudentEvent struct {
@@ -89,6 +94,8 @@ func GetEvent(filterId string) error {
 		data := hexutil.MustDecode(v.Data)
 
 		switch v.Topics[0] {
+		case evts["BabyEvent"].Id().String():
+
 		case evts["ChildEvent"].Id().String():
 			if err := showChild("ChildEvent", data, v.Topics); err != nil {
 				return err
@@ -98,6 +105,25 @@ func GetEvent(filterId string) error {
 				return err
 			}
 		}
+	}
+
+	return nil
+}
+
+
+func showBaby(eventName string, data []byte, topics []string) error {
+	event, ok := School.Abi.Events[eventName]
+	if !ok {
+		return errors.New("child event do not exist")
+	}
+
+	evt := &BabyEvent{}
+	if err := cm.UnpackEvent(event.Inputs, evt, data, topics); err != nil {
+		return err
+	}
+
+	for _, v := range evt.Addresses {
+		log.Println(v.Hex())
 	}
 
 	return nil
@@ -114,8 +140,10 @@ func showChild(eventName string, data []byte, topics []string) error {
 		return err
 	}
 
-	for _, v := range evt.Addresses {
-		log.Println(v.Hex())
+	for _, v := range evt.AddressList {
+		for _, v1 := range v {
+			log.Println(v1.Hex())
+		}
 	}
 
 	return nil

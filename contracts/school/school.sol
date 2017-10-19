@@ -3,8 +3,12 @@ pragma solidity ^0.4.15;
 
 contract School {
 
+    event BabyEvent(
+        address[3] addresses
+    );
+
     event ChildEvent(
-        address[] addresses
+        address[3][] addressList
     );
 
     event StudentEvent(
@@ -29,8 +33,12 @@ contract School {
         bytes32[]       rList
     );
 
-    function setChild(address[] addresses) {
-        ChildEvent(addresses);
+    function setBaby(address[3] addresses) {
+        BabyEvent(addresses);
+    }
+
+    function setChild(address[3][] addressList) {
+        ChildEvent(addressList);
     }
 
     function setStudent(address[2][] addressList) {

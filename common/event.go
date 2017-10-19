@@ -180,8 +180,6 @@ var (
 func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	index := i * 32
 
-	// println(t.Type.String()) address[2][]
-
 	// The slice must, at very least be large enough for the index+32 which is exactly the size required
 	// for the [offset in output, size of offset].
 	if index+32 > len(output) {
@@ -189,9 +187,23 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	}
 	elem := t.Type.Elem
 
-	println(elem.Type.String()) // common.Address
-	println(elem.SliceSize)		// 2
-	println(elem.IsArray)
+	/*
+	println(common.Bytes2Hex(output))	// 	child:22 				student:23					baby:21
+	println(t.Type.String())			//	child:address[]			student:address[2][]		baby:address[3][]
+	println(elem.String()) 				// 	child:address			student:address[2]			baby:address[3]
+	println(elem.SliceSize)				// 	child:0					student:2					baby:3
+	println(elem.IsArray)				//	child:false				student:true				baby:true
+	println(elem.IsSlice)				//	child:false				student:false				baby:false
+	*/
+
+	// todo: do something
+	if elem.IsSlice || elem.IsArray {
+		//a,err := toGoSlice(i, t, output)
+		//if err != nil {
+		//	return nil, err
+		//}
+		//elem = reflect.ValueOf(a).Type()
+	}
 
 	// first we need to create a slice of the type
 	var refSlice reflect.Value
@@ -239,6 +251,7 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 		if offset+32 > len(output) {
 			return nil, fmt.Errorf("abi: cannot marshal in to go slice: offset %d would go over slice boundary (len=%d)", len(output), offset+32)
 		}
+
 
 		slice = output[offset:]
 		// ... starting with the size of the array in elements ...
