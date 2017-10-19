@@ -5,6 +5,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/dylenfu/eth-libs/params"
 )
 
 // 监听block时需要解析
@@ -106,17 +107,17 @@ func (method *AbiMethod) Call(result interface{}, tag string, args ...interface{
 }
 
 // sendTransaction是不需要tag的
-func (method *AbiMethod) SendTransaction(miner, tokenAddress string, gas, gasPrice int, result interface{}, args ...interface{}) error {
+func (method *AbiMethod) SendTransaction(tokenAddress string, result interface{}, args ...interface{}) error {
 	bytes, err := method.Abi.Pack(method.Name, args...)
 	if err != nil {
 		return err
 	}
 
 	tx := &Transaction{}
-	tx.From = miner
+	tx.From = params.Miner
 	tx.To = tokenAddress
-	tx.Gas = Int2HexBigInt(gas)
-	tx.GasPrice = Int2HexBigInt(gasPrice)
+	tx.Gas = Int2HexBigInt(1200000)
+	tx.GasPrice = Int2HexBigInt(1)
 	tx.Data = common.ToHex(bytes)
 
 	return method.Client.Call(result, "eth_sendTransaction", tx)

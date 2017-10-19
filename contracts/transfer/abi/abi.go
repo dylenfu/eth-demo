@@ -33,10 +33,10 @@ type BankToken struct {
 }
 
 type DepositEvent struct {
-	Hash    []byte				`alias:"hash"`
-	Account common.Address		`alias:"account"`
-	Amount  *big.Int			`alias:"amount"`
-	Ok      bool				`alias:"ok"`
+	Hash    []byte         `alias:"hash"`
+	Account common.Address `alias:"account"`
+	Amount  *big.Int       `alias:"amount"`
+	Ok      bool           `alias:"ok"`
 }
 
 type Ha interface{}
@@ -45,12 +45,12 @@ type Ha interface{}
 type TransferEvent struct {
 	Ha
 	Hie      string
-	Hash     []byte				`alias:"hash"`
-	AccountS common.Address		`alias:"accountS"`
-	AccountB common.Address		`alias:"accountB"`
-	AmountS  *big.Int			`alias:"amountS"`
-	AmountB  *big.Int			`alias:"amountB"`
-	Ok       bool				`alias:"ok"`
+	Hash     []byte         `alias:"hash"`
+	AccountS common.Address `alias:"accountS"`
+	AccountB common.Address `alias:"accountB"`
+	AmountS  *big.Int       `alias:"amountS"`
+	AmountB  *big.Int       `alias:"amountB"`
+	Ok       bool           `alias:"ok"`
 }
 
 // filter可以根据blockNumber生成

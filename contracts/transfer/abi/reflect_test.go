@@ -1,11 +1,11 @@
 package abi
 
 import (
+	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"reflect"
 	"testing"
 	"unsafe"
-	"github.com/ethereum/go-ethereum/common"
 )
 
 func BytesToString(b []byte) string {
@@ -110,9 +110,9 @@ func TestBigIntPtrCopy(t *testing.T) {
 
 func TestReflectStructTag(t *testing.T) {
 	type Deposit struct {
-		Id 			[]byte 			`alias:"_id"`
-		Owner 		common.Address	`alias:"_owner"`
-		Amount		*big.Int		`alias:"_amount"`
+		Id     []byte         `alias:"_id"`
+		Owner  common.Address `alias:"_owner"`
+		Amount *big.Int       `alias:"_amount"`
 	}
 
 	d := Deposit{}

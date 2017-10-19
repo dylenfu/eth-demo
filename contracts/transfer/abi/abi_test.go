@@ -8,9 +8,9 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"math/big"
 	"strings"
 	"testing"
-	"math/big"
 )
 
 func TestUnpackMethod(t *testing.T) {
@@ -159,9 +159,9 @@ func TestUnpackTransaction(t *testing.T) {
 	method, _ := tabi.Methods["submitDeposit"]
 
 	type Deposit struct {
-		Id 			[]byte 			`alias:"_id"`
-		Owner 		common.Address	`alias:"_owner"`
-		Amount		*big.Int		`alias:"_amount"`
+		Id     []byte         `alias:"_id"`
+		Owner  common.Address `alias:"_owner"`
+		Amount *big.Int       `alias:"_amount"`
 	}
 
 	out := &Deposit{}

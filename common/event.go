@@ -95,45 +95,6 @@ func unpack(inputs []abi.Argument, v interface{}, output []byte) error {
 	return nil
 }
 
-func UnpackMethod(method abi.Method, v interface{}, output []byte) error {
-
-	if len(output) == 0 {
-		return fmt.Errorf("abi: unmarshalling empty output")
-	}
-
-	// make sure the passed value is a pointer
-	valueOf := reflect.ValueOf(v)
-	if reflect.Ptr != valueOf.Kind() {
-		return fmt.Errorf("abi: Unpack(non-pointer %T)", v)
-	}
-
-	var (
-		value = valueOf.Elem()
-		typ   = value.Type()
-	)
-
-	for i := 0; i < len(method.Outputs); i++ {
-		marshalledValue, err := toGoType(i, method.Outputs[i], output)
-		if err != nil {
-			return err
-		}
-		reflectValue := reflect.ValueOf(marshalledValue)
-
-		for j := 0; j < typ.NumField(); j++ {
-			field := typ.Field(j)
-			// TODO read tags: `abi:"fieldName"`
-			if field.Name == strings.ToUpper(method.Outputs[i].Name[:1])+method.Outputs[i].Name[1:] {
-				if err := set(value.Field(j), reflectValue, method.Outputs[i]); err != nil {
-					return err
-				}
-			}
-		}
-
-	}
-
-	return nil
-}
-
 // dst是unpack传入的interface数据结构,src是inputs的数据结构
 func set(dst, src reflect.Value, output abi.Argument) error {
 	dstType := dst.Type()
@@ -218,12 +179,19 @@ var (
 // argument in T.
 func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	index := i * 32
+
+	// println(t.Type.String()) address[2][]
+
 	// The slice must, at very least be large enough for the index+32 which is exactly the size required
 	// for the [offset in output, size of offset].
 	if index+32 > len(output) {
 		return nil, fmt.Errorf("abi: cannot marshal in to go slice: insufficient size output %d require %d", len(output), index+32)
 	}
 	elem := t.Type.Elem
+
+	println(elem.Type.String()) // common.Address
+	println(elem.SliceSize)		// 2
+	println(elem.IsArray)
 
 	// first we need to create a slice of the type
 	var refSlice reflect.Value
@@ -369,4 +337,43 @@ func readBool(word []byte) (bool, error) {
 		return false, errBadBool
 	}
 
+}
+
+func UnpackMethod(method abi.Method, v interface{}, output []byte) error {
+
+	if len(output) == 0 {
+		return fmt.Errorf("abi: unmarshalling empty output")
+	}
+
+	// make sure the passed value is a pointer
+	valueOf := reflect.ValueOf(v)
+	if reflect.Ptr != valueOf.Kind() {
+		return fmt.Errorf("abi: Unpack(non-pointer %T)", v)
+	}
+
+	var (
+		value = valueOf.Elem()
+		typ   = value.Type()
+	)
+
+	for i := 0; i < len(method.Outputs); i++ {
+		marshalledValue, err := toGoType(i, method.Outputs[i], output)
+		if err != nil {
+			return err
+		}
+		reflectValue := reflect.ValueOf(marshalledValue)
+
+		for j := 0; j < typ.NumField(); j++ {
+			field := typ.Field(j)
+			// TODO read tags: `abi:"fieldName"`
+			if field.Name == strings.ToUpper(method.Outputs[i].Name[:1])+method.Outputs[i].Name[1:] {
+				if err := set(value.Field(j), reflectValue, method.Outputs[i]); err != nil {
+					return err
+				}
+			}
+		}
+
+	}
+
+	return nil
 }
