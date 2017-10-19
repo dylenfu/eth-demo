@@ -187,14 +187,16 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	}
 	elem := t.Type.Elem
 
-	/*
-	println(common.Bytes2Hex(output))	// 	child:22 				student:23					baby:21
-	println(t.Type.String())			//	child:address[]			student:address[2][]		baby:address[3][]
-	println(elem.String()) 				// 	child:address			student:address[2]			baby:address[3]
-	println(elem.SliceSize)				// 	child:0					student:2					baby:3
-	println(elem.IsArray)				//	child:false				student:true				baby:true
-	println(elem.IsSlice)				//	child:false				student:false				baby:false
-	*/
+	// baby output 0000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d5
+	// child output 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d5
+	// student output 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c70000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d500000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c7
+
+	println(common.Bytes2Hex(output))	// 	baby:null 				child:21					student:23
+	println(t.Type.String())			//	baby:address[3]			child:address[3][]			student:address[2][]
+	println(elem.String()) 				// 	baby:address			student:address[3]			student:address[2]
+	println(elem.SliceSize)				// 	baby:0					student:3					student:2
+	println(elem.IsArray)				//	baby:false				student:true				student:true
+	println(elem.IsSlice)				//	baby:false				student:false				student:false
 
 	// todo: do something
 	if elem.IsSlice || elem.IsArray {
