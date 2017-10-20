@@ -3,6 +3,10 @@ pragma solidity ^0.4.15;
 
 contract School {
 
+    event SemenEvent(
+        address[] addresses
+    );
+
     event BabyEvent(
         address[3] addresses
     );
@@ -32,6 +36,10 @@ contract School {
         uint8[]         vList,
         bytes32[]       rList
     );
+
+    function setSemen(address[] addresses) {
+        SemenEvent(addresses);
+    }
 
     function setBaby(address[3] addresses) {
         BabyEvent(addresses);

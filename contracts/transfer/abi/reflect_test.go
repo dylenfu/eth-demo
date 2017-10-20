@@ -118,3 +118,26 @@ func TestReflectStructTag(t *testing.T) {
 	d := Deposit{}
 	t.Log(reflect.TypeOf(d).Field(0).Tag.Get("alias"))
 }
+
+// 使用反射将1维数组转换为2维数组
+func TestReflectArray(t *testing.T) {
+	strs := [][2]string{
+		[2]string{"bytes", "hash"},
+		[2]string{"int", "float"},
+	}
+	s := reflect.ValueOf(strs)
+	t.Log(s.Index(1).Index(1).String())
+
+	const (
+		addr1 = "0x0c0b638ffccb4bdc4c0d0d5fef062fc512c92511"
+		addr2 = "0x96124db0972e3522a9b3910578b3f2e1a50159c7"
+	)
+
+	list := [][2]common.Address{
+		[2]common.Address{common.HexToAddress(addr1), common.HexToAddress(addr2)},
+		[2]common.Address{common.HexToAddress(addr2), common.HexToAddress(addr1)},
+	}
+
+	refValue := reflect.ValueOf(list)
+	t.Log(refValue.Index(0).Index(0)) // [0:1]
+}

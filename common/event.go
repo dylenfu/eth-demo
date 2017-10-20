@@ -100,6 +100,10 @@ func set(dst, src reflect.Value, output abi.Argument) error {
 	dstType := dst.Type()
 	srcType := src.Type()
 
+	// todo:delete
+	println(dstType.String())
+	println(srcType.String())
+
 	switch {
 	case dstType.AssignableTo(src.Type()):
 		dst.Set(src)
@@ -108,6 +112,14 @@ func set(dst, src reflect.Value, output abi.Argument) error {
 			return fmt.Errorf("abi: cannot unmarshal src (len=%d) in to dst (len=%d)", output.Type.SliceSize, dst.Len())
 		}
 		reflect.Copy(dst, src)
+	case dstType.Kind() == reflect.Slice && srcType.Kind() == reflect.Slice && output.Type.Elem.IsSlice || output.Type.Elem.IsArray:
+		//println(src.Len())
+		//println(dst.Len())
+		//dst = reflect.Append(dst, src.Index(0))
+		//dst = reflect.Append(dst, src.Index(1))
+		//dst = reflect.Append(dst, src.Index(2))
+		println(src.Len())
+		//println(src.Elem().Len())
 	case dstType.Kind() == reflect.Interface:
 		dst.Set(src)
 	case dstType.Kind() == reflect.Ptr:
@@ -185,27 +197,23 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	if index+32 > len(output) {
 		return nil, fmt.Errorf("abi: cannot marshal in to go slice: insufficient size output %d require %d", len(output), index+32)
 	}
+
 	elem := t.Type.Elem
 
+	// todo: delete debug code
+	// semen output 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d50000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c92511
 	// baby output 0000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d5
 	// child output 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d5
 	// student output 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c70000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d500000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c7
 
-	println(common.Bytes2Hex(output))	// 	baby:null 				child:21					student:23
-	println(t.Type.String())			//	baby:address[3]			child:address[3][]			student:address[2][]
-	println(elem.String()) 				// 	baby:address			student:address[3]			student:address[2]
-	println(elem.SliceSize)				// 	baby:0					student:3					student:2
-	println(elem.IsArray)				//	baby:false				student:true				student:true
-	println(elem.IsSlice)				//	baby:false				student:false				student:false
-
-	// todo: do something
-	if elem.IsSlice || elem.IsArray {
-		//a,err := toGoSlice(i, t, output)
-		//if err != nil {
-		//	return nil, err
-		//}
-		//elem = reflect.ValueOf(a).Type()
-	}
+	/*
+	println(common.Bytes2Hex(output))	// 	semen:21				baby:null 				child:21					student:23
+	println(t.Type.String())			//	semen:address[]			baby:address[3]			child:address[3][]			student:address[2][]
+	println(elem.String()) 				// 	semen:address			baby:address			child:address[3]			student:address[2]
+	println(elem.SliceSize)				// 	semen:0					baby:0					child:3						student:2
+	println(elem.IsArray)				//	semen:false				baby:false				child:true					student:true
+	println(elem.IsSlice)				//	semen:false				baby:false				child:false					student:false
+	*/
 
 	// first we need to create a slice of the type
 	var refSlice reflect.Value
@@ -247,17 +255,27 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	var slice []byte
 	var size int
 	var offset int
+	var innerSize int
+
 	if t.Type.IsSlice {
+
+		// 2-D arrays
+		if elem.IsSlice || elem.IsArray {
+			innerSize = elem.SliceSize
+		} else {
+			innerSize = 1
+		}
+
 		// get the offset which determines the start of this array ...
 		offset = int(binary.BigEndian.Uint64(output[index+24 : index+32]))
 		if offset+32 > len(output) {
 			return nil, fmt.Errorf("abi: cannot marshal in to go slice: offset %d would go over slice boundary (len=%d)", len(output), offset+32)
 		}
 
-
 		slice = output[offset:]
 		// ... starting with the size of the array in elements ...
 		size = int(binary.BigEndian.Uint64(slice[24:32]))
+		size = size * innerSize
 		slice = slice[32:]
 		// ... and make sure that we've at the very least the amount of bytes
 		// available in the buffer.
@@ -270,6 +288,7 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	} else if t.Type.IsArray {
 		//get the number of elements in the array
 		size = t.Type.SliceSize
+		innerSize = 1
 
 		//check to make sure array size matches up
 		if index+32*size > len(output) {
@@ -279,30 +298,62 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 		slice = output[index : index+size*32]
 	}
 
-	for i := 0; i < size; i++ {
-		var (
-			inter        interface{}             // interface type
-			returnOutput = slice[i*32 : i*32+32] // the return output
-			err          error
-		)
-		// set inter to the correct type (cast)
+	// 将1维数组转换为二维数组
+	// todo:整理下代码，好看一点
+	if elem.IsArray || elem.IsSlice {
+		step := size / innerSize
+
 		switch elem.T {
-		case abi.IntTy, abi.UintTy:
-			inter = readInteger(t.Type.Kind, returnOutput)
-		case abi.BoolTy:
-			inter, err = readBool(returnOutput)
-			if err != nil {
-				return nil, err
-			}
 		case abi.AddressTy:
-			inter = common.BytesToAddress(returnOutput)
-		case abi.HashTy:
-			inter = common.BytesToHash(returnOutput)
-		case abi.FixedBytesTy:
-			inter = returnOutput
+			var dst [][]common.Address
+			refSlice = reflect.ValueOf([][]common.Address(nil))
+
+			for j:=0; j < innerSize; j++ {
+				var tmp []common.Address
+				for i:=0; i< step; i++ {
+					start := (j*step + i)*32
+					end := start + 32
+					bs := slice[start : end]
+					addr := common.BytesToAddress(bs)
+					tmp = append(tmp, addr)
+				}
+				dst = append(dst, tmp)
+			}
+			refSlice = reflect.ValueOf(dst)
+
+			// todo:delete
+			//for _, v:=range dst {
+			//	for _, v1 := range v {
+			//		println(v1.Hex())
+			//	}
+			//}
 		}
-		// append the item to our reflect slice
-		refSlice = reflect.Append(refSlice, reflect.ValueOf(inter))
+	} else {
+		for i := 0; i < size; i++ {
+			var (
+				inter        interface{}             // interface type
+				returnOutput = slice[i*32 : i*32+32] // the return output
+				err          error
+			)
+			// set inter to the correct type (cast)
+			switch elem.T {
+			case abi.IntTy, abi.UintTy:
+				inter = readInteger(t.Type.Kind, returnOutput)
+			case abi.BoolTy:
+				inter, err = readBool(returnOutput)
+				if err != nil {
+					return nil, err
+				}
+			case abi.AddressTy:
+				inter = common.BytesToAddress(returnOutput)
+			case abi.HashTy:
+				inter = common.BytesToHash(returnOutput)
+			case abi.FixedBytesTy:
+				inter = returnOutput
+			}
+			// append the item to our reflect slice
+			refSlice = reflect.Append(refSlice, reflect.ValueOf(inter))
+		}
 	}
 
 	// return the interface

@@ -122,3 +122,30 @@ func (method *AbiMethod) SendTransaction(tokenAddress string, result interface{}
 
 	return method.Client.Call(result, "eth_sendTransaction", tx)
 }
+
+func (method *AbiMethod) SignAndSendTransaction(tokenAddress,from string, result interface{}, args ...interface{}) error {
+	bytes, err := method.Abi.Pack(method.Name, args...)
+	if err != nil {
+		return err
+	}
+
+	tx := &Transaction{}
+	tx.From = from
+	tx.To = tokenAddress
+	tx.Gas = Int2HexBigInt(1200000)
+	tx.GasPrice = Int2HexBigInt(1)
+	tx.Data = common.ToHex(bytes)
+
+	// todo sign
+
+	//
+	//var signRes string
+	//txData, err := rlp.EncodeToBytes(tx)
+	//if err != nil {
+	//	return nil
+	//}
+
+	// return method.Client.Call(&signRes, "eth_sign", from, common.ToHex(txData))
+
+	return method.Client.Call(result, "eth_sendTransaction", tx)
+}

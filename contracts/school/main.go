@@ -26,6 +26,15 @@ const (
 	addr3 = "0x86324df0972e3522a9b3910578b3f2e1a50132d5"
 )
 
+func (h *Handle) Semen() {
+	impl := School.Token.(*SchoolImpl)
+	var result string
+	addresses := []common.Address{common.HexToAddress(addr1), common.HexToAddress(addr2), common.HexToAddress(addr3), common.HexToAddress(addr1)}
+	if err := impl.Semen.SendTransaction(TokenAddress, &result, addresses); err != nil {
+		panic(err)
+	}
+}
+
 func (h *Handle) Baby() {
 	impl := School.Token.(*SchoolImpl)
 
@@ -80,7 +89,7 @@ func (h *Handle) Grade() {
 }
 
 func (h *Handle) ListenEvent() {
-	h.Student()
+	h.Semen()
 	time.Sleep(3 * time.Second)
 	filterId, err := NewFilter(params.BlockNumber)
 	if err != nil {

@@ -15,7 +15,7 @@ var School *types.TokenImpl
 const (
 	AbiFilePath  = "github.com/dylenfu/eth-libs/contracts/school/abi.txt"
 	EthRpcUrl    = "http://127.0.0.1:8545"
-	TokenAddress = "0xb35cdcee1cb47bf8e8aa3132007d44a4bd711720"
+	TokenAddress = "0xf73fe142694ff8e7bc86e66a269a8e182fc69dbb"
 )
 
 func init() {
@@ -24,6 +24,7 @@ func init() {
 }
 
 type SchoolImpl struct {
+	Semen 	types.AbiMethod `methodName:"setSemen"`
 	Baby 	types.AbiMethod `methodName:"setBaby"`
 	Child   types.AbiMethod `methodName:"setChild"`
 	Student types.AbiMethod `methodName:"setStudent"`
@@ -32,12 +33,16 @@ type SchoolImpl struct {
 	Grade   types.AbiMethod `methodName:"setGrade"`
 }
 
+type SemenEvent struct {
+	Addresses []common.Address	`alias:"addresses"`
+}
+
 type BabyEvent struct {
 	Addresses [3]common.Address `alias:"addresses"`
 }
 
 type ChildEvent struct {
-	AddressList [][3]common.Address		`alias:"addressList"`
+	AddressList [][3]common.Address	`alias:"addressList"`
 }
 
 type StudentEvent struct {
@@ -94,8 +99,14 @@ func GetEvent(filterId string) error {
 		data := hexutil.MustDecode(v.Data)
 
 		switch v.Topics[0] {
+		case evts["SemenEvent"].Id().String():
+			if err := showSemen("SemenEvent", data, v.Topics); err != nil {
+				return err
+			}
 		case evts["BabyEvent"].Id().String():
-
+			if err := showBaby("BabyEvent", data, v.Topics); err != nil {
+				return err
+			}
 		case evts["ChildEvent"].Id().String():
 			if err := showChild("ChildEvent", data, v.Topics); err != nil {
 				return err
@@ -110,11 +121,28 @@ func GetEvent(filterId string) error {
 	return nil
 }
 
+func showSemen(eventName string, data []byte, topics []string) error {
+	event, ok := School.Abi.Events[eventName]
+	if !ok {
+		return errors.New("semen event do not exist")
+	}
+
+	evt := &SemenEvent{}
+	if err := cm.UnpackEvent(event.Inputs, evt, data, topics); err != nil {
+		return err
+	}
+
+	for _, v := range evt.Addresses {
+		log.Println(v.Hex())
+	}
+
+	return nil
+}
 
 func showBaby(eventName string, data []byte, topics []string) error {
 	event, ok := School.Abi.Events[eventName]
 	if !ok {
-		return errors.New("child event do not exist")
+		return errors.New("baby event do not exist")
 	}
 
 	evt := &BabyEvent{}
