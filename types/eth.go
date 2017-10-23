@@ -107,7 +107,7 @@ func (method *AbiMethod) Call(result interface{}, tag string, args ...interface{
 }
 
 // sendTransaction是不需要tag的
-func (method *AbiMethod) SendTransaction(tokenAddress string, result interface{}, args ...interface{}) error {
+func (method *AbiMethod) SendTransaction(result interface{}, args ...interface{}) error {
 	bytes, err := method.Abi.Pack(method.Name, args...)
 	if err != nil {
 		return err
@@ -115,7 +115,7 @@ func (method *AbiMethod) SendTransaction(tokenAddress string, result interface{}
 
 	tx := &Transaction{}
 	tx.From = params.Miner
-	tx.To = tokenAddress
+	tx.To = method.Address
 	tx.Gas = Int2HexBigInt(1200000)
 	tx.GasPrice = Int2HexBigInt(1)
 	tx.Data = common.ToHex(bytes)
@@ -123,7 +123,7 @@ func (method *AbiMethod) SendTransaction(tokenAddress string, result interface{}
 	return method.Client.Call(result, "eth_sendTransaction", tx)
 }
 
-func (method *AbiMethod) SignAndSendTransaction(tokenAddress,from string, result interface{}, args ...interface{}) error {
+func (method *AbiMethod) SignAndSendTransaction(from string, result interface{}, args ...interface{}) error {
 	bytes, err := method.Abi.Pack(method.Name, args...)
 	if err != nil {
 		return err
@@ -131,7 +131,7 @@ func (method *AbiMethod) SignAndSendTransaction(tokenAddress,from string, result
 
 	tx := &Transaction{}
 	tx.From = from
-	tx.To = tokenAddress
+	tx.To = method.Address
 	tx.Gas = Int2HexBigInt(1200000)
 	tx.GasPrice = Int2HexBigInt(1)
 	tx.Data = common.ToHex(bytes)

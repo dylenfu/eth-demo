@@ -28,8 +28,8 @@ func main() {
 func (h *Handle) BalanceOf() {
 	var result types.HexNumber
 
-	account := types.Str2Address(Account2)
-	err := tokenA.BalanceOf.Call(&result, "latest", account)
+	account := types.Str2Address(Account1)
+	err := tokenB.BalanceOf.Call(&result, "latest", account)
 	if err != nil {
 		panic(err)
 	}
@@ -39,10 +39,10 @@ func (h *Handle) BalanceOf() {
 
 func (h *Handle) Deposit() {
 	var result types.HexNumber
-	value := big.NewInt(100000000)
+	value := big.NewInt(10000000000)
 
 	account := types.Str2Address(Account1)
-	err := tokenA.Deposit.SendTransaction(TokenAddressA ,&result, account, value)
+	err := tokenB.Deposit.SendTransaction(&result, account, value)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +56,7 @@ func (h *Handle) Transfer() {
 	// 合约里面msg.sender是看谁对transaction签名过即为sender
 	to := common.HexToAddress(Account1)
 	amount := big.NewInt(100000000)
-	if err := tokenA.Transfer.SignAndSendTransaction(TokenAddressA, Account2, &result, to, amount); err != nil {
+	if err := tokenA.Transfer.SignAndSendTransaction(Account2, &result, to, amount); err != nil {
 		panic(err)
 	}
 

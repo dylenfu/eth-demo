@@ -30,7 +30,7 @@ func (h *Handle) Semen() {
 	impl := School.Token.(*SchoolImpl)
 	var result string
 	addresses := []common.Address{common.HexToAddress(addr1), common.HexToAddress(addr2), common.HexToAddress(addr3), common.HexToAddress(addr1)}
-	if err := impl.Semen.SendTransaction(TokenAddress, &result, addresses); err != nil {
+	if err := impl.Semen.SendTransaction(&result, addresses); err != nil {
 		panic(err)
 	}
 }
@@ -39,8 +39,8 @@ func (h *Handle) Baby() {
 	impl := School.Token.(*SchoolImpl)
 
 	var result string
-	addresses := []common.Address{common.HexToAddress(addr1), common.HexToAddress(addr2), common.HexToAddress(addr3)}
-	if err := impl.Baby.SendTransaction(TokenAddress, &result, addresses); err != nil {
+	addresses := [3]common.Address{common.HexToAddress(addr1), common.HexToAddress(addr2), common.HexToAddress(addr3)}
+	if err := impl.Baby.SendTransaction(&result, addresses); err != nil {
 		panic(err)
 	}
 }
@@ -52,7 +52,7 @@ func (h *Handle) Child() {
 	addrList := [][3]common.Address{
 		[3]common.Address{common.HexToAddress(addr1), common.HexToAddress(addr2), common.HexToAddress(addr3)},
 	}
-	err := impl.Child.SendTransaction(TokenAddress, &result, addrList)
+	err := impl.Child.SendTransaction(&result, addrList)
 
 	if err != nil {
 		panic(err)
@@ -69,7 +69,7 @@ func (h *Handle) Student() {
 		[2]common.Address{common.HexToAddress(addr2), common.HexToAddress(addr1)},
 		[2]common.Address{common.HexToAddress(addr3), common.HexToAddress(addr2)},
 	}
-	err := impl.Student.SendTransaction(TokenAddress, &result, addrList)
+	err := impl.Student.SendTransaction(&result, addrList)
 
 	if err != nil {
 		panic(err)
