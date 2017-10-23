@@ -14,7 +14,7 @@ import (
 	"reflect"
 )
 
-var call = flag.String("call", "Balance", "chose test case")
+var fn = flag.String("fn", "Balance", "chose test case")
 
 type Handle struct {
 	client *rpc.Client
@@ -58,7 +58,7 @@ func main() {
 	flag.Parse()
 	c, _ := rpc.Dial("http://127.0.0.1:8545")
 	handle := &Handle{client: c}
-	reflect.ValueOf(handle).MethodByName(*call).Call([]reflect.Value{})
+	reflect.ValueOf(handle).MethodByName(*fn).Call([]reflect.Value{})
 }
 
 // 查询账户余额
@@ -108,10 +108,10 @@ func (h *Handle) SendTransaction() {
 	)
 
 	tx.From = Miner
-	tx.To = Account2
+	tx.To = "0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2" //Account2
 	tx.Gas = tp.Int2HexBigInt(100000)
 	tx.GasPrice = tp.Int2HexBigInt(1)
-	tx.Value = tp.Int2HexBigInt(1000000000)
+	tx.Value = tp.Int2HexBigInt(100000000000)
 
 	if err := h.client.Call(&result, "eth_sendTransaction", &tx); err != nil {
 		panic(err)
