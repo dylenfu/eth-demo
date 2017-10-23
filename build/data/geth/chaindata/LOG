@@ -269,3 +269,15 @@
 10:45:09.182957 table@remove removed @54
 10:45:09.183227 table@remove removed @55
 10:45:09.183370 table@remove removed @56
+16:17:17.409855 db@close closing
+16:17:17.409988 db@close done T·132.174µs
+=============== Oct 23, 2017 (CST) ===============
+16:17:33.963801 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:17:33.964372 version@stat F·[0 4] S·8MiB[0B 8MiB] Sc·[0.00 0.08]
+16:17:33.964400 db@open opening
+16:17:33.964468 journal@recovery F·1
+16:17:33.965549 journal@recovery recovering @64
+16:17:34.007089 memdb@flush created L0@70 N·18523 S·1MiB "\x00\a\xf8..\f=b,v243823":"\xff\xf3\xf2..2P\xeb,v237541"
+16:17:34.008135 version@stat F·[1 4] S·9MiB[1MiB 8MiB] Sc·[0.25 0.08]
+16:17:34.009772 db@janitor F·7 G·0
+16:17:34.009788 db@open done T·45.382446ms

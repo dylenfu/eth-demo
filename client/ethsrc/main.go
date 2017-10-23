@@ -101,6 +101,10 @@ func (h *Handle) Code() {
 }
 
 // 发送transaction转账
+/*
+"0x48ff2269e58a373120FFdBBdEE3FBceA854AC30A"
+"0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2"
+*/
 func (h *Handle) SendTransaction() {
 	var (
 		result string
@@ -108,10 +112,10 @@ func (h *Handle) SendTransaction() {
 	)
 
 	tx.From = Miner
-	tx.To = "0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2" //Account2
+	tx.To = "0x48ff2269e58a373120FFdBBdEE3FBceA854AC30A" //Account2
 	tx.Gas = tp.Int2HexBigInt(100000)
 	tx.GasPrice = tp.Int2HexBigInt(1)
-	tx.Value = tp.Int2HexBigInt(100000000000)
+	tx.Value = tp.Int2HexBigInt(99900000000000)
 
 	if err := h.client.Call(&result, "eth_sendTransaction", &tx); err != nil {
 		panic(err)
