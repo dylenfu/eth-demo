@@ -37,13 +37,23 @@ func (h *Handle) BalanceOf() {
 	log.Println(result)
 }
 
+func (h *Handle) GetBalanceFromMap() {
+	var result types.HexNumber
+
+	account := types.Str2Address(Account1)
+	if err := tokenA.Balances.Call(&result,  "latest", account); err != nil {
+		panic(err)
+	}
+	log.Println(result.Int64())
+}
+
 /*
 "0x48ff2269e58a373120FFdBBdEE3FBceA854AC30A"
 "0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2"
 */
 func (h *Handle) Deposit() {
 	var result types.HexNumber
-	value := big.NewInt(1000000000000)
+	value := big.NewInt(1)
 
 	account := types.Str2Address("0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2")
 	err := tokenB.Deposit.SendTransaction(&result, account, value)

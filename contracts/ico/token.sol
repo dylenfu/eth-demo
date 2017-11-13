@@ -3,7 +3,7 @@ pragma solidity ^0.4.0;
 
 contract MyToken {
 
-    mapping (address => uint) balances;
+    mapping (address => uint) public balances;
     mapping (address => mapping (address => uint)) allowed;
     uint public totalSupply;
 
