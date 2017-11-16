@@ -1,11 +1,11 @@
 package types
 
 import (
+	"github.com/dylenfu/eth-libs/params"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/dylenfu/eth-libs/params"
 )
 
 // 监听block时需要解析

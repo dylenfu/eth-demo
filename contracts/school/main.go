@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	. "github.com/dylenfu/eth-libs/contracts/school/contract"
-	"github.com/ethereum/go-ethereum/common"
-	"reflect"
 	"github.com/dylenfu/eth-libs/params"
+	"github.com/ethereum/go-ethereum/common"
 	"qiniupkg.com/x/log.v7"
+	"reflect"
 	"time"
 )
 

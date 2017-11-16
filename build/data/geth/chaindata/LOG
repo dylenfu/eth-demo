@@ -386,3 +386,20 @@
 18:51:21.584365 version@stat F·[1 6] S·11MiB[773KiB 10MiB] Sc·[0.25 0.11]
 18:51:21.589815 db@janitor F·9 G·0
 18:51:21.589863 db@open done T·39.979ms
+=============== Nov 15, 2017 (CST) ===============
+11:40:33.916736 table@compaction L0·1 -> L1·6 S·11MiB Q·288323
+11:40:33.969686 table@build created L1@106 N·17736 S·2MiB "\x00\x04\xa9..\x97\"\v,v12134":"Hv\x11..\xd5!c,v267691"
+11:40:34.003245 table@build created L1@107 N·31334 S·2MiB "Hv\x17..^\xf4H,v208141":"h\x00\x00..D1\xaf,v7469"
+11:40:34.046334 table@build created L1@108 N·30346 S·2MiB "h\x00\x00..1\xaft,v7466":"h\x00\x00..N&\x10,v179905"
+11:40:34.091627 table@build created L1@109 N·33384 S·2MiB "h\x00\x00..&\x10t,v179902":"r\x00\x00..\x9d\x0e%,v221326"
+11:40:34.120263 table@build created L1@110 N·14918 S·2MiB "r\x00\x00..N>\x9c,v221343":"\xc1\xd7\xde..\xcb\x1a~,v33810"
+11:40:34.145933 table@build created L1@111 N·8564 S·1MiB "\xc1\xd9\x06..\xa4܉,v243091":"\xff\xfe\xbf..\xba\xf7',v221787"
+11:40:34.148744 version@stat F·[0 6] S·11MiB[0B 11MiB] Sc·[0.00 0.12]
+11:40:34.149631 table@compaction committed F-1 S+154KiB Ke·0 D·5619 T·230.617ms
+11:40:34.150050 table@remove removed @103
+11:40:34.151601 table@remove removed @97
+11:40:34.151959 table@remove removed @98
+11:40:34.152295 table@remove removed @99
+11:40:34.152602 table@remove removed @100
+11:40:34.152912 table@remove removed @101
+11:40:34.153118 table@remove removed @102

@@ -207,12 +207,12 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 	// student output 000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c700000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c70000000000000000000000000c0b638ffccb4bdc4c0d0d5fef062fc512c9251100000000000000000000000086324df0972e3522a9b3910578b3f2e1a50132d500000000000000000000000096124db0972e3522a9b3910578b3f2e1a50159c7
 
 	/*
-	println(common.Bytes2Hex(output))	// 	semen:21				baby:null 				child:21					student:23
-	println(t.Type.String())			//	semen:address[]			baby:address[3]			child:address[3][]			student:address[2][]
-	println(elem.String()) 				// 	semen:address			baby:address			child:address[3]			student:address[2]
-	println(elem.SliceSize)				// 	semen:0					baby:0					child:3						student:2
-	println(elem.IsArray)				//	semen:false				baby:false				child:true					student:true
-	println(elem.IsSlice)				//	semen:false				baby:false				child:false					student:false
+		println(common.Bytes2Hex(output))	// 	semen:21				baby:null 				child:21					student:23
+		println(t.Type.String())			//	semen:address[]			baby:address[3]			child:address[3][]			student:address[2][]
+		println(elem.String()) 				// 	semen:address			baby:address			child:address[3]			student:address[2]
+		println(elem.SliceSize)				// 	semen:0					baby:0					child:3						student:2
+		println(elem.IsArray)				//	semen:false				baby:false				child:true					student:true
+		println(elem.IsSlice)				//	semen:false				baby:false				child:false					student:false
 	*/
 
 	// first we need to create a slice of the type
@@ -308,12 +308,12 @@ func toGoSlice(i int, t abi.Argument, output []byte) (interface{}, error) {
 			var dst [][]common.Address
 			refSlice = reflect.ValueOf([][]common.Address(nil))
 
-			for j:=0; j < innerSize; j++ {
+			for j := 0; j < innerSize; j++ {
 				var tmp []common.Address
-				for i:=0; i< step; i++ {
-					start := (j*step + i)*32
+				for i := 0; i < step; i++ {
+					start := (j*step + i) * 32
 					end := start + 32
-					bs := slice[start : end]
+					bs := slice[start:end]
 					addr := common.BytesToAddress(bs)
 					tmp = append(tmp, addr)
 				}

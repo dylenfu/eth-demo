@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	AbiFilePath     = "github.com/dylenfu/eth-libs/contracts/ico/abi.txt"
-	EthRpcUrl   	= "http://127.0.0.1:8545"
-	TokenAddressA 	= "0x478d07f3cBE07f01B5c7D66b4Ba57e5a3c520564" //"0x359bbea6ade5155bce1e95918879903d3e93365f"
-	TokenAddressB   = "0x2084A83E25025D95848794f23e139AcAa56c7237" //"0xc85819398e4043f3d951367d6d97bb3257b862e0"
+	AbiFilePath   = "github.com/dylenfu/eth-libs/contracts/ico/abi.txt"
+	EthRpcUrl     = "http://127.0.0.1:8545"
+	TokenAddressA = "0x478d07f3cBE07f01B5c7D66b4Ba57e5a3c520564" //"0x359bbea6ade5155bce1e95918879903d3e93365f"
+	TokenAddressB = "0x2084A83E25025D95848794f23e139AcAa56c7237" //"0xc85819398e4043f3d951367d6d97bb3257b862e0"
 )
 
 var (
@@ -25,24 +25,23 @@ func init() {
 }
 
 type IcoImpl struct {
-	Deposit 	types.AbiMethod 	`methodName:"deposit"`
-	Transfer 	types.AbiMethod 	`methodName:"transfer"`
-	BalanceOf 	types.AbiMethod 	`methodName:"balanceOf"`
-	Balances 	types.AbiMethod 	`methodName:"balances"`
-	Allowance	types.AbiMethod 	`methodName:"allowance"`
-	Approve		types.AbiMethod 	`methodName:"approve"`
-	Sign 		types.AbiMethod 	`methodName:"eth_sign"`
+	Deposit   types.AbiMethod `methodName:"deposit"`
+	Transfer  types.AbiMethod `methodName:"transfer"`
+	BalanceOf types.AbiMethod `methodName:"balanceOf"`
+	Balances  types.AbiMethod `methodName:"balances"`
+	Allowance types.AbiMethod `methodName:"allowance"`
+	Approve   types.AbiMethod `methodName:"approve"`
+	Sign      types.AbiMethod `methodName:"eth_sign"`
 }
 
 type Transfer struct {
-	From 	common.Address 	`alias:"_from"`
-	To 		common.Address 	`alias:"_to"`
-	Value 	common.Address 	`alias:"_value"`
+	From  common.Address `alias:"_from"`
+	To    common.Address `alias:"_to"`
+	Value common.Address `alias:"_value"`
 }
 
 type Approval struct {
-	Owner 	common.Address 	`alias:"_owner"`
-	Spender common.Address 	`alias:"_spender"`
-	Value 	common.Address 	`alias:"_value"`
+	Owner   common.Address `alias:"_owner"`
+	Spender common.Address `alias:"_spender"`
+	Value   common.Address `alias:"_value"`
 }
-

@@ -53,6 +53,7 @@ func NewAbi(contractFilePath string) *abi.ABI {
 	if err != nil {
 		panic(err)
 	}
+
 	if err := tabi.UnmarshalJSON(abiStr); err != nil {
 		panic(err)
 	}

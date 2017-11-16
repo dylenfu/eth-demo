@@ -2,20 +2,20 @@ package main
 
 import (
 	"flag"
-	"reflect"
 	. "github.com/dylenfu/eth-libs/contracts/ico/contract"
-	"github.com/dylenfu/eth-libs/types"
 	. "github.com/dylenfu/eth-libs/params"
+	"github.com/dylenfu/eth-libs/types"
+	"github.com/ethereum/go-ethereum/common"
 	"log"
 	"math/big"
-	"github.com/ethereum/go-ethereum/common"
+	"reflect"
 )
 
 var (
 	tokenA = TokenA.Token.(*IcoImpl)
 	tokenB = TokenB.Token.(*IcoImpl)
 	handle = &Handle{}
-	fn = flag.String("fn", "deposit", "chose function")
+	fn     = flag.String("fn", "deposit", "chose function")
 )
 
 type Handle struct{}
@@ -41,7 +41,7 @@ func (h *Handle) GetBalanceFromMap() {
 	var result types.HexNumber
 
 	account := types.Str2Address(Account1)
-	if err := tokenA.Balances.Call(&result,  "latest", account); err != nil {
+	if err := tokenA.Balances.Call(&result, "latest", account); err != nil {
 		panic(err)
 	}
 	log.Println(result.Int64())

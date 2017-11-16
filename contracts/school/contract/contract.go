@@ -1,13 +1,13 @@
 package contract
 
 import (
+	"errors"
+	cm "github.com/dylenfu/eth-libs/common"
 	"github.com/dylenfu/eth-libs/types"
 	"github.com/ethereum/go-ethereum/common"
-	"math/big"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	cm "github.com/dylenfu/eth-libs/common"
-	"errors"
 	"log"
+	"math/big"
 )
 
 var School *types.TokenImpl
@@ -24,8 +24,8 @@ func init() {
 }
 
 type SchoolImpl struct {
-	Semen 	types.AbiMethod `methodName:"setSemen"`
-	Baby 	types.AbiMethod `methodName:"setBaby"`
+	Semen   types.AbiMethod `methodName:"setSemen"`
+	Baby    types.AbiMethod `methodName:"setBaby"`
 	Child   types.AbiMethod `methodName:"setChild"`
 	Student types.AbiMethod `methodName:"setStudent"`
 	Mates   types.AbiMethod `methodName:"setMates"`
@@ -34,7 +34,7 @@ type SchoolImpl struct {
 }
 
 type SemenEvent struct {
-	Addresses []common.Address	`alias:"addresses"`
+	Addresses []common.Address `alias:"addresses"`
 }
 
 type BabyEvent struct {
@@ -42,7 +42,7 @@ type BabyEvent struct {
 }
 
 type ChildEvent struct {
-	AddressList [][3]common.Address	`alias:"addressList"`
+	AddressList [][3]common.Address `alias:"addressList"`
 }
 
 type StudentEvent struct {
