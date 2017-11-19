@@ -5,22 +5,72 @@ pragma solidity ^0.4.15;
 contract RingMinedEvt {
 
     struct OrderFilled {
-        bytes32 _orderHash;
-        bytes32 _nextOrderHash;
-        uint    _amountS;
-        uint    _amountB;
-        uint    _lrcReward;
-        uint    _lrcFee;
+        bytes32 orderHash;
+        bytes32 nextOrderHash;
+        uint    amountS;
+        uint    amountB;
+        uint    lrcReward;
+        uint    lrcFee;
     }
 
-    event RingMined(
-        uint                _ringIndex,
-        bytes32     indexed _ringhash,
-        address     indexed _miner,
-        address     indexed _feeRecipient,
-        bool                _isRinghashReserved,
-        OrderFilled[]       _fills
+    event RingMinedEvent(
+        uint                ringIndex,
+        bytes32             ringhash,
+        address             miner,
+        address             feeRecipient,
+        bool                isRinghashReserved,
+        OrderFilled[]       fills
     );
+
+    event RingEvent (
+        uint                ringIndex,
+        bytes32             ringhash,
+        address             miner,
+        address             feeRecipient,
+        bool                isRinghashReserved
+    );
+
+    event MinEvent(
+        address             miner,
+        uint[]              amounts
+    );
+
+    struct SimpleFill {
+        address owner;
+        uint    amount;
+    }
+
+    event SimpleRingEvent(
+        address protocol,
+        uint    res,
+        SimpleFill[] fills
+    );
+
+    function simpleRing(
+        address protocol,
+        address miner,
+        uint    amount,
+        uint    res
+    ) public {
+
+        var list = new SimpleFill[](2);
+        var fill = SimpleFill(
+            miner,
+            amount
+        );
+        var fillSec = SimpleFill(
+            miner,
+            amount++
+        );
+        list[0] = fill;
+        list[1] = fillSec;
+
+        SimpleRingEvent(
+            protocol,
+            res,
+            list
+        );
+    }
 
     function submitRing(
         uint    _ringIndex,
@@ -48,13 +98,41 @@ contract RingMinedEvt {
         list[0] = order;
         list[1] = order;
 
-        RingMined(
+        RingMinedEvent(
         _ringIndex++,
         _ringhash,
         _miner,
         _feeRecipient,
         _isRinghashReserved,
         list
+        );
+    }
+
+    function justRing(
+    uint    _ringIndex,
+    bytes32 _ringhash,
+    address _miner,
+    address _feeRecipient,
+    bool    _isRinghashReserved
+    )
+    public {
+        RingEvent(
+        _ringIndex++,
+        _ringhash,
+        _miner,
+        _feeRecipient,
+        _isRinghashReserved
+        );
+    }
+
+    function min(address miner, uint number) public {
+        var list = new uint[](2);
+        list[0] = number++;
+        list[1] = number++;
+
+        MinEvent(
+            miner,
+            list
         );
     }
 

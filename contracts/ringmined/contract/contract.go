@@ -3,10 +3,10 @@ package contract
 import (
 	"github.com/dylenfu/eth-libs/types"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"log"
 	"math/big"
 	"strconv"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 var RingMined *types.TokenImpl
@@ -14,7 +14,7 @@ var RingMined *types.TokenImpl
 const (
 	AbiFilePath     = "github.com/dylenfu/eth-libs/contracts/ringmined/abi.txt"
 	EthRpcUrl       = "http://127.0.0.1:8545"
-	ContractAddress = "0x06D534CFA972363ca7D108dBE1E2cAfFef62913B"
+	ContractAddress = "0xd1ac65fa97a820274b51d92bc46ae08f747e77cf"
 )
 
 func init() {
@@ -24,6 +24,9 @@ func init() {
 
 type RingMinedImpl struct {
 	SubmitRing types.AbiMethod `methodName:"submitRing"`
+	JustRing types.AbiMethod `methodName:"justRing"`
+	Min types.AbiMethod `methodName:"min"`
+	SimpleRing types.AbiMethod `methodName:"simpleRing"`
 }
 
 type OrderFilled struct {
@@ -35,6 +38,25 @@ type OrderFilled struct {
 	LrcFee        *big.Int    `alias:"_lrcFee"`
 }
 
+type SimpleFill struct {
+	Owner 			common.Address `alias:"owner"`
+	Amount 			*big.Int		`alias:"amount"`
+}
+
+type SimpleRingEvent struct {
+	Protocol 		common.Address `alias:"protocol"`
+	Res 			*big.Int 		`alias:"res"`
+	Fills 			[]SimpleFill	`alias:"fills"`
+}
+
+type RingEvent struct {
+	RingIndex          *big.Int       `alias:"_ringIndex"`
+	RingHash           common.Hash    `alias:"_ringhash"`
+	Miner              common.Address `alias:"_miner"`
+	FeeRecipient       common.Address `alias:"_feeRecipient"`
+	IsRingHashReserved bool           `alias:"_isRinghashReserved"`
+}
+
 type RingMinedEvent struct {
 	RingIndex          *big.Int       `alias:"_ringIndex"`
 	RingHash           common.Hash    `alias:"_ringhash"`
@@ -42,6 +64,11 @@ type RingMinedEvent struct {
 	FeeRecipient       common.Address `alias:"_feeRecipient"`
 	IsRingHashReserved bool           `alias:"_isRinghashReserved"`
 	Fills              []OrderFilled  `alias:"_fills"`
+}
+
+type MinEvent struct {
+	Miner 				common.Address `alias:"miner"`
+	Amounts 			[]*big.Int    `alias:"amounts"`
 }
 
 func NewFilter(height int) (string, error) {
@@ -61,34 +88,26 @@ func NewFilter(height int) (string, error) {
 	return filterId, nil
 }
 
-func GetEvent(filterId string) error {
-	var logs []types.FilterLog
+func GetRingMinedEvent(txhex string) error {
+	var (
+		recipient types.RTransactionRecipient
+		evt RingMinedEvent
+		data []byte
+		err error
+	)
 
-	impl := RingMined
-	err := RingMined.Client.Call(&logs, "eth_getFilterChanges", filterId)
-	if err != nil {
+	txhash := common.HexToHash(txhex)
+	if err = RingMined.Client.Call(&recipient, "eth_getTransactionReceipt", txhash); err != nil {
 		return err
 	}
-	evts := impl.Abi.Events
 
-	for _, v := range logs {
-		println(v.Data)
-		data := hexutil.MustDecode(v.Data)
+	event := recipient.Logs[0]
+	data = hexutil.MustDecode(event.Data)
 
-		switch v.Topics[0] {
-		case evts["RingMined"].Id().String():
-			if err := showRingMined("SemenEvent", data, v.Topics); err != nil {
-				return err
-			}
-		}
-	}
+	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
+	log.Printf("before hex decord string:%s", event.Data)
 
-	return nil
-}
-
-func showRingMined(eventName string, data []byte, topics []string) error {
-	evt := &RingMinedEvent{}
-	if err := RingMined.Abi.Unpack(&evt, "RingMined", data); err != nil {
+	if err = RingMined.Abi.Unpack(&evt, "RingMinedEvent", data); err != nil {
 		return err
 	}
 
@@ -108,3 +127,101 @@ func showRingMined(eventName string, data []byte, topics []string) error {
 	}
 	return nil
 }
+
+func GetRingEvent(txhex string) error {
+	var (
+		recipient types.RTransactionRecipient
+		evt RingEvent
+		data []byte
+		err error
+	)
+
+	txhash := common.HexToHash(txhex)
+	if err = RingMined.Client.Call(&recipient, "eth_getTransactionReceipt", txhash); err != nil {
+		return err
+	}
+
+	event := recipient.Logs[0]
+	data = hexutil.MustDecode(event.Data)
+
+	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
+	log.Printf("before hex decord string:%s", event.Data)
+
+	if err = RingMined.Abi.Unpack(&evt, "RingEvent", data); err != nil {
+		return err
+	}
+
+	log.Printf("evt.ringIndex:%s", evt.RingIndex.String())
+	log.Printf("evt.ringHash:%s", evt.RingHash.Hex())
+	log.Printf("evt.miner:%s", evt.Miner.Hex())
+	log.Printf("evt.feeRecipient:%s", evt.FeeRecipient.Hex())
+	log.Printf("evt.isRingHashReserved:%s", strconv.FormatBool(evt.IsRingHashReserved))
+
+	return nil
+}
+
+func GetMinEvent(txhex string) error {
+	var (
+		recipient types.RTransactionRecipient
+		evt MinEvent
+		data []byte
+		err error
+	)
+
+	txhash := common.HexToHash(txhex)
+	if err = RingMined.Client.Call(&recipient, "eth_getTransactionReceipt", txhash); err != nil {
+		return err
+	}
+
+	event := recipient.Logs[0]
+	data = hexutil.MustDecode(event.Data)
+
+	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
+	log.Printf("before hex decord string:%s", event.Data)
+
+	if err = RingMined.Abi.Unpack(&evt, "MinEvent", data); err != nil {
+		return err
+	}
+
+	log.Printf("evt.miner:%s", evt.Miner.Hex())
+	for k, v := range evt.Amounts {
+		log.Printf("evt.amount.%d:%s", k, v.String())
+	}
+
+	return nil
+}
+
+func GetSimpleRingEvent(txhex string) error {
+	var (
+		recipient types.RTransactionRecipient
+		evt SimpleRingEvent
+		data []byte
+		err error
+	)
+
+	txhash := common.HexToHash(txhex)
+	if err = RingMined.Client.Call(&recipient, "eth_getTransactionReceipt", txhash); err != nil {
+		return err
+	}
+
+	event := recipient.Logs[0]
+	data = hexutil.MustDecode(event.Data)
+
+	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
+	log.Printf("before hex decord string:%s", event.Data)
+
+	if err = RingMined.Abi.Unpack(&evt, "SimpleRingEvent", data); err != nil {
+		return err
+	}
+
+	log.Printf("evt.protocol:%s", evt.Protocol.Hex())
+	log.Printf("evt.res:%s", evt.Res.String())
+
+	for k, v := range evt.Fills {
+		log.Printf("evt.fills[%d].owner:%s", k, v.Owner.Hex())
+		log.Printf("evt.fills[%d].amount:%s", k, v.Amount.String())
+	}
+
+	return nil
+}
+
