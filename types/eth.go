@@ -56,15 +56,15 @@ type RTransaction struct {
 }
 
 type RTransactionRecipient struct {
-	TransactionHash string
-	TransactionIndex hexutil.Big
-	BlockNumber hexutil.Big
-	BlockHash string
+	TransactionHash   string
+	TransactionIndex  hexutil.Big
+	BlockNumber       hexutil.Big
+	BlockHash         string
 	CumulativeGasUsed hexutil.Big
-	GasUsed hexutil.Big
-	ContractAddress string
-	Status hexutil.Big
-	Logs []FilterLog
+	GasUsed           hexutil.Big
+	ContractAddress   string
+	Status            hexutil.Big
+	Logs              []FilterLog
 }
 
 // 使用call方法

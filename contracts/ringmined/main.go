@@ -43,11 +43,11 @@ func (h *Handle) SimpleRing() {
 	var result string
 
 	protocol := common.HexToAddress("0x06D534CFA972363ca7D108dBE1E2cAfFef62913B")
-	miner := common.HexToAddress("0xd1ac65fa97a820274b51d92bc46ae08f747e77cg")
+	owner := common.HexToAddress("0xd1ac65fa97a820274b51d92bc46ae08f747e77cg")
 	amount := big.NewInt(36)
 	res := big.NewInt(1200)
 
-	if err := impl.SimpleRing.SendTransaction(&result, protocol, miner, amount, res); err != nil {
+	if err := impl.SimpleRing.SendTransaction(&result, protocol, owner, amount, res); err != nil {
 		panic(err)
 	}
 }

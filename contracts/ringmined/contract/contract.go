@@ -3,10 +3,10 @@ package contract
 import (
 	"github.com/dylenfu/eth-libs/types"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"log"
 	"math/big"
 	"strconv"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
 var RingMined *types.TokenImpl
@@ -14,7 +14,7 @@ var RingMined *types.TokenImpl
 const (
 	AbiFilePath     = "github.com/dylenfu/eth-libs/contracts/ringmined/abi.txt"
 	EthRpcUrl       = "http://127.0.0.1:8545"
-	ContractAddress = "0xd1ac65fa97a820274b51d92bc46ae08f747e77cf"
+	ContractAddress = "0xb399bd657c9f03f418e852fe72828ce40339fe85"
 )
 
 func init() {
@@ -24,8 +24,8 @@ func init() {
 
 type RingMinedImpl struct {
 	SubmitRing types.AbiMethod `methodName:"submitRing"`
-	JustRing types.AbiMethod `methodName:"justRing"`
-	Min types.AbiMethod `methodName:"min"`
+	JustRing   types.AbiMethod `methodName:"justRing"`
+	Min        types.AbiMethod `methodName:"min"`
 	SimpleRing types.AbiMethod `methodName:"simpleRing"`
 }
 
@@ -39,14 +39,14 @@ type OrderFilled struct {
 }
 
 type SimpleFill struct {
-	Owner 			common.Address `alias:"owner"`
-	Amount 			*big.Int		`alias:"amount"`
+	Owner  common.Address `alias:"owner"`
+	Amount *big.Int       `alias:"amount"`
 }
 
 type SimpleRingEvent struct {
-	Protocol 		common.Address `alias:"protocol"`
-	Res 			*big.Int 		`alias:"res"`
-	Fills 			[]SimpleFill	`alias:"fills"`
+	Protocol common.Address `alias:"protocol"`
+	Res      *big.Int       `alias:"res"`
+	Fills    []SimpleFill   `alias:"fills"`
 }
 
 type RingEvent struct {
@@ -67,8 +67,8 @@ type RingMinedEvent struct {
 }
 
 type MinEvent struct {
-	Miner 				common.Address `alias:"miner"`
-	Amounts 			[]*big.Int    `alias:"amounts"`
+	Miner   common.Address `alias:"miner"`
+	Amounts []*big.Int     `alias:"amounts"`
 }
 
 func NewFilter(height int) (string, error) {
@@ -91,9 +91,9 @@ func NewFilter(height int) (string, error) {
 func GetRingMinedEvent(txhex string) error {
 	var (
 		recipient types.RTransactionRecipient
-		evt RingMinedEvent
-		data []byte
-		err error
+		evt       RingMinedEvent
+		data      []byte
+		err       error
 	)
 
 	txhash := common.HexToHash(txhex)
@@ -131,9 +131,9 @@ func GetRingMinedEvent(txhex string) error {
 func GetRingEvent(txhex string) error {
 	var (
 		recipient types.RTransactionRecipient
-		evt RingEvent
-		data []byte
-		err error
+		evt       RingEvent
+		data      []byte
+		err       error
 	)
 
 	txhash := common.HexToHash(txhex)
@@ -163,9 +163,9 @@ func GetRingEvent(txhex string) error {
 func GetMinEvent(txhex string) error {
 	var (
 		recipient types.RTransactionRecipient
-		evt MinEvent
-		data []byte
-		err error
+		evt       MinEvent
+		data      []byte
+		err       error
 	)
 
 	txhash := common.HexToHash(txhex)
@@ -194,9 +194,9 @@ func GetMinEvent(txhex string) error {
 func GetSimpleRingEvent(txhex string) error {
 	var (
 		recipient types.RTransactionRecipient
-		evt SimpleRingEvent
-		data []byte
-		err error
+		evt       SimpleRingEvent
+		data      []byte
+		err       error
 	)
 
 	txhash := common.HexToHash(txhex)
@@ -224,4 +224,3 @@ func GetSimpleRingEvent(txhex string) error {
 
 	return nil
 }
-

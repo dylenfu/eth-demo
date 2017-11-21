@@ -48,18 +48,18 @@ contract RingMinedEvt {
 
     function simpleRing(
         address protocol,
-        address miner,
+        address owner,
         uint    amount,
         uint    res
     ) public {
 
         var list = new SimpleFill[](2);
         var fill = SimpleFill(
-            miner,
+            owner,
             amount
         );
         var fillSec = SimpleFill(
-            miner,
+            owner,
             amount++
         );
         list[0] = fill;
