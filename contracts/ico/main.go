@@ -28,13 +28,13 @@ func main() {
 func (h *Handle) BalanceOf() {
 	var result types.HexNumber
 
-	account := types.Str2Address(Account1)
-	err := tokenA.BalanceOf.Call(&result, "latest", account)
+	account := common.HexToAddress("0xb1018949b241d76a1ab2094f473e9befeabb5ead")
+	err := tokenB.BalanceOf.Call(&result, "latest", account)
 	if err != nil {
 		panic(err)
 	}
 
-	log.Println(result)
+	log.Println(result.BigInt().String())
 }
 
 func (h *Handle) GetBalanceFromMap() {
@@ -48,14 +48,19 @@ func (h *Handle) GetBalanceFromMap() {
 }
 
 /*
+normal user
 "0x48ff2269e58a373120FFdBBdEE3FBceA854AC30A"
 "0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2"
+
+loopring test accounts
+"0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135"
+"0xb1018949b241d76a1ab2094f473e9befeabb5ead"
 */
 func (h *Handle) Deposit() {
 	var result types.HexNumber
-	value := big.NewInt(1)
+	value, _ := new(big.Int).SetString("20223456789000000000000000000", 0)
 
-	account := types.Str2Address("0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2")
+	account := types.Str2Address("0xb1018949b241d76a1ab2094f473e9befeabb5ead")
 	err := tokenB.Deposit.SendTransaction(&result, account, value)
 	if err != nil {
 		panic(err)
