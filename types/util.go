@@ -30,6 +30,10 @@ func Int2HexBigInt(src int) hexutil.Big {
 	return ret
 }
 
+func BigInt2HexBigInt(src big.Int) hexutil.Big {
+	return hexutil.Big(src)
+}
+
 func Uint2HexUintPtr(src uint64) *hexutil.Uint64 {
 	var ret *hexutil.Uint64
 

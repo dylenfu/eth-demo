@@ -64,7 +64,7 @@ func main() {
 // 查询账户余额
 func (h *Handle) Balance() {
 	var amount hexutil.Big
-	h.client.Call(&amount, "eth_getBalance", Account1, "pending")
+	h.client.Call(&amount, "eth_getBalance", Account1, "latest")
 	log.Println(amount.ToInt().String())
 }
 
@@ -104,6 +104,10 @@ func (h *Handle) Code() {
 /*
 "0x48ff2269e58a373120FFdBBdEE3FBceA854AC30A"
 "0xb5fab0b11776aad5ce60588c16bd59dcfd61a1c2"
+
+loopring relay test accounts
+"0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135"
+"0xb1018949b241d76a1ab2094f473e9befeabb5ead"
 */
 func (h *Handle) SendTransaction() {
 	var (
@@ -111,11 +115,12 @@ func (h *Handle) SendTransaction() {
 		tx     transaction
 	)
 
+	amount, _ := new(big.Int).SetString("22345000000000000000000", 0)
 	tx.From = Miner
-	tx.To = "0x48ff2269e58a373120FFdBBdEE3FBceA854AC30A" //Account2
+	tx.To = "0xb1018949b241d76a1ab2094f473e9befeabb5ead" //Account2
 	tx.Gas = tp.Int2HexBigInt(100000)
 	tx.GasPrice = tp.Int2HexBigInt(1)
-	tx.Value = tp.Int2HexBigInt(99900000000000)
+	tx.Value = tp.BigInt2HexBigInt(*amount) //tp.Int2HexBigInt(99900000000000)
 
 	if err := h.client.Call(&result, "eth_sendTransaction", &tx); err != nil {
 		panic(err)
