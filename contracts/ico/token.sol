@@ -53,6 +53,7 @@ contract MyToken {
             balances[_from] -= _amount;
             allowed[_from][msg.sender] -= _amount; //减少发送者的批准量
             balances[_to] += _amount;
+            Transfer(_from, _to, _amount);
             return true;
         } else {
             return false;

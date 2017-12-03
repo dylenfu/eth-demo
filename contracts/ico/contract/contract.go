@@ -8,8 +8,8 @@ import (
 const (
 	AbiFilePath   = "github.com/dylenfu/eth-libs/contracts/ico/abi.txt"
 	EthRpcUrl     = "http://127.0.0.1:8545"
-	TokenAddressA = "0xed4fc65967f0e6a5ef9126f5c1d51f2d0acd3824"
-	TokenAddressB = "0x05ef4eee49738b1bc13e5aa6a8600516a8e7120b"
+	TokenAddressA = "0xfc2cbce778ddbc4d50bb5b2fc91afe14a8e3953d"
+	TokenAddressB = "0x876c8b6ff4a8e87dc6d5e3f64715b58be7d5ab55"
 )
 
 var (
