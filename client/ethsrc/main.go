@@ -62,9 +62,16 @@ func main() {
 }
 
 // 查询账户余额
+/*
+loopring relay test accounts
+"0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135"
+"0xb1018949b241d76a1ab2094f473e9befeabb5ead"
+*/
 func (h *Handle) Balance() {
 	var amount hexutil.Big
-	h.client.Call(&amount, "eth_getBalance", Account1, "latest")
+	h.client.Call(&amount, "eth_getBalance", "0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135", "latest")
+	log.Println(amount.ToInt().String())
+	h.client.Call(&amount, "eth_getBalance", "0xb1018949b241d76a1ab2094f473e9befeabb5ead", "latest")
 	log.Println(amount.ToInt().String())
 }
 
@@ -115,7 +122,7 @@ func (h *Handle) SendTransaction() {
 		tx     transaction
 	)
 
-	amount, _ := new(big.Int).SetString("22345000000000000000000", 0)
+	amount, _ := new(big.Int).SetString("500000000000000000000", 0)
 	tx.From = Miner
 	tx.To = "0xb1018949b241d76a1ab2094f473e9befeabb5ead" //Account2
 	tx.Gas = tp.Int2HexBigInt(100000)

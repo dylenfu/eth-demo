@@ -25,6 +25,11 @@ func main() {
 	reflect.ValueOf(handle).MethodByName(*fn).Call([]reflect.Value{})
 }
 
+/*
+loopring test accounts
+"0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135"
+"0xb1018949b241d76a1ab2094f473e9befeabb5ead"
+*/
 func (h *Handle) BalanceOf() {
 	var result types.HexNumber
 
@@ -33,7 +38,6 @@ func (h *Handle) BalanceOf() {
 	if err != nil {
 		panic(err)
 	}
-
 	log.Println(result.BigInt().String())
 }
 
@@ -59,13 +63,11 @@ loopring test accounts
 func (h *Handle) Deposit() {
 	var result types.HexNumber
 	value, _ := new(big.Int).SetString("20223456789000000000000000000", 0)
-
 	account := types.Str2Address("0xb1018949b241d76a1ab2094f473e9befeabb5ead")
 	err := tokenB.Deposit.SendTransaction(&result, account, value)
 	if err != nil {
 		panic(err)
 	}
-
 	log.Println(result)
 }
 
