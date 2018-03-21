@@ -1,1 +1,1 @@
-geth --datadir ./build/data init ./build/genesis.json
+geth --datadir ./build/.ethereum init ./build/genesis.json

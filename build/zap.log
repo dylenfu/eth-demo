@@ -1,0 +1,127 @@
+2018-03-14T14:57:48.316+0800	info	market util,supported token:LRC
+2018-03-14T14:57:48.316+0800	info	market util,supported market:LRC-WETH
+2018-03-14T14:57:49.102+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, lrcTokenAddress:0x0000000000000000000000009171293c4a670eb1fbfbed1218ef73406951165f
+2018-03-14T14:57:49.102+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, tokenRegistryAddress:0x0000000000000000000000007fa7b59fcb2e7845c98f326160bebbcf7a0e97b8
+2018-03-14T14:57:49.103+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, delegateAddress:0x000000000000000000000000b95d8bc203959b314a884294c4ea5ce1290960f6
+2018-03-14T14:57:49.103+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, nameRegistryAddress:0x00000000000000000000000077b56c4227bb27f52ced408bcf8df1f39e42745e
+2018-03-14T14:57:49.104+0800	info	extractor,contract protocol LRC->0x9171293c4A670EB1fBFBEd1218EF73406951165f
+2018-03-14T14:57:49.104+0800	info	extractor,contract protocol WETH->0x529540Ee6862158f47d647aE023098F6705210a9
+2018-03-14T14:57:49.104+0800	info	extractor,contract protocol loopring->0xAa171BcbDa19F9506B9448a4bBd559F0c8d557D8
+2018-03-14T14:57:49.104+0800	info	extractor,contract protocol token_register->0x7FA7b59fcb2E7845C98f326160beBbCF7A0e97b8
+2018-03-14T14:57:49.104+0800	info	extractor,contract protocol transfer_delegate->0xb95d8BC203959b314a884294C4Ea5cE1290960F6
+2018-03-14T14:57:49.104+0800	info	extractor,contract event name:Transfer -> key:0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
+2018-03-14T14:57:49.104+0800	info	extractor,contract method name:approve -> key:0x095ea7b3
+2018-03-14T14:57:49.104+0800	info	extractor,contract method name:withdraw -> key:0x2e1a7d4d
+2018-03-14T14:57:49.104+0800	info	extractor,contract method name:deposit -> key:0xd0e30db0
+2018-03-14T14:57:49.104+0800	info	extractor,contract event name:RingMined -> key:0x36fe6e0e52b9db0206978557b0c50ef564aeb27c4fce2455a2f459aeefefc23b
+2018-03-14T14:57:49.104+0800	info	extractor,contract event name:OrderCancelled -> key:0x3e1003227205ab9eb9b1652e25b2f6fc548ff55e94bf76a42aca90501c6c4e35
+2018-03-14T14:57:49.104+0800	info	extractor,contract event name:AllOrdersCancelled -> key:0x83a782ac7424737a1190d4668474e765f07d603de0485a081dbc343ac1b02099
+2018-03-14T14:57:49.104+0800	info	extractor,contract event name:OrdersCancelled -> key:0xa28167ee3483d28d6ed569bccaba7f8525dae3ee816b82eca0b809b830e8df87
+2018-03-14T14:57:49.104+0800	info	extractor,contract method name:cancelAllOrders -> key:0xbd545f53
+2018-03-14T14:57:49.105+0800	info	extractor,contract method name:submitRing -> key:0x0fd2f491
+2018-03-14T14:57:49.105+0800	info	extractor,contract method name:cancelAllOrdersByTradingPair -> key:0x8865cbd6
+2018-03-14T14:57:49.105+0800	info	extractor,contract method name:cancelOrder -> key:0x8bc12fd1
+2018-03-14T14:57:49.105+0800	info	extractor,contract event name:TokenUnregistered -> key:0xee98311a96660ce4ab10cd82053f767653901305ec8acf91ec60311de919e28a
+2018-03-14T14:57:49.105+0800	info	extractor,contract event name:TokenRegistered -> key:0xaaed15520cc86e95b7c2522d968096283afbef7858bdf194b2f60d28a1a8d63e
+2018-03-14T14:57:49.105+0800	info	extractor,contract event name:AddressDeauthorized -> key:0xa407c1ccf2240ac410f40f8008c27443bf0d10c03f6fb4565e5796d3bf86a5be
+2018-03-14T14:57:49.105+0800	info	extractor,contract event name:AddressAuthorized -> key:0x3b61204456cbbcb12a2d6b3006f6a24187ac7d5eeef361a93bad25888eebbb30
+2018-03-14T14:57:49.989+0800	info	extractor start...
+2018-03-14T14:57:49.998+0800	info	started
+2018-03-14T14:57:50.000+0800	info	extractor,get block:8709->0x3548cb67b5319d56507cecd4034327bfced0d55b96fc1e560d4bb4b565efc108, transaction number:1
+2018-03-14T14:57:50.001+0800	debug	extractor,chain block syncing... 
+2018-03-14T14:57:50.003+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953
+2018-03-14T14:57:50.003+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 status :0,logs:5
+2018-03-14T14:57:50.003+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 tokenTransfer event from:0x4baD3053d574Cd54513bABE21db3f09BEa1D387D, to:0xAa171BcbDa19F9506B9448a4bBd559F0c8d557D8, value:100000000000000000
+2018-03-14T14:57:50.003+0800	info	the eth network may be forked. flush all cache
+2018-03-14T14:57:50.003+0800	debug	extractor:tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 saveTransferAsTx
+2018-03-14T15:02:00.737+0800	info	market util,supported token:LRC
+2018-03-14T15:02:00.737+0800	info	market util,supported market:LRC-WETH
+2018-03-14T15:02:01.424+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, lrcTokenAddress:0x0000000000000000000000009171293c4a670eb1fbfbed1218ef73406951165f
+2018-03-14T15:02:01.425+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, tokenRegistryAddress:0x0000000000000000000000007fa7b59fcb2e7845c98f326160bebbcf7a0e97b8
+2018-03-14T15:02:01.426+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, delegateAddress:0x000000000000000000000000b95d8bc203959b314a884294c4ea5ce1290960f6
+2018-03-14T15:02:01.426+0800	debug	version:v1.2, contract:0xaa171bcbda19f9506b9448a4bbd559f0c8d557d8, nameRegistryAddress:0x00000000000000000000000077b56c4227bb27f52ced408bcf8df1f39e42745e
+2018-03-14T15:02:01.428+0800	info	extractor,contract protocol LRC->0x9171293c4A670EB1fBFBEd1218EF73406951165f
+2018-03-14T15:02:01.428+0800	info	extractor,contract protocol WETH->0x529540Ee6862158f47d647aE023098F6705210a9
+2018-03-14T15:02:01.428+0800	info	extractor,contract protocol loopring->0xAa171BcbDa19F9506B9448a4bBd559F0c8d557D8
+2018-03-14T15:02:01.428+0800	info	extractor,contract protocol token_register->0x7FA7b59fcb2E7845C98f326160beBbCF7A0e97b8
+2018-03-14T15:02:01.428+0800	info	extractor,contract protocol transfer_delegate->0xb95d8BC203959b314a884294C4Ea5cE1290960F6
+2018-03-14T15:02:01.428+0800	info	extractor,contract event name:Transfer -> key:0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
+2018-03-14T15:02:01.428+0800	info	extractor,contract method name:approve -> key:0x095ea7b3
+2018-03-14T15:02:01.429+0800	info	extractor,contract method name:withdraw -> key:0x2e1a7d4d
+2018-03-14T15:02:01.429+0800	info	extractor,contract method name:deposit -> key:0xd0e30db0
+2018-03-14T15:02:01.429+0800	info	extractor,contract event name:OrderCancelled -> key:0x3e1003227205ab9eb9b1652e25b2f6fc548ff55e94bf76a42aca90501c6c4e35
+2018-03-14T15:02:01.429+0800	info	extractor,contract event name:AllOrdersCancelled -> key:0x83a782ac7424737a1190d4668474e765f07d603de0485a081dbc343ac1b02099
+2018-03-14T15:02:01.429+0800	info	extractor,contract event name:OrdersCancelled -> key:0xa28167ee3483d28d6ed569bccaba7f8525dae3ee816b82eca0b809b830e8df87
+2018-03-14T15:02:01.429+0800	info	extractor,contract event name:RingMined -> key:0x36fe6e0e52b9db0206978557b0c50ef564aeb27c4fce2455a2f459aeefefc23b
+2018-03-14T15:02:01.429+0800	info	extractor,contract method name:cancelAllOrders -> key:0xbd545f53
+2018-03-14T15:02:01.429+0800	info	extractor,contract method name:cancelAllOrdersByTradingPair -> key:0x8865cbd6
+2018-03-14T15:02:01.429+0800	info	extractor,contract method name:submitRing -> key:0x0fd2f491
+2018-03-14T15:02:01.429+0800	info	extractor,contract method name:cancelOrder -> key:0x8bc12fd1
+2018-03-14T15:02:01.429+0800	info	extractor,contract event name:TokenRegistered -> key:0xaaed15520cc86e95b7c2522d968096283afbef7858bdf194b2f60d28a1a8d63e
+2018-03-14T15:02:01.430+0800	info	extractor,contract event name:TokenUnregistered -> key:0xee98311a96660ce4ab10cd82053f767653901305ec8acf91ec60311de919e28a
+2018-03-14T15:02:01.430+0800	info	extractor,contract event name:AddressAuthorized -> key:0x3b61204456cbbcb12a2d6b3006f6a24187ac7d5eeef361a93bad25888eebbb30
+2018-03-14T15:02:01.430+0800	info	extractor,contract event name:AddressDeauthorized -> key:0xa407c1ccf2240ac410f40f8008c27443bf0d10c03f6fb4565e5796d3bf86a5be
+2018-03-14T15:02:02.273+0800	info	extractor start...
+2018-03-14T15:02:02.273+0800	info	started
+2018-03-14T15:02:02.274+0800	info	extractor,get block:8709->0x3548cb67b5319d56507cecd4034327bfced0d55b96fc1e560d4bb4b565efc108, transaction number:1
+2018-03-14T15:02:02.275+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.282+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953
+2018-03-14T15:02:02.282+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 status :0,logs:5
+2018-03-14T15:02:02.282+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 tokenTransfer event from:0x4baD3053d574Cd54513bABE21db3f09BEa1D387D, to:0xAa171BcbDa19F9506B9448a4bBd559F0c8d557D8, value:100000000000000000
+2018-03-14T15:02:02.282+0800	info	the eth network may be forked. flush all cache
+2018-03-14T15:02:02.282+0800	debug	extractor:tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 saveTransferAsTx
+2018-03-14T15:02:02.282+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 tokenTransfer event from:0x4baD3053d574Cd54513bABE21db3f09BEa1D387D, to:0xAa171BcbDa19F9506B9448a4bBd559F0c8d557D8, value:537722557505166136913
+2018-03-14T15:02:02.283+0800	debug	extractor:tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 saveTransferAsTx
+2018-03-14T15:02:02.283+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 tokenTransfer event from:0x4baD3053d574Cd54513bABE21db3f09BEa1D387D, to:0xAa171BcbDa19F9506B9448a4bBd559F0c8d557D8, value:10000000000000000000
+2018-03-14T15:02:02.283+0800	debug	extractor:tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 saveTransferAsTx
+2018-03-14T15:02:02.283+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 tokenTransfer event from:0x4baD3053d574Cd54513bABE21db3f09BEa1D387D, to:0xAa171BcbDa19F9506B9448a4bBd559F0c8d557D8, value:5477225575051661369
+2018-03-14T15:02:02.283+0800	debug	extractor:tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 saveTransferAsTx
+2018-03-14T15:02:02.284+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 ringMined event ringhash:0x816932ef22a05e9c28a3a5ab5c34e7eb0e8882a34d11ec8c8daf3a3f39941d9e, ringIndex:2, tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953
+2018-03-14T15:02:02.284+0800	error	order manager,handle ringmined event,ring 0x816932ef22a05e9c28a3a5ab5c34e7eb0e8882a34d11ec8c8daf3a3f39941d9e has already exist
+github.com/Loopring/relay/log.Errorf
+	/Users/fukun/projects/gohome/src/github.com/Loopring/relay/log/log.go:63
+github.com/Loopring/relay/eventemiter.Emit.func1
+	/Users/fukun/projects/gohome/src/github.com/Loopring/relay/eventemiter/emit.go:125
+2018-03-14T15:02:02.284+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 orderFilled event ringhash:0x816932ef22a05e9c28a3a5ab5c34e7eb0e8882a34d11ec8c8daf3a3f39941d9e, amountS:100000000000000000, amountB:537722557505166136913, orderhash:0x15a352a3727dec7f881e2a8d1ca1424e6e7ff5be5b8ce70e5ebb3baec946da4a, lrcFee:0, lrcReward:0, nextOrderhash:0xfe5f7a27cf68bcc127caea81913835192d918d5ddddb260bd07c2ba0c75c0807, preOrderhash:0xfe5f7a27cf68bcc127caea81913835192d918d5ddddb260bd07c2ba0c75c0807, ringIndex:2
+2018-03-14T15:02:02.284+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 orderFilled event ringhash:0x816932ef22a05e9c28a3a5ab5c34e7eb0e8882a34d11ec8c8daf3a3f39941d9e, amountS:547722557505166136913, amountB:100000000000000000, orderhash:0xfe5f7a27cf68bcc127caea81913835192d918d5ddddb260bd07c2ba0c75c0807, lrcFee:5477225575051661369, lrcReward:0, nextOrderhash:0x15a352a3727dec7f881e2a8d1ca1424e6e7ff5be5b8ce70e5ebb3baec946da4a, preOrderhash:0x15a352a3727dec7f881e2a8d1ca1424e6e7ff5be5b8ce70e5ebb3baec946da4a, ringIndex:2
+2018-03-14T15:02:02.286+0800	debug	order manager,handle order filled event,fill already exist ringIndex:2 orderHash:0x15a352a3727dec7f881e2a8d1ca1424e6e7ff5be5b8ce70e5ebb3baec946da4a
+2018-03-14T15:02:02.286+0800	debug	order manager,handle order filled event,fill already exist ringIndex:2 orderHash:0xfe5f7a27cf68bcc127caea81913835192d918d5ddddb260bd07c2ba0c75c0807
+2018-03-14T15:02:02.286+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 saveFillListAsTxs:length 2 and tx isFailed:false
+2018-03-14T15:02:02.287+0800	debug	extractor,tx:0xd9e2460c0427df48daecee9162c4c1b321de1d13afd6b4383f1684af80c2c953 submitRing method gas:1000000, gasprice:10000000000
+2018-03-14T15:02:02.287+0800	info	extractor,get block:8710->0x2016ab23fe8e342ff1f18adb0d5219620c2d4923c0d289318bf0776318037edb, transaction number:1
+2018-03-14T15:02:02.288+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.288+0800	debug	extractor,tx:0x0a04445b6daa8d9a9451f15d71dcdac6337ca2dd3cf5548b0ca04814e116fb1b
+2018-03-14T15:02:02.288+0800	debug	extractor,tx:0x0a04445b6daa8d9a9451f15d71dcdac6337ca2dd3cf5548b0ca04814e116fb1b status :0,logs:1
+2018-03-14T15:02:02.289+0800	debug	extractor,tx:0x0a04445b6daa8d9a9451f15d71dcdac6337ca2dd3cf5548b0ca04814e116fb1b cutoffPair event ownerAddress:0xb1018949b241D76A1AB2094f473E9bEfeAbB5Ead, token1:0x9171293c4A670EB1fBFBEd1218EF73406951165f, token2:0x529540Ee6862158f47d647aE023098F6705210a9, cutOffTime:1521002001
+2018-03-14T15:02:02.290+0800	debug	order manager,handle cutoffPair event, owner:0xb1018949b241D76A1AB2094f473E9bEfeAbB5Ead, token1:0x9171293c4A670EB1fBFBEd1218EF73406951165f, token2:0x529540Ee6862158f47d647aE023098F6705210a9, cutoffTimestamp:1521002001
+2018-03-14T15:02:02.290+0800	debug	extractor,tx:0x0a04445b6daa8d9a9451f15d71dcdac6337ca2dd3cf5548b0ca04814e116fb1b cutoffpair method owenr:0xb1018949b241D76A1AB2094f473E9bEfeAbB5Ead, token1:0x9171293c4A670EB1fBFBEd1218EF73406951165f, token2:0x529540Ee6862158f47d647aE023098F6705210a9, cutoff:1531931942
+2018-03-14T15:02:02.291+0800	info	extractor,get block:8711->0x94e1b58cae5d7433e03b797996680f4200e22aa23e928db2998aeb3386aeb306, transaction number:0
+2018-03-14T15:02:02.291+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.292+0800	info	extractor,get block:8712->0xac2e7c633321b60b644347da023e09cf4cc359d69fa35c4505966dc0e3699722, transaction number:1
+2018-03-14T15:02:02.293+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.294+0800	debug	extractor,tx:0x0556ffe5aa7700cb2a07ec6eeb07d578c4de8385f673e28e2599be045243d4dc
+2018-03-14T15:02:02.294+0800	debug	extractor,tx:0x0556ffe5aa7700cb2a07ec6eeb07d578c4de8385f673e28e2599be045243d4dc status :0,logs:0
+2018-03-14T15:02:02.294+0800	debug	extractor,tx:0x0556ffe5aa7700cb2a07ec6eeb07d578c4de8385f673e28e2599be045243d4dc wethDeposit method from:0x4baD3053d574Cd54513bABE21db3f09BEa1D387D, to:0x529540Ee6862158f47d647aE023098F6705210a9, value:1000000000000000000
+2018-03-14T15:02:02.294+0800	debug	extractor:tx:0x0556ffe5aa7700cb2a07ec6eeb07d578c4de8385f673e28e2599be045243d4dc saveWethDepositMethodAsTx
+2018-03-14T15:02:02.294+0800	info	extractor,get block:8713->0x0f5a2745c123a5e88d3e199c8f0788b66f04ed6a36a324aaff83d8f7d4f40828, transaction number:0
+2018-03-14T15:02:02.295+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.296+0800	info	extractor,get block:8714->0x290fd386eaee4c565838c8add1f1b1474a6573c8231e27be37a84bc0cf417fa6, transaction number:1
+2018-03-14T15:02:02.296+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.297+0800	debug	extractor,tx:0x3886091a40d8f6427aea0ed3dd8db31b60e695944865ae0c23a86733dc74522b
+2018-03-14T15:02:02.297+0800	debug	extractor,tx:0x3886091a40d8f6427aea0ed3dd8db31b60e695944865ae0c23a86733dc74522b status :0,logs:0
+2018-03-14T15:02:02.297+0800	debug	extractor,tx:0x3886091a40d8f6427aea0ed3dd8db31b60e695944865ae0c23a86733dc74522b wethWithdrawal method from:0x4baD3053d574Cd54513bABE21db3f09BEa1D387D, to:0x529540Ee6862158f47d647aE023098F6705210a9, value:1000000000000000000
+2018-03-14T15:02:02.297+0800	debug	extractor:tx:0x3886091a40d8f6427aea0ed3dd8db31b60e695944865ae0c23a86733dc74522b saveWethWithdrawalMethodAsTx
+2018-03-14T15:02:02.298+0800	info	extractor,get block:8715->0x8104d35928ab055155afb2d0384337fb6214a9820053199eb5a05f6eddce30ff, transaction number:0
+2018-03-14T15:02:02.298+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.299+0800	info	extractor,get block:8716->0xf880414d863667a3a01dacd0a754df4023d2776dd13834c53e8c68064a4f0914, transaction number:1
+2018-03-14T15:02:02.299+0800	debug	extractor,chain block syncing... 
+2018-03-14T15:02:02.300+0800	debug	extractor,tx:0xaa33821417c3bae3649be8a23ecfc8295d2e7ec210667d0d691f62787a634bf9
+2018-03-14T15:02:02.300+0800	debug	extractor,tx:0xaa33821417c3bae3649be8a23ecfc8295d2e7ec210667d0d691f62787a634bf9 status :0,logs:1
+2018-03-14T15:02:02.300+0800	debug	extractor,tx:0xaa33821417c3bae3649be8a23ecfc8295d2e7ec210667d0d691f62787a634bf9 contract event id error:0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925
+2018-03-14T15:02:02.300+0800	debug	extractor,tx:0xaa33821417c3bae3649be8a23ecfc8295d2e7ec210667d0d691f62787a634bf9 approve method owner:0x1B978a1D302335a6F2Ebe4B8823B5E17c3C84135, spender:0xb95d8BC203959b314a884294C4Ea5cE1290960F6, value:1000000000000000000000000
+2018-03-14T15:02:02.300+0800	debug	extractor:tx:0xaa33821417c3bae3649be8a23ecfc8295d2e7ec210667d0d691f62787a634bf9 saveApproveMethodAsTx, txIsFailed:false
+2018-03-14T15:02:02.301+0800	info	extractor,get block:8717->0x11fc1edcd3953e4733d14a4ba254ce8f5b1cf87a885509476d65d4727ecfe658, transaction number:0
+2018-03-14T15:02:02.301+0800	info	extractor,sync chain block complete!
+2018-03-14T15:02:02.303+0800	debug	match round:8717, market: 0x529540Ee6862158f47d647aE023098F6705210a9 -> 0x9171293c4A670EB1fBFBEd1218EF73406951165f , candidateRingList.length:0
+2018-03-14T15:02:18.429+0800	info	captured interrupt, exiting...
+

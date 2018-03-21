@@ -33,8 +33,8 @@ loopring test accounts
 func (h *Handle) BalanceOf() {
 	var result types.HexNumber
 
-	account := common.HexToAddress("0xb1018949b241d76a1ab2094f473e9befeabb5ead")
-	err := tokenB.BalanceOf.Call(&result, "latest", account)
+	account := common.HexToAddress("0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135")
+	err := tokenA.BalanceOf.Call(&result, "latest", account)
 	if err != nil {
 		panic(err)
 	}
@@ -62,9 +62,9 @@ loopring test accounts
 */
 func (h *Handle) Deposit() {
 	var result types.HexNumber
-	value, _ := new(big.Int).SetString("20223456789000000000000000000", 0)
-	account := types.Str2Address("0xb1018949b241d76a1ab2094f473e9befeabb5ead")
-	err := tokenB.Deposit.SendTransaction(&result, account, value)
+	value, _ := new(big.Int).SetString("20123456789000000000000000000", 0)
+	account := types.Str2Address("0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135")
+	err := tokenA.Deposit.SendTransaction(&result, account, value)
 	if err != nil {
 		panic(err)
 	}

@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/big"
 	"strconv"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 )
 
 var RingMined *types.TokenImpl
@@ -107,7 +108,7 @@ func GetRingMinedEvent(txhex string) error {
 	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
 	log.Printf("before hex decord string:%s", event.Data)
 
-	if err = RingMined.Abi.Unpack(&evt, "RingMinedEvent", data); err != nil {
+	if err = RingMined.Abi.Unpack(&evt, "RingMinedEvent", data, abi.SEL_UNPACK_EVENT); err != nil {
 		return err
 	}
 
@@ -147,7 +148,7 @@ func GetRingEvent(txhex string) error {
 	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
 	log.Printf("before hex decord string:%s", event.Data)
 
-	if err = RingMined.Abi.Unpack(&evt, "RingEvent", data); err != nil {
+	if err = RingMined.Abi.Unpack(&evt, "RingEvent", data, abi.SEL_UNPACK_EVENT); err != nil {
 		return err
 	}
 
@@ -179,7 +180,7 @@ func GetMinEvent(txhex string) error {
 	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
 	log.Printf("before hex decord string:%s", event.Data)
 
-	if err = RingMined.Abi.Unpack(&evt, "MinEvent", data); err != nil {
+	if err = RingMined.Abi.Unpack(&evt, "MinEvent", data, abi.SEL_UNPACK_EVENT); err != nil {
 		return err
 	}
 
@@ -210,7 +211,7 @@ func GetSimpleRingEvent(txhex string) error {
 	log.Printf("recepient block number:%s", recipient.BlockNumber.ToInt().String())
 	log.Printf("before hex decord string:%s", event.Data)
 
-	if err = RingMined.Abi.Unpack(&evt, "SimpleRingEvent", data); err != nil {
+	if err = RingMined.Abi.Unpack(&evt, "SimpleRingEvent", data, abi.SEL_UNPACK_EVENT); err != nil {
 		return err
 	}
 
@@ -221,6 +222,23 @@ func GetSimpleRingEvent(txhex string) error {
 		log.Printf("evt.fills[%d].owner:%s", k, v.Owner.Hex())
 		log.Printf("evt.fills[%d].amount:%s", k, v.Amount.String())
 	}
+
+	return nil
+}
+
+func GetLogs() error {
+	var (
+		fl types.FilterLog
+		err       error
+	)
+
+	methodId := ""
+	if err = RingMined.Client.Call(&fl, "eth_getFilterChanges", methodId); err != nil {
+		return err
+	}
+
+	log.Printf("logindex:%d", fl.LogIndex.Int())
+	log.Printf("evt.txhash:%s", fl.TransactionHash)
 
 	return nil
 }

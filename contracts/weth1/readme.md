@@ -1,0 +1,4 @@
+weth新版本：
+loadScript("./contracts/weth1/token.js")
+fullhash=0xb8cea226a3571ecffc3d16a09afbeffeee856fcbb3923af92c04e8cc0a1bb57e 
+contract=0xf079E0612E869197c5F4c7D0a95DF570B163232b

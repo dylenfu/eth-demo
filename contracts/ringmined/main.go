@@ -136,3 +136,7 @@ func (h *Handle) SimpleRingEvent() {
 		panic(err)
 	}
 }
+
+func (h *Handle) EthLogs() {
+	GetLogs()
+}

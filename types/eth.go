@@ -87,6 +87,7 @@ type FilterReq struct {
 
 // 监听某个filter得到的log数据结构
 type FilterLog struct {
+	Removed 		 bool 	   `json:"removed"`
 	LogIndex         HexNumber `json:"logIndex"`
 	BlockNumber      HexNumber `json:"blockNumber"`
 	BlockHash        string    `json:"blockHash"`

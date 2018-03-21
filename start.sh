@@ -1,1 +1,1 @@
-geth --datadir ./build/data --networkid 151 --rpc --rpccorsdomain "*" --nodiscover console
+geth --datadir ./build/.ethereum --networkid 151 --rpc --rpccorsdomain "*" --nodiscover console
