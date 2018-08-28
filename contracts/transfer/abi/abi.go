@@ -86,27 +86,31 @@ func EventChanged(filterId string) error {
 		return err
 	}
 
-	den := "DepositFilled"
-	oen := "OrderFilled"
-	denId := Bank.Abi.Events[den].Id().String()
-	oenId := Bank.Abi.Events[oen].Id().String()
-
-	for _, v := range logs {
-		// 转换hex
-		data := hexutil.MustDecode(v.Data)
-
-		// topics第一个元素就是eventId
-		switch v.Topics[0] {
-		case denId:
-			if err := showDeposit(den, data, v.Topics); err != nil {
-				return err
-			}
-		case oenId:
-			if err := showTransfer(oen, data, v.Topics); err != nil {
-				return err
-			}
-		}
+	for _, log := range logs {
+		println(log.TransactionHash)
 	}
+
+	//den := "DepositFilled"
+	//oen := "OrderFilled"
+	//denId := Bank.Abi.Events[den].Id().String()
+	//oenId := Bank.Abi.Events[oen].Id().String()
+	//
+	//for _, v := range logs {
+	//	// 转换hex
+	//	data := hexutil.MustDecode(v.Data)
+	//
+	//	// topics第一个元素就是eventId
+	//	switch v.Topics[0] {
+	//	case denId:
+	//		if err := showDeposit(den, data, v.Topics); err != nil {
+	//			return err
+	//		}
+	//	case oenId:
+	//		if err := showTransfer(oen, data, v.Topics); err != nil {
+	//			return err
+	//		}
+	//	}
+	//}
 
 	return nil
 }

@@ -1,0 +1,1 @@
+/Users/fukun/projects/gohome/src/github.com/Loopring/go-ethereum/build/bin/geth --datadir ./build/.ethereum --networkid 151 --rpc --rpcapi "eth,net,web3,debug,personal" --rpccorsdomain "*" --nodiscover console
