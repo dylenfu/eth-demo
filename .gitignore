@@ -21,4 +21,5 @@ build/seed0/data
 
 eth-demo.iml
 build/data/
+build/.ethereum/
 data/
