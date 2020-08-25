@@ -2,15 +2,16 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
+	"log"
+	"os"
+
 	. "github.com/dylenfu/eth-libs/params"
 	"github.com/dylenfu/eth-libs/types"
 	abi "github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rpc"
-	"io/ioutil"
-	"log"
-	"os"
 )
 
 const (

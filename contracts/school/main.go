@@ -2,12 +2,13 @@ package main
 
 import (
 	"flag"
+	"log"
+	"reflect"
+	"time"
+
 	. "github.com/dylenfu/eth-libs/contracts/school/contract"
 	"github.com/dylenfu/eth-libs/params"
 	"github.com/ethereum/go-ethereum/common"
-	"qiniupkg.com/x/log.v7"
-	"reflect"
-	"time"
 )
 
 type Handle struct{}
@@ -99,7 +100,7 @@ func (h *Handle) ListenEvent() {
 	for {
 		err := GetEvent(filterId)
 		if err != nil {
-			log.Error(err.Error())
+			log.Fatal(err.Error())
 		}
 	}
 }

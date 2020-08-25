@@ -123,8 +123,8 @@ func (h *Handle) SendTransaction() {
 	)
 
 	amount, _ := new(big.Int).SetString("500000000000000000000", 0)
-	tx.From = "0x48ff2269e58a373120ffdbbdee3fbcea854ac30a"//Miner
-	tx.To = "0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135" //Account2
+	tx.From = "0x48ff2269e58a373120ffdbbdee3fbcea854ac30a" //Miner
+	tx.To = "0x1b978a1d302335a6f2ebe4b8823b5e17c3c84135"   //Account2
 	tx.Gas = tp.Int2HexBigInt(100000)
 	tx.GasPrice = tp.Int2HexBigInt(1)
 	tx.Value = tp.BigInt2HexBigInt(*amount) //tp.Int2HexBigInt(99900000000000)

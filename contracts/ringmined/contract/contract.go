@@ -2,12 +2,12 @@ package contract
 
 import (
 	"github.com/dylenfu/eth-libs/types"
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"log"
 	"math/big"
 	"strconv"
-	"github.com/ethereum/go-ethereum/accounts/abi"
 )
 
 var RingMined *types.TokenImpl
@@ -228,8 +228,8 @@ func GetSimpleRingEvent(txhex string) error {
 
 func GetLogs() error {
 	var (
-		fl types.FilterLog
-		err       error
+		fl  types.FilterLog
+		err error
 	)
 
 	methodId := ""
