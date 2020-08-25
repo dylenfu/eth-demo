@@ -1,20 +1,33 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/ipfs/go-log"
+	"io/ioutil"
 	"math/big"
 )
 
-var logger = log.Logger("geth")
+var (
+	logger = log.Logger("geth")
+	One, _ = new(big.Int).SetString("1000000000000000000", 10)
+)
 
 const (
-	Keystore     = `/Users/dylen/software/quorum/node1/keystore/`
+	NetworkID = 10
+	GasLimit  = 21000
+	GasPrice  = 0
+
+	Keystore     = `/Users/dylen/software/quorum/node0/keystore/`
 	KeyFile      = Keystore + `UTC--2020-08-25T03-33-39.871331000Z--c2e3d3c40b70e6b95feee3f7b10e604ea967db4d`
 	Passphase    = `111111`
 	AdminAddress = `0xc2E3d3c40B70E6b95fEeE3f7b10E604Ea967Db4d`
-	NetworkID    = 10
+	TestAddress  = "0x5569DdCD8AcAFaa65753cF46715910E4c1913152"
 )
 
 func init() {
@@ -26,21 +39,32 @@ func init() {
 func main() {
 	client := getClient()
 
-	balance := client.balance(AdminAddress)
-	logger.Infof("admin balance %s", balance.String())
+	balanceBeforeTransfer := client.Balance(TestAddress)
+	logger.Infof("Balance before transfer %s", balanceBeforeTransfer.String())
+
+	nonce := client.Nonce(AdminAddress)
+	logger.Infof("admin Nonce %d", nonce)
+
+	tx := transferETH(2, TestAddress, One)
+	signedTx := client.SignTransaction(tx)
+
+	hash := client.SendRawTransaction(signedTx)
+	logger.Infof("transfer result %s", hash.Hex())
+
+	balanceAfterTransfer := client.Balance(TestAddress)
+	logger.Infof("Balance after transfer %s", balanceAfterTransfer.String())
 }
 
 type wrapClient struct {
 	*rpc.Client
+	key *keystore.Key
 }
 
-func (c *wrapClient) balance(address string) *big.Int {
-	var amount string
-
-	decimal, _ := new(big.Int).SetString("1000000000000000000", 0)
+func (c *wrapClient) Balance(address string) *big.Int {
+	var raw string
 
 	if err := c.Call(
-		&amount,
+		&raw,
 		"eth_getBalance",
 		address,
 		"latest",
@@ -48,10 +72,69 @@ func (c *wrapClient) balance(address string) *big.Int {
 		logger.Fatal(err)
 	}
 
-	src, _ := new(big.Int).SetString(amount, 0)
-	data := new(big.Int).Div(src, decimal)
+	src, _ := new(big.Int).SetString(raw, 0)
+	data := new(big.Int).Div(src, One)
 
 	return data
+}
+
+func (c *wrapClient) Nonce(address string) uint64 {
+	var raw string
+
+	if err := c.Call(
+		&raw,
+		"eth_getTransactionCount",
+		address,
+		"latest",
+	); err != nil {
+		logger.Fatal(err)
+	}
+
+	data, ok := new(big.Int).SetString(raw, 16)
+	if !ok {
+		return big.NewInt(0).Uint64()
+	} else {
+		return data.Uint64()
+	}
+}
+
+func (c *wrapClient) SignTransaction(tx *types.Transaction) string {
+
+	signer := types.HomesteadSigner{}
+	signedTx, err := types.SignTx(
+		tx,
+		signer,
+		c.key.PrivateKey,
+	)
+	if err != nil {
+		logger.Fatalf("failed to sign tx: [%v]", err)
+	}
+
+	bz, err := rlp.EncodeToBytes(signedTx)
+	if err != nil {
+		logger.Fatalf("failed to rlp encode bytes: [%v]", err)
+	}
+	return "0x" + hex.EncodeToString(bz)
+}
+
+func (c *wrapClient) SendRawTransaction(signedTx string) common.Hash {
+	var result common.Hash
+	if err := c.Client.Call(&result, "eth_sendRawTransaction", signedTx); err != nil {
+		logger.Fatalf("failed to send raw transaction: [%v]", err)
+	}
+
+	return result
+}
+
+func transferETH(nonce uint64, toAddress string, value *big.Int) *types.Transaction {
+	return types.NewTransaction(
+		nonce,
+		common.HexToAddress(toAddress),
+		value,
+		GasLimit,
+		big.NewInt(GasPrice),
+		nil,
+	)
 }
 
 func getClient() *wrapClient {
@@ -60,104 +143,37 @@ func getClient() *wrapClient {
 		panic(err)
 	}
 
+	keyJson, err := ioutil.ReadFile(KeyFile)
+	if err != nil {
+		logger.Fatalf("failed to read file: [%v]", err)
+	}
+
+	key, err := keystore.DecryptKey(keyJson, Passphase)
+	if err != nil {
+		logger.Fatalf("failed to decrypt keyjson: [%v]", err)
+	}
+
 	return &wrapClient{
 		Client: client,
+		key:    key,
 	}
 }
 
-//
-//func sendTx() {
-//	// Init a keystore
-//	ks := keystore.NewKeyStore(
-//		Keystore,
-//		keystore.LightScryptN,
-//		keystore.LightScryptP)
-//	fmt.Println()
-//
-//	// Create account definitions
-//	fromAccDef := accounts.Account{
-//		Address: common.HexToAddress(AdminAddress),
-//	}
-//
-//	toAccDef := accounts.Account{
-//		Address: common.HexToAddress(AdminAddress),
-//	}
-//
-//	// Find the signing account
-//	signAcc, err := ks.Find(fromAccDef)
-//	if err != nil {
-//		fmt.Println("account keystore find error:")
-//		panic(err)
-//	}
-//	fmt.Printf("account found: signAcc.addr=%s; signAcc.url=%s\n", signAcc.Address.String(), signAcc.URL)
-//	fmt.Println()
-//
-//	// Unlock the signing account
-//	errUnlock := ks.Unlock(signAcc, Passphase)
-//	if errUnlock != nil {
-//		fmt.Println("account unlock error:")
-//		panic(err)
-//	}
-//	fmt.Printf("account unlocked: signAcc.addr=%s; signAcc.url=%s\n", signAcc.Address.String(), signAcc.URL)
-//	fmt.Println()
-//
-//	// Construct the transaction
-//	tx := types.NewTransaction(
-//		0x0,
-//		toAccDef.Address,
-//		new(big.Int),
-//		0,
-//		new(big.Int),
-//		[]byte(`cooldatahere`))
-//
-//	// Open the account key file
-//	keyJson, readErr := ioutil.ReadFile(KeyFile)
-//	if readErr != nil {
-//		fmt.Println("key json read error:")
-//		panic(readErr)
-//	}
-//
-//	// Get the private key
-//	keyWrapper, keyErr := keystore.DecryptKey(keyJson, Passphase)
-//	if keyErr != nil {
-//		fmt.Println("key decrypt error:")
-//		panic(keyErr)
-//	}
-//	fmt.Printf("key extracted: addr=%s", keyWrapper.Address.String())
-//
-//	// Define signer and chain id
-//	// chainID := big.NewInt(CHAIN_ID)
-//	// signer := types.NewEIP155Signer(chainID)
-//	signer := types.HomesteadSigner{}
-//
-//	// Sign the transaction signature with the private key
-//	signature, signatureErr := crypto.Sign(tx.Hash().Bytes(), keyWrapper.PrivateKey)
-//	if signatureErr != nil {
-//		fmt.Println("signature create error:")
-//		panic(signatureErr)
-//	}
-//
-//	signedTx, signErr := tx.WithSignature(signer, signature)
-//	if signErr != nil {
-//		fmt.Println("signer with signature error:")
-//		panic(signErr)
-//	}
-//
-//	// Connect the client
-//	client, err := ethclient.Dial("http://localhost:8000") // 8000=geth RPC port
-//	if err != nil {
-//		fmt.Println("client connection error:")
-//		panic(err)
-//	}
-//	fmt.Println("client connected")
-//	fmt.Println()
-//
-//	// Send the transaction to the network
-//	txErr := client.SendTransaction(context.Background(), signedTx)
-//	if txErr != nil {
-//		fmt.Println("send tx error:")
-//		panic(txErr)
-//	}
-//
-//	fmt.Printf("send success tx.hash=%s\n", signedTx.Hash().String())
-//}
+func unlock() {
+	// unlock account
+	//ks := keystore.NewKeyStore(
+	//	Keystore,
+	//	keystore.LightScryptN,
+	//	keystore.LightScryptP,
+	//	)
+	//
+	//account, err := ks.Find(accounts.Account{
+	//	Address: common.HexToAddress(AdminAddress),
+	//})
+	//if err != nil {
+	//	logger.Fatalf("failed to find account in keystore: [%v]", err)
+	//}
+	//if err := ks.Unlock(account, Passphase); err != nil {
+	//	logger.Fatalf("failed to unlock account: [%v]", err)
+	//}
+}
