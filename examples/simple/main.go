@@ -3,14 +3,16 @@ package main
 import (
 	"encoding/hex"
 	"fmt"
+	"io/ioutil"
+	"math/big"
+	"time"
+
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/ipfs/go-log"
-	"io/ioutil"
-	"math/big"
 )
 
 var (
@@ -22,12 +24,14 @@ const (
 	NetworkID = 10
 	GasLimit  = 21000
 	GasPrice  = 0
+	Nonce     = 5 // increase by 1 for each test
 
-	Keystore     = `/Users/dylen/software/quorum/node0/keystore/`
-	KeyFile      = Keystore + `UTC--2020-08-25T03-33-39.871331000Z--c2e3d3c40b70e6b95feee3f7b10e604ea967db4d`
+	RpcURL       = "http://localhost:22000"
+	Keystore     = `/Users/dylen/software/quorum/node0/data/keystore/`
+	KeyFile      = Keystore + `UTC--2020-08-26T09-55-25.770341000Z--57a259e0bcd61dffdd205a5cd046be9068e832dd`
 	Passphase    = `111111`
-	AdminAddress = `0xc2E3d3c40B70E6b95fEeE3f7b10E604Ea967Db4d`
-	TestAddress  = "0x5569DdCD8AcAFaa65753cF46715910E4c1913152"
+	AdminAddress = `0x57A259e0BcD61dFfdd205a5Cd046be9068E832dd`
+	TestAddress  = "0x8409f65FD78a03edd654671a9d15c6E9962C07c9"
 )
 
 func init() {
@@ -39,20 +43,20 @@ func init() {
 func main() {
 	client := getClient()
 
-	balanceBeforeTransfer := client.Balance(TestAddress)
-	logger.Infof("Balance before transfer %s", balanceBeforeTransfer.String())
+	srcBalanceBeforeTransfer := client.Balance(AdminAddress)
+	logger.Infof("src Balance before transfer %s", srcBalanceBeforeTransfer.String())
 
-	nonce := client.Nonce(AdminAddress)
-	logger.Infof("admin Nonce %d", nonce)
-
-	tx := transferETH(2, TestAddress, One)
+	tx := transferETH(Nonce, TestAddress, One)
 	signedTx := client.SignTransaction(tx)
-
 	hash := client.SendRawTransaction(signedTx)
 	logger.Infof("transfer result %s", hash.Hex())
 
-	balanceAfterTransfer := client.Balance(TestAddress)
-	logger.Infof("Balance after transfer %s", balanceAfterTransfer.String())
+	time.Sleep(10 * time.Second)
+
+	srcBalanceAfterTransfer := client.Balance(AdminAddress)
+	dstBalanceAfterTransfer := client.Balance(TestAddress)
+	logger.Infof("src balance after transfer %s", srcBalanceAfterTransfer.String())
+	logger.Infof("dest balance after transfer %s", dstBalanceAfterTransfer.String())
 }
 
 type wrapClient struct {
@@ -76,26 +80,6 @@ func (c *wrapClient) Balance(address string) *big.Int {
 	data := new(big.Int).Div(src, One)
 
 	return data
-}
-
-func (c *wrapClient) Nonce(address string) uint64 {
-	var raw string
-
-	if err := c.Call(
-		&raw,
-		"eth_getTransactionCount",
-		address,
-		"latest",
-	); err != nil {
-		logger.Fatal(err)
-	}
-
-	data, ok := new(big.Int).SetString(raw, 16)
-	if !ok {
-		return big.NewInt(0).Uint64()
-	} else {
-		return data.Uint64()
-	}
 }
 
 func (c *wrapClient) SignTransaction(tx *types.Transaction) string {
@@ -138,7 +122,7 @@ func transferETH(nonce uint64, toAddress string, value *big.Int) *types.Transact
 }
 
 func getClient() *wrapClient {
-	client, err := rpc.Dial("http://localhost:22000")
+	client, err := rpc.Dial(RpcURL)
 	if err != nil {
 		panic(err)
 	}
@@ -158,6 +142,27 @@ func getClient() *wrapClient {
 		key:    key,
 	}
 }
+
+//func (c *wrapClient) Nonce(address string) uint64 {
+//	var raw string
+//
+//	if err := c.Call(
+//		&raw,
+//		"eth_getTransactionCount",
+//		address,
+//		"latest",
+//	); err != nil {
+//		logger.Fatal(err)
+//	}
+//
+//	data, ok := new(big.Int).SetString(raw, 16)
+//	if !ok {
+//		return big.NewInt(0).Uint64()
+//	} else {
+//		return data.Uint64()
+//	}
+//}
+
 
 func unlock() {
 	// unlock account
